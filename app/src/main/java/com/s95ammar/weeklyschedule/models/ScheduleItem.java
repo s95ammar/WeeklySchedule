@@ -1,4 +1,4 @@
-package com.s95ammar.weeklyschedule;
+package com.s95ammar.weeklyschedule.models;
 
 public class ScheduleItem {
     private String name;
@@ -22,6 +22,10 @@ public class ScheduleItem {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public void showSchedule() {
+
     }
 
     @Override

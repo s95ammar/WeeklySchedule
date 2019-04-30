@@ -57,17 +57,19 @@
             android:switchPadding="20dp"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_status"
-            app:layout_constraintEnd_toStartOf="@+id/imageView_more"
+            app:layout_constraintEnd_toStartOf="@+id/button_more"
             app:layout_constraintTop_toTopOf="@+id/textView_status" />
 
-        <ImageView
-            android:id="@+id/imageView_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+
+        <Button
+            android:id="@+id/button_more"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:layout_constraintBottom_toBottomOf="@+id/switch_is_active"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/switch_is_active"
-            app:srcCompat="@drawable/ic_more_vert" />
+            android:background="@drawable/ic_more_vert" />
 
 
     </android.support.constraint.ConstraintLayout>
