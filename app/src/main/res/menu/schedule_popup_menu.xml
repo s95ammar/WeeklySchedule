@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/rename"
+        android:id="@+id/popup_rename"
         android:title="@string/rename" />
     <item
-        android:id="@+id/delete"
+        android:id="@+id/popup_delete"
         android:title="@string/delete" />
 </menu>
