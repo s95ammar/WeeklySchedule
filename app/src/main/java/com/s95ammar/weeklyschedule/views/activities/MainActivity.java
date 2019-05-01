@@ -49,26 +49,33 @@ public class  MainActivity extends AppCompatActivity implements
         setUpNavDrawer(toolbar);
     }
 
-    @Override
     public void saveData() {
+        Log.d(TAG, "saveData: Saving data");
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        int activeScheduleIndex = SchedulesList.getInstance().indexOf(SchedulesList.getInstance().getActiveSchedule());
         String json = new Gson().toJson(SchedulesList.getInstance());
+        Log.d(TAG, "saveData: active schedule index: " + activeScheduleIndex + " : " + SchedulesList.getInstance().getActiveSchedule());
+        Log.d(TAG, "saveData: schedules list" + json);
+        editor.putInt("active schedule index", activeScheduleIndex);
         editor.putString("schedules list", json);
         editor.apply();
     }
 
-    @Override
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        String json = sharedPreferences.getString("schedules list", null);
-        SchedulesList.createFromJson(json);
+        int activeScheduleIndex = sharedPreferences.getInt("active schedule index", -1);
+        String jsonList = sharedPreferences.getString("schedules list", null);
+        SchedulesList.createFromJson(jsonList);
+        SchedulesList.getInstance().loadActiveSchedule(activeScheduleIndex);
     }
 
     private void checkActiveSchedule() {
         if (SchedulesList.getInstance().getActiveSchedule() != null) {
+            Log.d(TAG, "checkActiveSchedule: Active schedule found " + SchedulesList.getInstance().getActiveSchedule());
             switchToFragment(activeScheduleFragment != null ? activeScheduleFragment : (activeScheduleFragment = new ActiveScheduleFragment()));
         } else {
+            Log.d(TAG, "checkActiveSchedule: Active schedule not found");
             switchToFragment(schedulesFragment != null ? schedulesFragment : (schedulesFragment = new SchedulesFragment()));
         }
     }
@@ -81,15 +88,10 @@ public class  MainActivity extends AppCompatActivity implements
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        Log.d(TAG, "setUpNavDrawer: isn't null = " + String.valueOf(schedulesFragment != null));
-        Log.d(TAG, "setUpNavDrawer: is visible = " + String.valueOf(schedulesFragment.isVisible()));
-
         if (activeScheduleFragment != null && activeScheduleFragment.getUserVisibleHint()) {
             navigationView.getMenu().getItem(NavDrawerItems.ACTIVE_SCHEDULE).setChecked(true);
-            Log.d(TAG, "setUpNavDrawer: Checking Active Schedule");
         } else if (schedulesFragment != null && schedulesFragment.getUserVisibleHint()) {
             navigationView.getMenu().getItem(NavDrawerItems.SCHEDULES).setChecked(true);
-            Log.d(TAG, "setUpNavDrawer: Checking Schedules");
         }
     }
 

@@ -3,8 +3,9 @@
 
     <item
         android:id="@+id/popup_rename"
-        android:title="@string/rename" />
+        android:title="@string/popup_rename" />
     <item
         android:id="@+id/popup_delete"
-        android:title="@string/delete" />
+        android:title="@string/popup_delete" />
+
 </menu>

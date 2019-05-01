@@ -1,12 +1,13 @@
 package com.s95ammar.weeklyschedule.views.recyclerView;
 
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupMenu;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -51,11 +52,13 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
         private TextView tvScheduleName;
         private Switch switchIsActive;
         private Button buttonMore;
+        private TextView tvIsActive;
 
-        public ScheduleViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
+        public ScheduleViewHolder(@NonNull final View itemView, final OnItemClickListener listener) {
             super(itemView);
             tvScheduleName = itemView.findViewById(R.id.textView_schedule_name);
             switchIsActive = itemView.findViewById(R.id.switch_is_active);
+            tvIsActive = itemView.findViewById(R.id.textView_is_Active);
             buttonMore = itemView.findViewById(R.id.button_more);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,6 +82,26 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
                     }
                 }
             });
+            switchIsActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (listener != null) {
+                        int i = getAdapterPosition();
+                        if (i != RecyclerView.NO_POSITION) {
+                            if (isChecked) {
+                                tvIsActive.setText(R.string.status_active);
+                                tvIsActive.setTextColor(itemView.getResources().getColor(R.color.colorPrimary));
+                                tvIsActive.setTypeface(null, Typeface.BOLD);
+                            } else {
+                                tvIsActive.setText(R.string.status_inactive);
+                                tvIsActive.setTextColor(itemView.getResources().getColor(R.color.colorDarkerGray));
+                                tvIsActive.setTypeface(null, Typeface.NORMAL);
+                            }
+                            listener.onSwitchChecked(i, isChecked);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -89,5 +112,6 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
     public interface OnItemClickListener {
         void onItemClicked(int i);
         void onMoreClicked(int i, Button buttonMore);
+        void onSwitchChecked(int i, boolean isChecked);
     }
 }

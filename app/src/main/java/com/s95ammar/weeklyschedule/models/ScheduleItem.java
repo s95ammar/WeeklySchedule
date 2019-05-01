@@ -4,6 +4,7 @@ public class ScheduleItem {
     private String name;
     private boolean isActive;
 
+
     public ScheduleItem(String name) {
         this.name = name;
     }
@@ -24,14 +25,8 @@ public class ScheduleItem {
         isActive = active;
     }
 
-    public void showSchedule() {
-
-    }
-
     @Override
     public String toString() {
-        return "ScheduleItem{" +
-                "name='" + name + '\'' +
-                '}';
+        return '{' + name + ':' + isActive + '}';
     }
 }

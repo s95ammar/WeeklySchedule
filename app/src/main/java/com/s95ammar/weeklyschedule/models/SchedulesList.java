@@ -21,7 +21,6 @@ public class SchedulesList extends ArrayList<ScheduleItem> {
         return instance;
     }
 
-
     public ScheduleItem getActiveSchedule() {
         return activeSchedule;
     }
@@ -31,13 +30,20 @@ public class SchedulesList extends ArrayList<ScheduleItem> {
     }
 
     public static void createFromJson(String json) {
-        Log.d(TAG, "createFromJson: creating from json");
+        Log.d(TAG, "createFromJson: " + json);
         if (instance == null) {
             instance = new Gson().fromJson(json, SchedulesList.class);
             Log.d(TAG, "createFromJson: " + getInstance().toString());
         } else {
-            Log.d(TAG, "createFromJson: User already exists");
+            Log.d(TAG, "createFromJson: Schedule already exists");
         }
 
+    }
+
+    public void loadActiveSchedule(int activeScheduleIndex) {
+        if (activeScheduleIndex != -1) {
+            activeSchedule = instance.get(activeScheduleIndex);
+        }
+        Log.d(TAG, "loadActiveSchedule: index: " + activeScheduleIndex + " : " + activeSchedule);
     }
 }
