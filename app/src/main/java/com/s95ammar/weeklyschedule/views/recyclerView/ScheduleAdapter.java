@@ -45,7 +45,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
 
     @Override
     public int getItemCount() {
-        return mScheduleItems.size();
+        return mScheduleItems == null ? 0 : mScheduleItems.size();
     }
 
     public static class ScheduleViewHolder extends RecyclerView.ViewHolder {
@@ -58,7 +58,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
             super(itemView);
             tvScheduleName = itemView.findViewById(R.id.textView_schedule_name);
             switchIsActive = itemView.findViewById(R.id.switch_is_active);
-            tvIsActive = itemView.findViewById(R.id.textView_is_Active);
+            tvIsActive = itemView.findViewById(R.id.textView_is_active);
             buttonMore = itemView.findViewById(R.id.button_more);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

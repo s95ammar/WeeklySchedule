@@ -14,14 +14,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
+        <include
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:elevation="4dp"
-            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar" />
+            layout="@layout/toolbar"/>
 
         <FrameLayout
             android:id="@+id/fragment_container"

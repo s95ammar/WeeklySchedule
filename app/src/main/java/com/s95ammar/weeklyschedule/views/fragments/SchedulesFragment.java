@@ -43,16 +43,15 @@ public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnIte
         super.onViewCreated(view, savedInstanceState);
         setUpActionButtonListener();
         buildRecyclerView();
-        refreshBackground();
+        refreshLayout();
         getActivity().setTitle(R.string.title_schedules);
     }
 
 
 
-    private void refreshBackground() {
-        boolean isEmpty = SchedulesList.getInstance().size() == 0;
-        getView().findViewById(R.id.textView_no_schedules).setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        getView().findViewById(R.id.recyclerView).setBackgroundColor(isEmpty ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
+    private void refreshLayout() {
+        getView().findViewById(R.id.textView_no_schedules).setVisibility(SchedulesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.recyclerView).setBackgroundColor(SchedulesList.getInstance().isEmpty() ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
     }
 
     private void buildRecyclerView() {
@@ -124,14 +123,14 @@ public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnIte
         SchedulesList.getInstance().add(0, new ScheduleItem(name));
         mAdapter.notifyItemInserted(0);
         mLayoutManager.scrollToPosition(0);
-        refreshBackground();
+        refreshLayout();
         Log.d(TAG, "addSchedule: " + SchedulesList.getInstance());
     }
 
     public void renameSchedule(String newName, int i) {
         SchedulesList.getInstance().get(i).setName(newName);
         mAdapter.notifyItemChanged(i);
-        refreshBackground();
+//        refreshLayout(); TODO: make sure there's no need for this
         Log.d(TAG, "renameSchedule: " + SchedulesList.getInstance());
     }
 
@@ -141,7 +140,7 @@ public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnIte
         }
         SchedulesList.getInstance().remove(i);
         mAdapter.notifyItemRemoved(i);
-        refreshBackground();
+        refreshLayout();
         Log.d(TAG, "deleteSchedule: " + SchedulesList.getInstance());
     }
 

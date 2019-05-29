@@ -46,4 +46,9 @@ public class SchedulesList extends ArrayList<ScheduleItem> {
         }
         Log.d(TAG, "loadActiveSchedule: index: " + activeScheduleIndex + " : " + activeSchedule);
     }
+
+    public boolean hasActiveSchedule() {
+        return activeSchedule != null;
+    }
+
 }

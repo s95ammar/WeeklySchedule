@@ -48,7 +48,7 @@ public class ScheduleNamerDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.dialog_add_schedule, null);
         String name = getArguments().getString("name");
         final int i = getArguments().getInt("index");
-        action = (i == (Action.ADD) ? Action.ADD_TITLE : Action.RENAME_TITLE);
+        action = (i == Action.ADD ? Action.ADD_TITLE : Action.RENAME_TITLE);
         builder.setView(view)
                 .setTitle(action)
                 .setNegativeButton("Cancel", null)

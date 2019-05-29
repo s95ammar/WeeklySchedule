@@ -2,6 +2,7 @@ package com.s95ammar.weeklyschedule.views.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
@@ -21,15 +24,17 @@ import com.s95ammar.weeklyschedule.views.fragments.ScheduleNamerDialog;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.views.fragments.SchedulesFragment;
 
-public class  MainActivity extends AppCompatActivity implements
+public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         ScheduleNamerDialog.DialogListener,
-        SchedulesFragment.ScheduleManager {
+        SchedulesFragment.ScheduleManager,
+        ActiveScheduleFragment.ScheduleEditor {
 
     private static final String TAG = "MainActivity";
     private DrawerLayout drawer;
     private ActiveScheduleFragment activeScheduleFragment;
     private SchedulesFragment schedulesFragment;
+    private Menu menu;
 
     private interface NavDrawerItems {
         int ACTIVE_SCHEDULE = 0;
@@ -45,8 +50,39 @@ public class  MainActivity extends AppCompatActivity implements
         loadData();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu, menu);
+        this.menu = menu;
+        Toolbar toolbar = findViewById(R.id.toolbar);
         checkActiveSchedule();
         setUpNavDrawer(toolbar);
+        return true;
+    }
+
+    public void editListener(MenuItem item) {
+        //TODO: start edit mode
+        setEditVisibility(false);
+        setDoneVisibility(true);
+    }
+
+    public void doneListener(MenuItem item) {
+        //TODO: close edit mode
+        setDoneVisibility(false);
+        setEditVisibility(true);
+    }
+
+    @Override
+    public void setEditVisibility(boolean visibility) {
+        menu.findItem(R.id.button_edit).setVisible(visibility);
+    }
+
+    @Override
+    public void setDoneVisibility(boolean visibility) {
+        menu.findItem(R.id.button_done).setVisible(visibility);
     }
 
     public void saveData() {
@@ -71,7 +107,7 @@ public class  MainActivity extends AppCompatActivity implements
     }
 
     private void checkActiveSchedule() {
-        if (SchedulesList.getInstance().getActiveSchedule() != null) {
+        if (SchedulesList.getInstance().hasActiveSchedule()) {
             Log.d(TAG, "checkActiveSchedule: Active schedule found " + SchedulesList.getInstance().getActiveSchedule());
             switchToFragment(activeScheduleFragment != null ? activeScheduleFragment : (activeScheduleFragment = new ActiveScheduleFragment()));
         } else {
@@ -107,7 +143,7 @@ public class  MainActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.nav_current_schedule:
+            case R.id.nav_active_schedule:
                 switchToFragment(activeScheduleFragment != null ? activeScheduleFragment : (activeScheduleFragment = new ActiveScheduleFragment()));
                 break;
             case R.id.nav_schedules:

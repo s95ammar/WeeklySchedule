@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Weekly Schedule</string>
     <string name="schedules">Schedules</string>
-    <string name="current_schedule">Current Schedule</string>
+    <string name="active_schedule">Active Schedule</string>
     <string name="settings">Settings</string>
     <string name="info">Info</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -20,5 +20,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_settings">Settings</string>
-    <string name="title_activity_info">InfoActivity</string>
+    <string name="title_activity_info">Info</string>
+    <string name="done">Done</string>
+    <string name="edit">Edit</string>
+    <string name="no_active_schedule">Active schedule will be shown\n here once selected</string>
 </resources>
