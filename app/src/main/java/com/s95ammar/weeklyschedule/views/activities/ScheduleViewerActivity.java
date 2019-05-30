@@ -1,5 +1,6 @@
 package com.s95ammar.weeklyschedule.views.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 import static com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment.SchedulesListManager.KEY_INDEX;
 
 public class ScheduleViewerActivity extends ParentActivity {
+    private static final String TAG = "ScheduleViewerActivity";
 //    protected ScheduleViewerFragment scheduleViewerFragment;
 
     @Override
@@ -36,9 +38,23 @@ public class ScheduleViewerActivity extends ParentActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                setResult(RESULT_OK, new Intent());
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
+    }
+
     private void showSchedule() {
         ScheduleItem schedule = SchedulesList.getInstance().get(getIntent().getIntExtra(KEY_INDEX, -1));
-        Serializable object = getIntent().getSerializableExtra(KEY_SHCEDULE);
+        Serializable object = getIntent().getSerializableExtra(KEY_SCHEDULE);
         openScheduleViewerFragment(schedule, R.id.fragment_container_schedule_viewer_activity);
     }
 

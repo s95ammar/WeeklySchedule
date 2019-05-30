@@ -32,7 +32,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Serializable object = bundle.getSerializable(ScheduleEditor.KEY_SHCEDULE);
+            Serializable object = bundle.getSerializable(ScheduleEditor.KEY_SCHEDULE);
             if (object instanceof ScheduleItem) {
                 schedule = (ScheduleItem) object;
             }
@@ -100,7 +100,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
         void setDoneCancelVisibility(boolean visibility);
-        String KEY_SHCEDULE = "schedule";
+        String KEY_SCHEDULE = "schedule";
     }
 
 

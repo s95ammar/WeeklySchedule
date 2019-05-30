@@ -19,6 +19,7 @@ import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 public class ParentActivity extends AppCompatActivity implements
         ScheduleViewerFragment.ScheduleEditor,
         ScheduleViewer {
+
     private static final String TAG = "ParentActivity";
     protected ScheduleViewerFragment scheduleViewerFragment;
     protected Menu menu;
@@ -59,7 +60,7 @@ public class ParentActivity extends AppCompatActivity implements
     @Override
     public void openScheduleViewerFragment(ScheduleItem schedule, int fragContainerId) {
         Bundle scheduleBundle = new Bundle();
-        scheduleBundle.putSerializable(KEY_SHCEDULE, schedule);
+        scheduleBundle.putSerializable(KEY_SCHEDULE, schedule);
         switchToFragment(scheduleViewerFragment != null ? scheduleViewerFragment : (scheduleViewerFragment = new ScheduleViewerFragment()),
                 fragContainerId, scheduleBundle);
 

@@ -25,6 +25,7 @@ public class MainActivity extends ParentActivity implements
         SchedulesListFragment.SchedulesListManager,
         ScheduleViewer {
 
+    private static final int REQUEST_CODE = 0;
     private static final String TAG = "MainActivity";
     private DrawerLayout drawer;
     private SchedulesListFragment schedulesListFragment;
@@ -67,6 +68,19 @@ public class MainActivity extends ParentActivity implements
                     R.id.fragment_container_main_activity, null);
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if(resultCode == RESULT_OK) {
+                switchToFragment(schedulesListFragment != null ? schedulesListFragment : (schedulesListFragment = new SchedulesListFragment()),
+                        R.id.fragment_container_main_activity, null);
+
+            }
+        }
+    }
+
 
     private void setUpNavDrawer(Toolbar toolbar) {
         drawer = findViewById(R.id.drawer_layout);
@@ -121,7 +135,7 @@ public class MainActivity extends ParentActivity implements
     public void showScheduleInActivity(int i) {
         Intent intent = new Intent(this, ScheduleViewerActivity.class);
         intent.putExtra(KEY_INDEX, i);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     @Override
