@@ -12,6 +12,9 @@ import android.widget.EditText;
 
 import com.s95ammar.weeklyschedule.R;
 
+import static com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment.SchedulesListManager.KEY_INDEX;
+import static com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment.SchedulesListManager.KEY_NAME;
+
 public class ScheduleNamerDialog extends AppCompatDialogFragment {
     private EditText mEditTextName;
     private DialogListener mListener;
@@ -46,8 +49,8 @@ public class ScheduleNamerDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_schedule, null);
-        String name = getArguments().getString("name");
-        final int i = getArguments().getInt("index");
+        String name = getArguments().getString(KEY_NAME);
+        final int i = getArguments().getInt(KEY_INDEX);
         action = (i == Action.ADD ? Action.ADD_TITLE : Action.RENAME_TITLE);
         builder.setView(view)
                 .setTitle(action)

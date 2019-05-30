@@ -25,25 +25,6 @@ public class ParentActivity extends AppCompatActivity implements
     protected ScheduleViewerFragment scheduleViewerFragment;
     protected Menu menu;
 
-/*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
-*/
-
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.toolbar_menu, menu);
-        this.menu = menu;
-        return true;
-    }
-*/
-
     public void editListener(MenuItem item) {
         setEditVisibility(false);
         setDoneVisibility(true);
@@ -69,7 +50,7 @@ public class ParentActivity extends AppCompatActivity implements
     @Override
     public void openScheduleViewerFragment(ScheduleItem schedule, int fragContainerId) {
         Bundle scheduleBundle = new Bundle();
-        scheduleBundle.putSerializable("schedule", schedule);
+        scheduleBundle.putSerializable(KEY_SHCEDULE, schedule);
         switchToFragment(scheduleViewerFragment != null ? scheduleViewerFragment : (scheduleViewerFragment = new ScheduleViewerFragment()),
                 fragContainerId, scheduleBundle);
 

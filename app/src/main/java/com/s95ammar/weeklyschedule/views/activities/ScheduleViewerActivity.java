@@ -10,7 +10,7 @@ import com.s95ammar.weeklyschedule.models.ScheduleItem;
 
 import java.io.Serializable;
 
-public class ScheduleViewerActivity extends ParentActivity /*implements ScheduleViewer*/ {
+public class ScheduleViewerActivity extends ParentActivity {
 //    protected ScheduleViewerFragment scheduleViewerFragment;
 
 
@@ -23,8 +23,6 @@ public class ScheduleViewerActivity extends ParentActivity /*implements Schedule
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
     }
 
     @Override
@@ -32,23 +30,17 @@ public class ScheduleViewerActivity extends ParentActivity /*implements Schedule
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu, menu);
         super.menu = menu;
-        Serializable object = getIntent().getSerializableExtra("schedule");
+        showSchedule();
+        return true;
+    }
+
+    private void showSchedule() {
+        Serializable object = getIntent().getSerializableExtra(KEY_SHCEDULE);
         if (object instanceof ScheduleItem) {
             openScheduleViewerFragment((ScheduleItem) object, R.id.fragment_container_schedule_viewer_activity);
         }
 
-        return true;
     }
 
-
-
-/*
-    @Override
-    public void openScheduleViewerFragment(ScheduleItem schedule) {
-        Bundle scheduleBundle = new Bundle();
-        scheduleBundle.putSerializable("schedule", schedule);
-        switchToFragment(scheduleViewerFragment != null ? scheduleViewerFragment : (scheduleViewerFragment = new ScheduleViewerFragment()), scheduleBundle);
-
-    }
-*/
+    
 }

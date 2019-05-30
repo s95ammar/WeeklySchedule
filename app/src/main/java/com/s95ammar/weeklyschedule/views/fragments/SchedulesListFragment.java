@@ -68,7 +68,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
     @Override
     public void onItemClicked(int i) {
 //        TODO: show schedule
-        mListener.showScheduleInActivity(SchedulesList.getInstance().get(i));
+        mListener.showScheduleInActivity(i);
         Log.d(TAG, "onItemClicked: " + SchedulesList.getInstance().get(i).getName());
     }
 
@@ -175,7 +175,10 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
 
     public interface SchedulesListManager {
         void showScheduleRefactorDialog(String action, int i);
-        void showScheduleInActivity(ScheduleItem schedule);
+        void showScheduleInActivity(int i);
+        String KEY_SCHEDULE = "schedule";
+        String KEY_NAME = "name";
+        String KEY_INDEX = "index";
     }
 
 }

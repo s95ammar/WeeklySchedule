@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleNamerDialog;
 import com.s95ammar.weeklyschedule.R;
@@ -28,9 +27,7 @@ public class MainActivity extends ParentActivity implements
 
     private static final String TAG = "MainActivity";
     private DrawerLayout drawer;
-//    private ScheduleViewerFragment scheduleViewerFragment;
     private SchedulesListFragment schedulesListFragment;
-//    private Menu menu;
 
 
     private interface NavDrawerItems {
@@ -60,53 +57,6 @@ public class MainActivity extends ParentActivity implements
         return true;
     }
 
-/*
-    public void editListener(MenuItem item) {
-        setEditVisibility(false);
-        setDoneVisibility(true);
-        scheduleViewerFragment.setMode(ScheduleViewerFragment.EDIT);
-    }
-
-    public void doneListener(MenuItem item) {
-        setDoneVisibility(false);
-        setEditVisibility(true);
-        scheduleViewerFragment.setMode(ScheduleViewerFragment.VIEW);
-    }
-
-    @Override
-    public void setEditVisibility(boolean visibility) {
-        menu.findItem(R.id.button_edit).setVisible(visibility);
-    }
-
-    @Override
-    public void setDoneVisibility(boolean visibility) {
-        menu.findItem(R.id.button_done).setVisible(visibility);
-    }
-*/
-
-/*
-    public void saveData() {
-        Log.d(TAG, "saveData: Saving data");
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        int activeScheduleIndex = SchedulesList.getInstance().indexOf(SchedulesList.getInstance().getActiveSchedule());
-        String json = new Gson().toJson(SchedulesList.getInstance());
-        Log.d(TAG, "saveData: active schedule index: " + activeScheduleIndex + " : " + SchedulesList.getInstance().getActiveSchedule());
-        Log.d(TAG, "saveData: schedules list" + json);
-        editor.putInt("active schedule index", activeScheduleIndex);
-        editor.putString("schedules list", json);
-        editor.apply();
-    }
-
-    public void loadData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        int activeScheduleIndex = sharedPreferences.getInt("active schedule index", -1);
-        String jsonList = sharedPreferences.getString("schedules list", null);
-        SchedulesList.createFromJson(jsonList);
-        SchedulesList.getInstance().loadActiveSchedule(activeScheduleIndex);
-    }
-*/
-
     private void checkActiveSchedule() {
         if (SchedulesList.getInstance().hasActiveSchedule()) {
             Log.d(TAG, "checkActiveSchedule: Active schedule found " + SchedulesList.getInstance().getActiveSchedule());
@@ -117,16 +67,6 @@ public class MainActivity extends ParentActivity implements
                     R.id.fragment_container_main_activity, null);
         }
     }
-
-/*
-    @Override
-    public void openScheduleViewerFragment(ScheduleItem schedule) {
-        Bundle scheduleBundle = new Bundle();
-        scheduleBundle.putSerializable("schedule", schedule);
-        switchToFragment(scheduleViewerFragment != null ? scheduleViewerFragment : (scheduleViewerFragment = new ScheduleViewerFragment()),
-                R.id.fragment_container_main_activity, scheduleBundle);
-    }
-*/
 
     private void setUpNavDrawer(Toolbar toolbar) {
         drawer = findViewById(R.id.drawer_layout);
@@ -178,20 +118,11 @@ public class MainActivity extends ParentActivity implements
     }
 
     @Override
-    public void showScheduleInActivity(ScheduleItem schedule) {
+    public void showScheduleInActivity(int i) {
         Intent intent = new Intent(this, ScheduleViewerActivity.class);
-        intent.putExtra("schedule", schedule);
+        intent.putExtra(KEY_SCHEDULE, i);
         startActivity(intent);
     }
-
-    /*
-    private void switchToFragment(@NonNull Fragment fragment, Bundle args) {
-        if (args != null) {
-            fragment.setArguments(args);
-        }
-        getSupportFragmentManager().beginTransaction().replace((R.id.fragment_container_main_activity), fragment).commit();
-    }
-*/
 
     @Override
     public void applyName(String name, int i) {
@@ -208,18 +139,11 @@ public class MainActivity extends ParentActivity implements
     public void showScheduleRefactorDialog(String name, int i) {
         ScheduleNamerDialog dialog = new ScheduleNamerDialog();
         Bundle values = new Bundle();
-        values.putString("name", name);
-        values.putInt("index", i);
+        values.putString(KEY_NAME, name);
+        values.putInt(KEY_INDEX, i);
         dialog.setArguments(values);
         dialog.show(getSupportFragmentManager(), TAG);
 
     }
 
-/*
-    @Override
-    protected void onStop() {
-        saveData();
-        super.onStop();
-    }
-*/
 }
