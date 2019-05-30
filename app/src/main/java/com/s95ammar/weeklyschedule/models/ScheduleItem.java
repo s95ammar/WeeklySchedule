@@ -1,9 +1,12 @@
 package com.s95ammar.weeklyschedule.models;
 
-public class ScheduleItem {
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class ScheduleItem implements Serializable {
     private String name;
     private boolean isActive;
-
+    private ArrayList<ArrayList<Event>> days;
 
     public ScheduleItem(String name) {
         this.name = name;

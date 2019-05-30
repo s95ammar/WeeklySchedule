@@ -2,6 +2,7 @@ package com.s95ammar.weeklyschedule.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,13 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.s95ammar.weeklyschedule.R;
+import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public class ActiveScheduleFragment extends Fragment {
+
+public class ScheduleViewerFragment extends Fragment implements View.OnClickListener {
+    public static final int VIEW = 0;
+    public static final int EDIT = 1;
     private ScheduleEditor mListener;
+    private ScheduleItem schedule;
 
-    public ActiveScheduleFragment() {
+    public ScheduleViewerFragment() {
     }
 
     @Override
@@ -28,23 +36,27 @@ public class ActiveScheduleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        refreshLayout(false);
+        setUpLayout();
+        getView().findViewById(R.id.button_add_event).setOnClickListener(this);
     }
 
-
-    public void refreshLayout(boolean editMode) {
+    private void setUpLayout() {
         boolean hasActiveSchedule = SchedulesList.getInstance().hasActiveSchedule();
         getActivity().setTitle(hasActiveSchedule ? SchedulesList.getInstance().getActiveSchedule().getName() : getString(R.string.title_active_schedule));
         getView().findViewById(R.id.textView_no_active_schedule).setVisibility(hasActiveSchedule ? View.GONE : View.VISIBLE);
-
-        if (!editMode) {
-            mListener.setEditVisibility(hasActiveSchedule);
-        } else {
-            mListener.setDoneVisibility(hasActiveSchedule);
+        if (hasActiveSchedule) {
+            setMode(VIEW);
         }
-
     }
 
+
+    public void setMode(@Mode int mode) {
+        mListener.setDoneVisibility(mode == EDIT);
+        mListener.setEditVisibility(mode == VIEW);
+        getView().findViewById(R.id.button_add_event).setVisibility(mode == EDIT ? View.VISIBLE : View.GONE);
+
+
+    }
 
 
     @Override
@@ -54,7 +66,7 @@ public class ActiveScheduleFragment extends Fragment {
             mListener = (ScheduleEditor) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement ScheduleManager");
+                    + " must implement ScheduleEditor");
         }
     }
 
@@ -66,17 +78,32 @@ public class ActiveScheduleFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_add_event:
+//                TODO: open event-creator dialog
+            break;
+        }
+    }
+
 
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
         void setDoneVisibility(boolean visibility);
     }
 
-/*
-    @IntDef({VISIBLE, INVISIBLE, GONE})
+
+    @IntDef({EDIT, VIEW})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Visibility {}
+    public @interface Mode {}
+
+/*
+    public interface EventManager() {
+
+    }
 */
+
 
 
 }

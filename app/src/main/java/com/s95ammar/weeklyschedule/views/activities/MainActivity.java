@@ -2,7 +2,6 @@ package com.s95ammar.weeklyschedule.views.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -18,8 +17,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
+import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
+import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
-import com.s95ammar.weeklyschedule.views.fragments.ActiveScheduleFragment;
+import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleNamerDialog;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.views.fragments.SchedulesFragment;
@@ -28,21 +29,23 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         ScheduleNamerDialog.DialogListener,
         SchedulesFragment.ScheduleManager,
-        ActiveScheduleFragment.ScheduleEditor {
+        ScheduleViewerFragment.ScheduleEditor,
+        ScheduleViewer {
 
     private static final String TAG = "MainActivity";
     private DrawerLayout drawer;
-    private ActiveScheduleFragment activeScheduleFragment;
+    private ScheduleViewerFragment scheduleViewerFragment;
     private SchedulesFragment schedulesFragment;
     private Menu menu;
 
+
     private interface NavDrawerItems {
+
         int ACTIVE_SCHEDULE = 0;
         int SCHEDULES = 1;
         int SETTINGS = 2;
         int INFO = 3;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,15 +67,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void editListener(MenuItem item) {
-        //TODO: start edit mode
         setEditVisibility(false);
         setDoneVisibility(true);
+        scheduleViewerFragment.setMode(ScheduleViewerFragment.EDIT);
     }
 
     public void doneListener(MenuItem item) {
-        //TODO: close edit mode
         setDoneVisibility(false);
         setEditVisibility(true);
+        scheduleViewerFragment.setMode(ScheduleViewerFragment.VIEW);
     }
 
     @Override
@@ -109,11 +112,18 @@ public class MainActivity extends AppCompatActivity implements
     private void checkActiveSchedule() {
         if (SchedulesList.getInstance().hasActiveSchedule()) {
             Log.d(TAG, "checkActiveSchedule: Active schedule found " + SchedulesList.getInstance().getActiveSchedule());
-            switchToFragment(activeScheduleFragment != null ? activeScheduleFragment : (activeScheduleFragment = new ActiveScheduleFragment()));
+            viewScheduleInFragment(SchedulesList.getInstance().getActiveSchedule());
         } else {
             Log.d(TAG, "checkActiveSchedule: Active schedule not found");
-            switchToFragment(schedulesFragment != null ? schedulesFragment : (schedulesFragment = new SchedulesFragment()));
+            switchToFragment(schedulesFragment != null ? schedulesFragment : (schedulesFragment = new SchedulesFragment()), null);
         }
+    }
+
+    @Override
+    public void viewScheduleInFragment(ScheduleItem schedule) {
+        Bundle scheduleBundle = new Bundle();
+        scheduleBundle.putSerializable("schedule", schedule);
+        switchToFragment(scheduleViewerFragment != null ? scheduleViewerFragment : (scheduleViewerFragment = new ScheduleViewerFragment()), scheduleBundle);
     }
 
     private void setUpNavDrawer(Toolbar toolbar) {
@@ -124,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (activeScheduleFragment != null && activeScheduleFragment.getUserVisibleHint()) {
+        if (scheduleViewerFragment != null && scheduleViewerFragment.getUserVisibleHint()) {
             navigationView.getMenu().getItem(NavDrawerItems.ACTIVE_SCHEDULE).setChecked(true);
         } else if (schedulesFragment != null && schedulesFragment.getUserVisibleHint()) {
             navigationView.getMenu().getItem(NavDrawerItems.SCHEDULES).setChecked(true);
@@ -144,10 +154,10 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_active_schedule:
-                switchToFragment(activeScheduleFragment != null ? activeScheduleFragment : (activeScheduleFragment = new ActiveScheduleFragment()));
+                viewScheduleInFragment(SchedulesList.getInstance().getActiveSchedule());
                 break;
             case R.id.nav_schedules:
-                switchToFragment(schedulesFragment != null ? schedulesFragment : (schedulesFragment = new SchedulesFragment()));
+                switchToFragment(schedulesFragment != null ? schedulesFragment : (schedulesFragment = new SchedulesFragment()), null);
                 break;
             case R.id.nav_settings:
                 Intent intentSettings = new Intent(this, SettingsActivity.class);
@@ -162,9 +172,11 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    private void switchToFragment(@NonNull Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace((R.id.fragment_container), fragment).commit();
-
+    private void switchToFragment(@NonNull Fragment fragment, Bundle args) {
+        if (args != null) {
+            fragment.setArguments(args);
+        }
+        getSupportFragmentManager().beginTransaction().replace((R.id.fragment_container_main_activity), fragment).commit();
     }
 
     @Override
@@ -176,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 schedulesFragment.renameSchedule(name, i);
         }
-
     }
 
     @Override

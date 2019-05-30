@@ -130,7 +130,6 @@ public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnIte
     public void renameSchedule(String newName, int i) {
         SchedulesList.getInstance().get(i).setName(newName);
         mAdapter.notifyItemChanged(i);
-//        refreshLayout(); TODO: make sure there's no need for this
         Log.d(TAG, "renameSchedule: " + SchedulesList.getInstance());
     }
 
