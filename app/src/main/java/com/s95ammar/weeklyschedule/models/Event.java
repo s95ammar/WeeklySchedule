@@ -1,12 +1,10 @@
 package com.s95ammar.weeklyschedule.models;
 
-//import java.time.DayOfWeek;
 
 import org.joda.time.LocalTime;
 
 public class Event {
     private String name;
-//    private DayOfWeek day;
     private LocalTime startTime;
     private LocalTime endTime;
 

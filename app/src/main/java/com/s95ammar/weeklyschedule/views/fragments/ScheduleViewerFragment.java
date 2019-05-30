@@ -50,7 +50,6 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
 
     private void setUpLayout() {
 //        boolean hasActiveSchedule = SchedulesList.getInstance().hasActiveSchedule();
-
         getActivity().setTitle(schedule != null ? schedule.getName() : getString(R.string.title_active_schedule));
         getView().findViewById(R.id.textView_no_active_schedule).setVisibility(schedule != null ? View.GONE : View.VISIBLE);
         if (schedule != null) {
@@ -63,7 +62,6 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
         mListener.setDoneCancelVisibility(mode == EDIT);
         mListener.setEditVisibility(mode == VIEW);
         getView().findViewById(R.id.button_add_event).setVisibility(mode == EDIT ? View.VISIBLE : View.GONE);
-
 
     }
 

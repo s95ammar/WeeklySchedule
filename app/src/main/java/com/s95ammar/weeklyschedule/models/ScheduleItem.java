@@ -1,15 +1,22 @@
 package com.s95ammar.weeklyschedule.models;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 
 public class ScheduleItem implements Serializable {
     private String name;
     private boolean isActive;
-    private ArrayList<ArrayList<Event>> days;
+    private ArrayList<Day> days;
 
     public ScheduleItem(String name) {
         this.name = name;
+        days = new ArrayList<>();
+/*
+        for (int i = 0; i < 7; i++) {
+            days.add(new Day(DayOfWeek.SATURDAY.plus(i)), new ArrayList<Event>());
+        }
+*/
     }
 
     public String getName() {

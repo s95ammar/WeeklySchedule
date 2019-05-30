@@ -23,4 +23,6 @@
     <string name="edit">Edit</string>
     <string name="no_active_schedule">Active schedule will be shown\n here once selected</string>
     <string name="cancel">Cancel</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
 </resources>

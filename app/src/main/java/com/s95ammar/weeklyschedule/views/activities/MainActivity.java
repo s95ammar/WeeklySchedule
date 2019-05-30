@@ -21,7 +21,7 @@ import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment;
 
 public class MainActivity extends ParentActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        ScheduleNamerDialog.DialogListener,
+        ScheduleNamerDialog.ScheduleNamerListener,
         SchedulesListFragment.SchedulesListManager,
         ScheduleViewer {
 
@@ -153,8 +153,8 @@ public class MainActivity extends ParentActivity implements
     public void showScheduleRefactorDialog(String name, int i) {
         ScheduleNamerDialog dialog = new ScheduleNamerDialog();
         Bundle values = new Bundle();
-        values.putString(KEY_NAME, name);
         values.putInt(KEY_INDEX, i);
+        values.putString(KEY_NAME, name);
         dialog.setArguments(values);
         dialog.show(getSupportFragmentManager(), TAG);
 

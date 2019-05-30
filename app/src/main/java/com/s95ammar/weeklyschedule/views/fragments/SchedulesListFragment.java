@@ -67,7 +67,6 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
 
     @Override
     public void onItemClicked(int i) {
-//        TODO: show schedule
         mListener.showScheduleInActivity(i);
         Log.d(TAG, "onItemClicked: " + SchedulesList.getInstance().get(i).getName());
     }
