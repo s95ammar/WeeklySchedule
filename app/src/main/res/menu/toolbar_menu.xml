@@ -4,6 +4,14 @@
 
     <item
         android:visible="false"
+        android:id="@+id/button_edit"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="ifRoom"
+        android:onClick="editListener"
+        android:title="@string/edit" />
+
+    <item
+        android:visible="false"
         android:id="@+id/button_done"
         android:icon="@drawable/ic_done"
         app:showAsAction="ifRoom"
@@ -12,10 +20,10 @@
 
     <item
         android:visible="false"
-        android:id="@+id/button_edit"
-        android:icon="@drawable/ic_edit"
+        android:id="@+id/button_cancel"
+        android:icon="@drawable/ic_cancel"
         app:showAsAction="ifRoom"
-        android:onClick="editListener"
-        android:title="@string/edit" />
+        android:onClick="cancelListener"
+        android:title="@string/cancel" />
 
 </menu>

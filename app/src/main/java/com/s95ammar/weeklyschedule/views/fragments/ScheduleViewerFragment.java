@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
-import com.s95ammar.weeklyschedule.models.SchedulesList;
 
 import java.io.Serializable;
 import java.lang.annotation.Retention;
@@ -61,7 +60,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
 
 
     public void setMode(@Mode int mode) {
-        mListener.setDoneVisibility(mode == EDIT);
+        mListener.setDoneCancelVisibility(mode == EDIT);
         mListener.setEditVisibility(mode == VIEW);
         getView().findViewById(R.id.button_add_event).setVisibility(mode == EDIT ? View.VISIBLE : View.GONE);
 
@@ -84,7 +83,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public void onDetach() {
         super.onDetach();
         mListener.setEditVisibility(false);
-        mListener.setDoneVisibility(false);
+        mListener.setDoneCancelVisibility(false);
         mListener = null;
     }
 
@@ -100,7 +99,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
 
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
-        void setDoneVisibility(boolean visibility);
+        void setDoneCancelVisibility(boolean visibility);
         String KEY_SHCEDULE = "schedule";
     }
 

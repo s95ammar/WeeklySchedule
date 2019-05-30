@@ -120,7 +120,7 @@ public class MainActivity extends ParentActivity implements
     @Override
     public void showScheduleInActivity(int i) {
         Intent intent = new Intent(this, ScheduleViewerActivity.class);
-        intent.putExtra(KEY_SCHEDULE, i);
+        intent.putExtra(KEY_INDEX, i);
         startActivity(intent);
     }
 

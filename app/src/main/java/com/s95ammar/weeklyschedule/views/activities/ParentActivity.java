@@ -5,10 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
@@ -27,15 +25,25 @@ public class ParentActivity extends AppCompatActivity implements
 
     public void editListener(MenuItem item) {
         setEditVisibility(false);
-        setDoneVisibility(true);
+        setDoneCancelVisibility(true);
         scheduleViewerFragment.setMode(ScheduleViewerFragment.EDIT);
     }
 
     public void doneListener(MenuItem item) {
-        setDoneVisibility(false);
+        setDoneCancelVisibility(false);
         setEditVisibility(true);
         scheduleViewerFragment.setMode(ScheduleViewerFragment.VIEW);
+//        TODO: apply changes
     }
+
+
+    public void cancelListener(MenuItem item) {
+        setDoneCancelVisibility(false);
+        setEditVisibility(true);
+        scheduleViewerFragment.setMode(ScheduleViewerFragment.VIEW);
+//        TODO: discard changes
+    }
+
 
     @Override
     public void setEditVisibility(boolean visibility) {
@@ -43,8 +51,9 @@ public class ParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void setDoneVisibility(boolean visibility) {
+    public void setDoneCancelVisibility(boolean visibility) {
         menu.findItem(R.id.button_done).setVisible(visibility);
+        menu.findItem(R.id.button_cancel).setVisible(visibility);
     }
 
     @Override
