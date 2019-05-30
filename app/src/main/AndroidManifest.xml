@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".views.activities.ParentActivity"></activity>
         <activity
             android:name=".views.activities.ScheduleViewerActivity"
-            android:parentActivityName=".views.activities.MainActivity" />
+            android:parentActivityName=".views.activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".views.activities.InfoActivity"
             android:parentActivityName=".views.activities.MainActivity" />
@@ -20,7 +22,7 @@
             android:parentActivityName=".views.activities.MainActivity" />
         <activity
             android:name=".views.activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBarTransStatusBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

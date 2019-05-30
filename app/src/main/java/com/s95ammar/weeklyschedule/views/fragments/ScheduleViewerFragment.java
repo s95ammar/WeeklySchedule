@@ -14,6 +14,7 @@ import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -30,6 +31,14 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            Serializable object = bundle.getSerializable("schedule");
+            if (object instanceof ScheduleItem) {
+                schedule = (ScheduleItem) object;
+            }
+        }
+
         return inflater.inflate(R.layout.fragment_active_schedule, container, false);
     }
 
@@ -41,10 +50,11 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     }
 
     private void setUpLayout() {
-        boolean hasActiveSchedule = SchedulesList.getInstance().hasActiveSchedule();
-        getActivity().setTitle(hasActiveSchedule ? SchedulesList.getInstance().getActiveSchedule().getName() : getString(R.string.title_active_schedule));
-        getView().findViewById(R.id.textView_no_active_schedule).setVisibility(hasActiveSchedule ? View.GONE : View.VISIBLE);
-        if (hasActiveSchedule) {
+//        boolean hasActiveSchedule = SchedulesList.getInstance().hasActiveSchedule();
+
+        getActivity().setTitle(schedule != null ? schedule.getName() : getString(R.string.title_active_schedule));
+        getView().findViewById(R.id.textView_no_active_schedule).setVisibility(schedule != null ? View.GONE : View.VISIBLE);
+        if (schedule != null) {
             setMode(VIEW);
         }
     }

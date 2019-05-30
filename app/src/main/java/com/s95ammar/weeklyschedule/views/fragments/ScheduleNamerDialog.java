@@ -31,7 +31,7 @@ public class ScheduleNamerDialog extends AppCompatDialogFragment {
             mListener = (DialogListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement ScheduleManager");
+                    + " must implement SchedulesListManager");
         }
     }
 

@@ -22,14 +22,14 @@ import com.s95ammar.weeklyschedule.models.SchedulesList;
 import com.s95ammar.weeklyschedule.views.recyclerView.ScheduleAdapter;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 
-public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnItemClickListener{
-    private static final String TAG = "SchedulesFragment";
-    private ScheduleManager mListener;
+public class SchedulesListFragment extends Fragment implements ScheduleAdapter.OnItemClickListener{
+    private static final String TAG = "SchedulesListFragment";
+    private SchedulesListManager mListener;
     private RecyclerView mRecyclerView;
     private ScheduleAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    public SchedulesFragment() {
+    public SchedulesListFragment() {
     }
 
     @Override
@@ -68,6 +68,7 @@ public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnIte
     @Override
     public void onItemClicked(int i) {
 //        TODO: show schedule
+        mListener.showScheduleInActivity(SchedulesList.getInstance().get(i));
         Log.d(TAG, "onItemClicked: " + SchedulesList.getInstance().get(i).getName());
     }
 
@@ -158,11 +159,11 @@ public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnIte
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ScheduleManager) {
-            mListener = (ScheduleManager) context;
+        if (context instanceof SchedulesListManager) {
+            mListener = (SchedulesListManager) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement ScheduleManager");
+                    + " must implement SchedulesListManager");
         }
     }
 
@@ -172,8 +173,9 @@ public class SchedulesFragment extends Fragment implements ScheduleAdapter.OnIte
         mListener = null;
     }
 
-    public interface ScheduleManager {
+    public interface SchedulesListManager {
         void showScheduleRefactorDialog(String action, int i);
+        void showScheduleInActivity(ScheduleItem schedule);
     }
 
 }
