@@ -1,10 +1,11 @@
 package com.s95ammar.weeklyschedule.models;
 
-import java.time.DayOfWeek;
+//import java.time.DayOfWeek;
 import java.util.ArrayList;
 
 public class Day {
-    private DayOfWeek dayOfWeek;
+//    private DayOfWeek dayOfWeek;
+/*
     private ArrayList<Event> events;
 
     public Day(DayOfWeek dayOfWeek, ArrayList<Event> events) {
@@ -27,4 +28,5 @@ public class Day {
     public void setEvents(ArrayList<Event> events) {
         this.events = events;
     }
+*/
 }

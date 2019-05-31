@@ -1,28 +1,45 @@
 package com.s95ammar.weeklyschedule.views.activities;
 
+import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.gson.Gson;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
+import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
+import com.s95ammar.weeklyschedule.views.fragments.EventRefactorDialog;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
+import com.s95ammar.weeklyschedule.views.fragments.TimePickerFragment;
 
 public class ParentActivity extends AppCompatActivity implements
         ScheduleViewerFragment.ScheduleEditor,
-        ScheduleViewer {
+        ScheduleViewer,
+        EventRefactorDialog.EventCreatorListener,
+        TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = "ParentActivity";
     protected ScheduleViewerFragment scheduleViewerFragment;
     protected Menu menu;
+
+    protected void switchToFragment(@NonNull Fragment fragment, int containerId, Bundle args) {
+        if (args != null) {
+            fragment.setArguments(args);
+        }
+        getSupportFragmentManager().beginTransaction().replace(containerId, fragment).commit();
+    }
 
     public void editListener(MenuItem item) {
         setEditVisibility(false);
@@ -66,12 +83,32 @@ public class ParentActivity extends AppCompatActivity implements
 
     }
 
-    protected void switchToFragment(@NonNull Fragment fragment, int containerId, Bundle args) {
-        if (args != null) {
-            fragment.setArguments(args);
-        }
-        getSupportFragmentManager().beginTransaction().replace(containerId, fragment).commit();
+    @Override
+    public void showEventRefactorDialog(Event event) {
+        EventRefactorDialog dialog = new EventRefactorDialog();
+        Bundle values = new Bundle();
+        values.putSerializable(KEY_EVENT, event);
+        dialog.setArguments(values);
+        dialog.show(getSupportFragmentManager(), TAG);
     }
+
+    public void timePickerListener(View view) {
+        DialogFragment timePicker = new TimePickerFragment();
+        timePicker.show(getSupportFragmentManager(), "time picker");
+
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Log.d(TAG, "onTimeSet: " + "Hour: " + hourOfDay + " Minute: " + minute);
+    }
+
+
+    @Override
+    public void createEvent(String day, String name, String startTime, String endTime) {
+        Log.d(TAG, "createEvent: " + day + ", " + name + ", " + startTime + ", " + endTime);
+    }
+
 
     public void saveData() {
         Log.d(TAG, "saveData: Saving data");
@@ -99,5 +136,6 @@ public class ParentActivity extends AppCompatActivity implements
         saveData();
         super.onStop();
     }
+
 
 }

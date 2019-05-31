@@ -18,12 +18,12 @@ import static com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment.
 public class ScheduleNamerDialog extends AppCompatDialogFragment {
     private EditText mEditTextName;
     private ScheduleNamerListener mListener;
-    private String action;
+    private static final String ADD_TITLE = "New Schedule";
+    private static final String RENAME_TITLE = "Rename Schedule";
 
     public interface Action {
         int ADD = -1;
-        String ADD_TITLE = "New Schedule";
-        String RENAME_TITLE = "Rename Schedule";
+        // REMAKE = any value other than -1 (value will be used as index)
     }
 
 
@@ -51,9 +51,8 @@ public class ScheduleNamerDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.dialog_add_schedule, null);
         String name = getArguments().getString(KEY_NAME);
         final int i = getArguments().getInt(KEY_INDEX);
-        action = (i == Action.ADD ? Action.ADD_TITLE : Action.RENAME_TITLE);
         builder.setView(view)
-                .setTitle(action)
+                .setTitle(i == Action.ADD ? ADD_TITLE : RENAME_TITLE)
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override

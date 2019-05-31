@@ -31,6 +31,7 @@ public class MainActivity extends ParentActivity implements
     private SchedulesListFragment schedulesListFragment;
 
 
+
     private interface NavDrawerItems {
         int ACTIVE_SCHEDULE = 0;
         int SCHEDULES = 1;
@@ -157,7 +158,6 @@ public class MainActivity extends ParentActivity implements
         values.putString(KEY_NAME, name);
         dialog.setArguments(values);
         dialog.show(getSupportFragmentManager(), TAG);
-
     }
 
 }

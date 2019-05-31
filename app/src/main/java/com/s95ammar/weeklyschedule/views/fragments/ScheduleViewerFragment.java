@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.s95ammar.weeklyschedule.R;
+import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 
 import java.io.Serializable;
@@ -19,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 
 
 public class ScheduleViewerFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "ScheduleViewerFragment";
     public static final int VIEW = 0;
     public static final int EDIT = 1;
     private ScheduleEditor mListener;
@@ -38,14 +42,15 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
             }
         }
 
-        return inflater.inflate(R.layout.fragment_active_schedule, container, false);
+        return inflater.inflate(R.layout.fragment_schedule_viewer, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUpLayout();
-        getView().findViewById(R.id.button_add_event).setOnClickListener(this);
+        setUpActionButtonListener();
+//        getView().findViewById(R.id.button_add_event).setOnClickListener(this);
     }
 
     private void setUpLayout() {
@@ -89,16 +94,26 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_add_event:
-//                TODO: open event-creator dialog
+                mListener.showEventRefactorDialog(null);  //TODO: onOk -> addEvent(name)
             break;
         }
     }
+
+    private void setUpActionButtonListener() {
+        FloatingActionButton fab = getView().findViewById(R.id.button_add_event);
+        fab.setOnClickListener(this);
+        Log.d(TAG, "setUpActionButtonListener: Listener set");
+
+    }
+
 
 
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
         void setDoneCancelVisibility(boolean visibility);
+        void showEventRefactorDialog(Event event);
         String KEY_SCHEDULE = "schedule";
+        String KEY_EVENT = "event";
     }
 
 
@@ -106,11 +121,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     @Retention(RetentionPolicy.SOURCE)
     public @interface Mode {}
 
-/*
-    public interface EventManager() {
 
-    }
-*/
 
 
 
