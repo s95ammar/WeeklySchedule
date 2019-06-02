@@ -27,7 +27,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
 
     @NonNull
     @Override
-    // Called when in need for ScheduleViewHolder to represent an item
+    // Called when in need for CategoryViewHolder to represent an item
     public ScheduleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_schedule, viewGroup, false);
         ScheduleViewHolder scheduleViewHolder = new ScheduleViewHolder(v, mListener);
@@ -59,7 +59,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
             tvScheduleName = itemView.findViewById(R.id.textView_schedule_name);
             switchIsActive = itemView.findViewById(R.id.switch_is_active);
             tvIsActive = itemView.findViewById(R.id.textView_is_active);
-            buttonMore = itemView.findViewById(R.id.button_more);
+            buttonMore = itemView.findViewById(R.id.schedules_button_more);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -57,13 +57,13 @@
             android:switchPadding="20dp"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_status"
-            app:layout_constraintEnd_toStartOf="@+id/button_more"
+            app:layout_constraintEnd_toStartOf="@+id/schedules_button_more"
             app:layout_constraintTop_toTopOf="@+id/textView_status" />
 
 
 
         <Button
-            android:id="@+id/button_more"
+            android:id="@+id/schedules_button_more"
             android:layout_width="24dp"
             android:layout_height="24dp"
             app:layout_constraintBottom_toBottomOf="@+id/switch_is_active"

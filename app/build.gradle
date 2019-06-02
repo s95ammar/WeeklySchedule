@@ -9,6 +9,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        lintOptions {
+            disable 'RestrictedApi'
+        }
+
     }
     buildTypes {
         release {
@@ -31,5 +35,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'joda-time:joda-time:2.10.2'
+    implementation 'com.github.yukuku:ambilwarna:2.0.1'
 
 }

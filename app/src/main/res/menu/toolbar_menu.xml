@@ -18,12 +18,4 @@
         android:onClick="doneListener"
         android:title="@string/done" />
 
-    <item
-        android:visible="false"
-        android:id="@+id/button_cancel"
-        android:icon="@drawable/ic_cancel"
-        app:showAsAction="ifRoom"
-        android:onClick="cancelListener"
-        android:title="@string/cancel" />
-
 </menu>

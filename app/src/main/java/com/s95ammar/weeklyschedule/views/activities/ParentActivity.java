@@ -1,17 +1,16 @@
 package com.s95ammar.weeklyschedule.views.activities;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.gson.Gson;
@@ -20,19 +19,21 @@ import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
 import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
-import com.s95ammar.weeklyschedule.views.fragments.EventRefactorDialog;
+//import com.s95ammar.weeklyschedule.views.fragments.EventRefactorDialog;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
-import com.s95ammar.weeklyschedule.views.fragments.TimePickerFragment;
+
+import java.util.Calendar;
 
 public class ParentActivity extends AppCompatActivity implements
         ScheduleViewerFragment.ScheduleEditor,
-        ScheduleViewer,
-        EventRefactorDialog.EventCreatorListener,
-        TimePickerDialog.OnTimeSetListener {
+        ScheduleViewer
+//        EventRefactorDialog.EventCreatorListener, TODO: replace dialog with activity
+        /*TimePickerDialog.OnTimeSetListener*/ {
 
     private static final String TAG = "ParentActivity";
     protected ScheduleViewerFragment scheduleViewerFragment;
     protected Menu menu;
+//    protected EventRefactorDialog eventRefactorDialog; TODO: replace dialog with activity
 
     protected void switchToFragment(@NonNull Fragment fragment, int containerId, Bundle args) {
         if (args != null) {
@@ -55,14 +56,6 @@ public class ParentActivity extends AppCompatActivity implements
     }
 
 
-    public void cancelListener(MenuItem item) {
-        setDoneCancelVisibility(false);
-        setEditVisibility(true);
-        scheduleViewerFragment.setMode(ScheduleViewerFragment.VIEW);
-//        TODO: discard changes
-    }
-
-
     @Override
     public void setEditVisibility(boolean visibility) {
         menu.findItem(R.id.button_edit).setVisible(visibility);
@@ -71,43 +64,31 @@ public class ParentActivity extends AppCompatActivity implements
     @Override
     public void setDoneCancelVisibility(boolean visibility) {
         menu.findItem(R.id.button_done).setVisible(visibility);
-        menu.findItem(R.id.button_cancel).setVisible(visibility);
     }
 
     @Override
     public void openScheduleViewerFragment(ScheduleItem schedule, int fragContainerId) {
         Bundle scheduleBundle = new Bundle();
         scheduleBundle.putSerializable(KEY_SCHEDULE, schedule);
-        switchToFragment(scheduleViewerFragment != null ? scheduleViewerFragment : (scheduleViewerFragment = new ScheduleViewerFragment()),
+        switchToFragment(scheduleViewerFragment = new ScheduleViewerFragment(),
                 fragContainerId, scheduleBundle);
 
     }
 
     @Override
-    public void showEventRefactorDialog(Event event) {
-        EventRefactorDialog dialog = new EventRefactorDialog();
-        Bundle values = new Bundle();
-        values.putSerializable(KEY_EVENT, event);
-        dialog.setArguments(values);
-        dialog.show(getSupportFragmentManager(), TAG);
+    public void openEventRefactorActivity(Event event) {
+        Intent intent = new Intent(this, EventRefactorActivity.class);
+        intent.putExtra(KEY_EVENT, event);
+        startActivity(intent);
     }
 
-    public void timePickerListener(View view) {
-        DialogFragment timePicker = new TimePickerFragment();
-        timePicker.show(getSupportFragmentManager(), "time picker");
-
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Log.d(TAG, "onTimeSet: " + "Hour: " + hourOfDay + " Minute: " + minute);
-    }
-
-
+//    TODO: replace dialog with activity
+/*
     @Override
     public void createEvent(String day, String name, String startTime, String endTime) {
         Log.d(TAG, "createEvent: " + day + ", " + name + ", " + startTime + ", " + endTime);
     }
+*/
 
 
     public void saveData() {

@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +93,8 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_add_event:
-                mListener.showEventRefactorDialog(null);  //TODO: onOk -> addEvent(name)
+                mListener.openEventRefactorActivity(null);  //TODO: onOk -> addEvent(name)
+//                TODO: replace dialog with activity
             break;
         }
     }
@@ -102,7 +102,6 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     private void setUpActionButtonListener() {
         FloatingActionButton fab = getView().findViewById(R.id.button_add_event);
         fab.setOnClickListener(this);
-        Log.d(TAG, "setUpActionButtonListener: Listener set");
 
     }
 
@@ -111,7 +110,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
         void setDoneCancelVisibility(boolean visibility);
-        void showEventRefactorDialog(Event event);
+        void openEventRefactorActivity(Event event);
         String KEY_SCHEDULE = "schedule";
         String KEY_EVENT = "event";
     }

@@ -1,5 +1,6 @@
 package com.s95ammar.weeklyschedule.views.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +38,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_schedules, container, false);
+        return inflater.inflate(R.layout.fragment_schedules_list, container, false);
     }
 
     @Override
@@ -51,11 +54,11 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
 
     private void refreshLayout() {
         getView().findViewById(R.id.textView_no_schedules).setVisibility(SchedulesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
-        getView().findViewById(R.id.recyclerView).setBackgroundColor(SchedulesList.getInstance().isEmpty() ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
+        getView().findViewById(R.id.recyclerView_schedules).setBackgroundColor(SchedulesList.getInstance().isEmpty() ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
     }
 
     private void buildRecyclerView() {
-        mRecyclerView = getView().findViewById(R.id.recyclerView);
+        mRecyclerView = getView().findViewById(R.id.recyclerView_schedules);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mAdapter = new ScheduleAdapter(SchedulesList.getInstance());
@@ -74,22 +77,24 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
     @Override
     public void onMoreClicked(final int i, Button buttonMore) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), buttonMore);
-        popupMenu.inflate(R.menu.schedule_popup_menu);
+        popupMenu.inflate(R.menu.schedules_more_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.popup_rename:
-                        mListener.showScheduleRefactorDialog(SchedulesList.getInstance().get(i).getName(), i); // onOk -> renameSchedule(newName, i)
+                    case R.id.schedules_more_rename:
+                        mListener.showScheduleRefactorDialog(SchedulesList.getInstance().get(i).getName(), i); // onOk -> editCategory(newName, i)
                         break;
-                    case R.id.popup_delete:
+                    case R.id.schedules_more_delete:
                         deleteSchedule(i);
                         break;
                 }
                 return true;
             }
         });
-        popupMenu.show();
+        MenuPopupHelper menuHelper = new MenuPopupHelper(getActivity(), (MenuBuilder) popupMenu.getMenu(), buttonMore);
+        menuHelper.setForceShowIcon(true);
+        menuHelper.show();
     }
 
     @Override
@@ -130,7 +135,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
     public void renameSchedule(String newName, int i) {
         SchedulesList.getInstance().get(i).setName(newName);
         mAdapter.notifyItemChanged(i);
-        Log.d(TAG, "renameSchedule: " + SchedulesList.getInstance());
+        Log.d(TAG, "editCategory: " + SchedulesList.getInstance());
     }
 
     public void deleteSchedule(int i) {
@@ -140,7 +145,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
         SchedulesList.getInstance().remove(i);
         mAdapter.notifyItemRemoved(i);
         refreshLayout();
-        Log.d(TAG, "deleteSchedule: " + SchedulesList.getInstance());
+        Log.d(TAG, "deleteCategory: " + SchedulesList.getInstance());
     }
 
 
@@ -162,7 +167,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
             mListener = (SchedulesListManager) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement SchedulesListManager");
+                    + " must implement CategoriesListManager");
         }
     }
 
@@ -173,9 +178,8 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
     }
 
     public interface SchedulesListManager {
-        void showScheduleRefactorDialog(String action, int i);
+        void showScheduleRefactorDialog(String name, int i);
         void showScheduleInActivity(int i);
-        String KEY_SCHEDULE = "schedule";
         String KEY_NAME = "name";
         String KEY_INDEX = "index";
     }
