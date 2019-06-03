@@ -1,6 +1,5 @@
 package com.s95ammar.weeklyschedule.views.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,14 +21,14 @@ import android.widget.Button;
 
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
-import com.s95ammar.weeklyschedule.views.recyclerView.ScheduleAdapter;
+import com.s95ammar.weeklyschedule.views.adapters.ScheduleRecViewAdapter;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 
-public class SchedulesListFragment extends Fragment implements ScheduleAdapter.OnItemClickListener{
+public class SchedulesListFragment extends Fragment implements ScheduleRecViewAdapter.OnItemClickListener{
     private static final String TAG = "SchedulesListFragment";
     private SchedulesListManager mListener;
     private RecyclerView mRecyclerView;
-    private ScheduleAdapter mAdapter;
+    private ScheduleRecViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     public SchedulesListFragment() {
@@ -61,7 +60,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleAdapter.O
         mRecyclerView = getView().findViewById(R.id.recyclerView_schedules);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mAdapter = new ScheduleAdapter(SchedulesList.getInstance());
+        mAdapter = new ScheduleRecViewAdapter(SchedulesList.getInstance());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickedListener(this);

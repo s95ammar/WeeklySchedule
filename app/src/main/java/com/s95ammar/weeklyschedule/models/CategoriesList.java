@@ -20,18 +20,18 @@ public class CategoriesList extends ArrayList<Category> {
         return instance;
     }
 
-/*
+
     public static void createFromJson(String json) {
         Log.d(TAG, "createFromJson: " + json);
         if (instance == null) {
             instance = new Gson().fromJson(json, CategoriesList.class);
             Log.d(TAG, "createFromJson: " + getInstance().toString());
         } else {
-            Log.d(TAG, "createFromJson: Schedule already exists");
+            Log.d(TAG, "createFromJson: Categories list already exists");
         }
 
 
     }
-*/
+
 
 }

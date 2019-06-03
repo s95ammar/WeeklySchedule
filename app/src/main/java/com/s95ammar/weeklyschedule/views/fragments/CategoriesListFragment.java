@@ -1,7 +1,6 @@
 package com.s95ammar.weeklyschedule.views.fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,15 +21,13 @@ import android.widget.Button;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Category;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
-import com.s95ammar.weeklyschedule.models.SchedulesList;
-import com.s95ammar.weeklyschedule.views.recyclerView.CategoryAdapter;
+import com.s95ammar.weeklyschedule.views.adapters.CategoryRecViewAdapter;
 
-public class CategoriesListFragment extends Fragment implements CategoryAdapter.OnItemClickListener{
+public class CategoriesListFragment extends Fragment implements CategoryRecViewAdapter.OnItemClickListener{
     private static final String TAG = "SchedulesListFragment";
     private CategoriesListManager mListener;
     private RecyclerView mRecyclerView;
-    private CategoryAdapter mAdapter;
+    private CategoryRecViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     public CategoriesListFragment() {
@@ -55,14 +52,14 @@ public class CategoriesListFragment extends Fragment implements CategoryAdapter.
 
     private void refreshLayout() {
         getView().findViewById(R.id.textView_no_categories).setVisibility(CategoriesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
-        getView().findViewById(R.id.recyclerView_categories).setBackgroundColor(CategoriesList.getInstance().isEmpty() ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
+//        getView().findViewById(R.id.recyclerView_categories).setBackgroundColor(CategoriesList.getInstance().isEmpty() ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
     }
 
     private void buildRecyclerView() {
         mRecyclerView = getView().findViewById(R.id.recyclerView_categories);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mAdapter = new CategoryAdapter(CategoriesList.getInstance());
+        mAdapter = new CategoryRecViewAdapter(CategoriesList.getInstance());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickedListener(this);
@@ -86,7 +83,7 @@ public class CategoriesListFragment extends Fragment implements CategoryAdapter.
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.categories_more_edit:
-                        mListener.showCategoryRefactorDialog(CategoriesList.getInstance().get(i), i); // TODO: onOk -> applyCategory(name, tColor, fColor)
+                        mListener.showCategoryRefactorDialog(CategoriesList.getInstance().get(i), i); // onOk -> applyCategory(Category category)
                         break;
                     case R.id.categories_more_delete:
                         deleteCategory(i);
@@ -97,6 +94,7 @@ public class CategoriesListFragment extends Fragment implements CategoryAdapter.
         });
         MenuPopupHelper menuHelper = new MenuPopupHelper(getActivity(), (MenuBuilder) popupMenu.getMenu(), buttonMore);
         menuHelper.setForceShowIcon(true);
+//        TODO: add icons
         menuHelper.show();
     }
 

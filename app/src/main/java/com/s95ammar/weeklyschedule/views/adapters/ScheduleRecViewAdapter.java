@@ -1,4 +1,4 @@
-package com.s95ammar.weeklyschedule.views.recyclerView;
+package com.s95ammar.weeklyschedule.views.adapters;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -16,12 +16,12 @@ import com.s95ammar.weeklyschedule.models.ScheduleItem;
 
 import java.util.ArrayList;
 
-public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder> {
-    private static final String TAG = "ScheduleAdapter";
+public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecViewAdapter.ScheduleViewHolder> {
+    private static final String TAG = "ScheduleRecViewAdapter";
     private ArrayList<ScheduleItem> mScheduleItems;
     private OnItemClickListener mListener;
 
-    public ScheduleAdapter(ArrayList<ScheduleItem> ScheduleItems) {
+    public ScheduleRecViewAdapter(ArrayList<ScheduleItem> ScheduleItems) {
         mScheduleItems = ScheduleItems;
     }
 

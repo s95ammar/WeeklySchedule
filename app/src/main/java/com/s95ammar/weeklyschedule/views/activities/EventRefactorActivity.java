@@ -5,14 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.s95ammar.weeklyschedule.R;
+import com.s95ammar.weeklyschedule.models.CategoriesList;
+import com.s95ammar.weeklyschedule.models.Category;
 import com.s95ammar.weeklyschedule.models.Event;
+import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter;
 
 import org.joda.time.LocalTime;
 
@@ -22,6 +27,7 @@ import java.util.Calendar;
 import static com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment.ScheduleEditor.KEY_EVENT;
 
 public class EventRefactorActivity extends AppCompatActivity {
+    private static final String TAG = "EventRefactorActivity";
     private Event event;
     private String[] days ;
     private String timePattern;
@@ -41,6 +47,7 @@ public class EventRefactorActivity extends AppCompatActivity {
         initializeViews();
         setValues();
         setUpToolbar();
+        setUpCategorySpinner();
     }
 
     private void setUpToolbar() {
@@ -105,6 +112,26 @@ public class EventRefactorActivity extends AppCompatActivity {
             }
         }, hour, minute, DateFormat.is24HourFormat(this));
         timePickerDialog.show();
+
+    }
+
+    private void setUpCategorySpinner() {
+        Spinner spinnerCategories = findViewById(R.id.spinner_categories);
+        CategorySpinnerAdapter mAdapter = new CategorySpinnerAdapter(this, CategoriesList.getInstance());
+        spinnerCategories.setAdapter(mAdapter);
+
+        spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Category clickedItem = (Category) parent.getItemAtPosition(position);
+                Log.d(TAG, "onItemSelected: " + clickedItem);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 

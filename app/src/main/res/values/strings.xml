@@ -34,10 +34,13 @@
     <string name="new_event">New Event</string>
     <string name="day">Day:</string>
     <string name="categories">Categories</string>
+    <string name="category_preview_value">Event</string>
     <string name="category_list_is_empty">Category list is empty</string>
     <string name="text_color">Text color:</string>
     <string name="fill_color">Fill color:</string>
-    <string name="preview">Preview:</string>
+    <string name="category_preview">Preview:</string>
     <string name="category">Category</string>
+    <string name="category_empty_name">Category was not created because name was empty</string>
+
 
 </resources>

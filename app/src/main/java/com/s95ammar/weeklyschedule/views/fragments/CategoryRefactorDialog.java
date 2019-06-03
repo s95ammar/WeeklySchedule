@@ -1,21 +1,17 @@
 package com.s95ammar.weeklyschedule.views.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.Category;
@@ -84,29 +80,11 @@ public class CategoryRefactorDialog extends AppCompatDialogFragment implements V
 
     private void initializeViews(View view) {
         mTextViewPreview = view.findViewById(R.id.tView_add_category_preview_value);
-        mEditTextName = view.findViewById(R.id.eText_add_category_name);
-        mEditTextName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = mEditTextName.getText().toString();
-                mTextViewPreview.setText(text);
-                if (text.length() == 1) {
-                    mTextViewPreview.setBackgroundColor(((ColorDrawable) mViewFillColor.getBackground()).getColor());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
         mViewFillColor = view.findViewById(R.id.view_add_category_fill_color);
         mViewTextColor = view.findViewById(R.id.view_add_category_text_color);
+        mEditTextName = view.findViewById(R.id.eText_add_category_name);
+        mTextViewPreview.setText(R.string.category_preview_value);
+        mTextViewPreview.setBackgroundColor(((ColorDrawable) mViewFillColor.getBackground()).getColor());
         mViewFillColor.setOnClickListener(this);
         mViewTextColor.setOnClickListener(this);
     }
@@ -129,6 +107,8 @@ public class CategoryRefactorDialog extends AppCompatDialogFragment implements V
                 if (!name.isEmpty()) {
                     Category category = new Category(name, ((ColorDrawable) mViewFillColor.getBackground()).getColor(), ((ColorDrawable) mViewTextColor.getBackground()).getColor());
                     mListener.applyCategory(category, i);
+                } else {
+                    Toast.makeText(getActivity(), R.string.category_empty_name, Toast.LENGTH_SHORT).show();
                 }
             }
         };

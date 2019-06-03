@@ -211,6 +211,6 @@ public class MainActivity extends ParentActivity implements
             }
         });
         colorPicker.show();
-
     }
+
 }

@@ -35,7 +35,7 @@ public class SchedulesList extends ArrayList<ScheduleItem> {
             instance = new Gson().fromJson(json, SchedulesList.class);
             Log.d(TAG, "createFromJson: " + getInstance().toString());
         } else {
-            Log.d(TAG, "createFromJson: Schedule already exists");
+            Log.d(TAG, "createFromJson: Schedules list already exists");
         }
 
     }

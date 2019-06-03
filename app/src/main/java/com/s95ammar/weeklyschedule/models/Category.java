@@ -36,4 +36,9 @@ public class Category implements Serializable {
     public void setTextColor(int textColor) {
         this.textColor = textColor;
     }
+
+    @Override
+    public String toString() {
+        return '{' + name + ':' + fillColor + ", " + textColor +  '}';
+    }
 }

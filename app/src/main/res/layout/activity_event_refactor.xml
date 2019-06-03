@@ -62,7 +62,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/eText_event_name" />
+                app:layout_constraintTop_toBottomOf="@+id/tView_event_category" />
 
             <Spinner
                 android:id="@+id/spinner_day"
@@ -78,18 +78,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/category"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tView_event_day" />
+                app:layout_constraintTop_toBottomOf="@+id/eText_event_name" />
 
             <Spinner
-                android:id="@+id/spinner_category"
+                android:id="@+id/spinner_categories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:gravity="right"
                 app:layout_constraintBottom_toBottomOf="@+id/tView_event_category"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tView_event_category" />
@@ -105,7 +106,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tView_event_category" />
+                app:layout_constraintTop_toBottomOf="@+id/tView_event_day" />
 
             <TextView
                 android:id="@+id/tView_event_start_value"
@@ -152,8 +153,8 @@
             android:id="@+id/button_ok"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/ok"
             android:onClick="submitEvent"
+            android:text="@string/ok"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -163,9 +164,9 @@
             android:id="@+id/button_delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:onClick="deleteEvent"
             android:text="@string/delete"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:onClick="deleteEvent"
             app:layout_constraintEnd_toStartOf="@+id/button_ok"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/button_cancel" />
@@ -174,10 +175,10 @@
             android:id="@+id/button_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:onClick="cancelListener"
             android:text="@string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_delete"
-            android:onClick="cancelListener"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent" />
 

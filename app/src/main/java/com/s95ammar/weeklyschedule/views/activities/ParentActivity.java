@@ -16,6 +16,7 @@ import android.widget.TimePicker;
 import com.google.gson.Gson;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
+import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
@@ -96,19 +97,24 @@ public class ParentActivity extends AppCompatActivity implements
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         int activeScheduleIndex = SchedulesList.getInstance().indexOf(SchedulesList.getInstance().getActiveSchedule());
-        String json = new Gson().toJson(SchedulesList.getInstance());
+        String schedulesJson = new Gson().toJson(SchedulesList.getInstance());
+        String categoriesJson = new Gson().toJson(CategoriesList.getInstance());
+        Log.d(TAG, "saveData: categories list" + categoriesJson);
+        Log.d(TAG, "saveData: schedules list" + schedulesJson);
         Log.d(TAG, "saveData: active schedule index: " + activeScheduleIndex + " : " + SchedulesList.getInstance().getActiveSchedule());
-        Log.d(TAG, "saveData: schedules list" + json);
         editor.putInt("active schedule index", activeScheduleIndex);
-        editor.putString("schedules list", json);
+        editor.putString("schedules list", schedulesJson);
+        editor.putString("categories list", categoriesJson);
         editor.apply();
     }
 
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         int activeScheduleIndex = sharedPreferences.getInt("active schedule index", -1);
-        String jsonList = sharedPreferences.getString("schedules list", null);
-        SchedulesList.createFromJson(jsonList);
+        String schedulesJson = sharedPreferences.getString("schedules list", null);
+        String categoriesJson = sharedPreferences.getString("categories list", null);
+        SchedulesList.createFromJson(schedulesJson);
+        CategoriesList.createFromJson(categoriesJson);
         SchedulesList.getInstance().loadActiveSchedule(activeScheduleIndex);
     }
 
