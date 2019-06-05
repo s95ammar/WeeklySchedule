@@ -1,23 +1,29 @@
 package com.s95ammar.weeklyschedule.models;
 
-//import java.time.DayOfWeek;
-import java.util.ArrayList;
+import android.support.annotation.StringDef;
 
-public class Day {
-//    private DayOfWeek dayOfWeek;
-/*
+import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class Day implements Serializable {
+
+    private String dayOfWeek;
+
     private ArrayList<Event> events;
 
-    public Day(DayOfWeek dayOfWeek, ArrayList<Event> events) {
+    public Day(String dayOfWeek, ArrayList<Event> events) {
         this.dayOfWeek = dayOfWeek;
         this.events = events;
     }
 
-    public DayOfWeek getDayOfWeek() {
+    public String getDayOfWeek() {
         return dayOfWeek;
     }
 
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+    public void setDayOfWeek(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
 
@@ -28,5 +34,19 @@ public class Day {
     public void setEvents(ArrayList<Event> events) {
         this.events = events;
     }
-*/
+
+
+    @Override
+    public boolean equals(Object that) {
+        if (that instanceof Day) {
+            return dayOfWeek.equals(((Day) that).dayOfWeek);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return dayOfWeek;
+
+    }
 }

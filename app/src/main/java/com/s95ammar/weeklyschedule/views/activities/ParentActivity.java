@@ -77,13 +77,13 @@ public class ParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void openEventRefactorActivity(Event event) {
+    public void openEventRefactorActivity(Event event, int scheduleIndex) {
         Intent intent = new Intent(this, EventRefactorActivity.class);
         intent.putExtra(KEY_EVENT, event);
+        intent.putExtra(KEY_SCHEDULE_INDEX, scheduleIndex);
         startActivity(intent);
     }
 
-//    TODO: replace dialog with activity
 /*
     @Override
     public void createEvent(String day, String name, String startTime, String endTime) {

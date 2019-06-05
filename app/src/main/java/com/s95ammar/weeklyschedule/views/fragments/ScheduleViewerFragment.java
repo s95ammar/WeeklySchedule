@@ -7,13 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.s95ammar.weeklyschedule.R;
+import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.models.SchedulesList;
 
 import java.io.Serializable;
 import java.lang.annotation.Retention;
@@ -93,8 +97,11 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_add_event:
-                mListener.openEventRefactorActivity(null);  //TODO: onOk -> addEvent(name)
-//                TODO: replace dialog with activity
+                if (!CategoriesList.getInstance().isEmpty()) {
+                    mListener.openEventRefactorActivity(null, SchedulesList.getInstance().indexOf(schedule));  // TODO: onOk -> addEvent(name)
+                } else {
+                    Toast.makeText(getActivity(), R.string.category_list_empty_error, Toast.LENGTH_SHORT).show();
+                }
             break;
         }
     }
@@ -110,15 +117,17 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
         void setDoneCancelVisibility(boolean visibility);
-        void openEventRefactorActivity(Event event);
+        void openEventRefactorActivity(Event event, int scheduleIndex);
         String KEY_SCHEDULE = "schedule";
+        String KEY_SCHEDULE_INDEX = "schedule index";
         String KEY_EVENT = "event";
+
     }
 
 
     @IntDef({EDIT, VIEW})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Mode {}
+    private @interface Mode {}
 
 
 

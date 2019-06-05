@@ -12,21 +12,26 @@
         <activity
             android:name=".views.activities.EventRefactorActivity"
             android:parentActivityName=".views.activities.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".views.activities.ParentActivity" />
         <activity
             android:name=".views.activities.ScheduleViewerActivity"
             android:parentActivityName=".views.activities.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".views.activities.InfoActivity"
-            android:parentActivityName=".views.activities.MainActivity" />
+            android:parentActivityName=".views.activities.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".views.activities.SettingsActivity"
-            android:parentActivityName=".views.activities.MainActivity" />
+            android:parentActivityName=".views.activities.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".views.activities.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBarTransStatusBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

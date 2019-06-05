@@ -1,22 +1,18 @@
 package com.s95ammar.weeklyschedule.models;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 
 public class ScheduleItem implements Serializable {
     private String name;
     private boolean isActive;
     private ArrayList<Day> days;
+    public static final String [] WEEK_DAYS = {"Sunday" , "Monday" , "Tuesday" , "Wednesday" , "Thursday" , "Friday" , "Saturday"};
 
-    public ScheduleItem(String name) {
+
+    public ScheduleItem(String name, ArrayList<Day> days) {
         this.name = name;
-        days = new ArrayList<>();
-/*
-        for (int i = 0; i < 7; i++) {
-            days.add(new Day(DayOfWeek.SATURDAY.plus(i)), new ArrayList<Event>());
-        }
-*/
+        this.days = days;
     }
 
     public String getName() {
@@ -33,6 +29,14 @@ public class ScheduleItem implements Serializable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public ArrayList<Day> getDays() {
+        return days;
+    }
+
+    public void setDays(ArrayList<Day> days) {
+        this.days = days;
     }
 
     @Override

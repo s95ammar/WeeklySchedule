@@ -26,7 +26,7 @@
     <string name="start_time">Start Time:</string>
     <string name="end_time">End Time:</string>
     <string name="empty_name_error">Name cannot be blank</string>
-    <string name="start_end_time_error">Start time cannot be before or equal to end time</string>
+    <string name="start_end_time_error">End time must be after start time</string>
     <string name="default_time">12:00</string>
     <string name="ok">Ok</string>
     <string name="delete">Delete</string>
@@ -41,6 +41,8 @@
     <string name="category_preview">Preview:</string>
     <string name="category">Category</string>
     <string name="category_empty_name">Category was not created because name was empty</string>
+    <string name="category_list_empty_error">At least 1 category needed to create an event</string>
+    <string name="event_overlap_error">An event already exists within this period</string>
 
 
 </resources>

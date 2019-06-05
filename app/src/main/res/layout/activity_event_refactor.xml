@@ -27,24 +27,47 @@
             tools:layout_editor_absoluteX="46dp">
 
             <TextView
-                android:id="@+id/tView_event_name"
+                android:id="@+id/tView_event_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/name"
+                android:text="@string/category"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
+            <Spinner
+                android:id="@+id/spinner_categories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:gravity="right"
+                app:layout_constraintBottom_toBottomOf="@+id/tView_event_category"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tView_event_category" />
+
+            <TextView
+                android:id="@+id/tView_event_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/name"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tView_event_category" />
+
+            <AutoCompleteTextView
                 android:id="@+id/eText_event_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="8dp"
                 android:inputType="text"
+                android:completionThreshold="1"
                 android:maxLength="25"
                 android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="@+id/tView_event_name"
@@ -62,7 +85,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tView_event_category" />
+                app:layout_constraintTop_toBottomOf="@+id/tView_event_name" />
 
             <Spinner
                 android:id="@+id/spinner_day"
@@ -72,28 +95,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tView_event_day"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tView_event_day" />
-
-            <TextView
-                android:id="@+id/tView_event_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/category"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/eText_event_name" />
-
-            <Spinner
-                android:id="@+id/spinner_categories"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:gravity="right"
-                app:layout_constraintBottom_toBottomOf="@+id/tView_event_category"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tView_event_category" />
 
 
             <TextView
