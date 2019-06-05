@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SchedulesList extends ArrayList<ScheduleItem> {
     private static final String TAG = "SchedulesList";
@@ -32,7 +33,8 @@ public class SchedulesList extends ArrayList<ScheduleItem> {
     public static void createFromJson(String json) {
         Log.d(TAG, "createFromJson: " + json);
         if (instance == null) {
-            instance = new Gson().fromJson(json, SchedulesList.class);
+            Gson gson = LocalTimeSerializer.getGsonLocalTimeSerializer();
+            instance = gson.fromJson(json, SchedulesList.class);
             Log.d(TAG, "createFromJson: " + getInstance().toString());
         } else {
             Log.d(TAG, "createFromJson: Schedules list already exists");

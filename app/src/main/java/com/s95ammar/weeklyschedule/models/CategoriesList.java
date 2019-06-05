@@ -24,7 +24,8 @@ public class CategoriesList extends ArrayList<Category> {
     public static void createFromJson(String json) {
         Log.d(TAG, "createFromJson: " + json);
         if (instance == null) {
-            instance = new Gson().fromJson(json, CategoriesList.class);
+            Gson gson = LocalTimeSerializer.getGsonLocalTimeSerializer();
+            instance = gson.fromJson(json, CategoriesList.class);
             Log.d(TAG, "createFromJson: " + getInstance().toString());
         } else {
             Log.d(TAG, "createFromJson: Categories list already exists");

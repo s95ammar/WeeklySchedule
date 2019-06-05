@@ -38,7 +38,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        if (bundle != null) {
+        if (bundle != null && schedule == null) {
             Serializable object = bundle.getSerializable(ScheduleEditor.KEY_SCHEDULE);
             if (object instanceof ScheduleItem) {
                 schedule = (ScheduleItem) object;

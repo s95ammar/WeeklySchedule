@@ -7,7 +7,6 @@ public class ScheduleItem implements Serializable {
     private String name;
     private boolean isActive;
     private ArrayList<Day> days;
-    public static final String [] WEEK_DAYS = {"Sunday" , "Monday" , "Tuesday" , "Wednesday" , "Thursday" , "Friday" , "Saturday"};
 
 
     public ScheduleItem(String name, ArrayList<Day> days) {

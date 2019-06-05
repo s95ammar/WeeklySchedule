@@ -34,6 +34,8 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
     private RecyclerView mRecyclerView;
     private ScheduleRecViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    public static final String [] WEEK_DAYS = {"Sunday" , "Monday" , "Tuesday" , "Wednesday" , "Thursday" , "Friday" , "Saturday"};
+
 
     public SchedulesListFragment() {
     }
@@ -129,8 +131,8 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
 
     public void addSchedule(String name) {
         ArrayList<Day> days = new ArrayList<>();
-        for (int i = 0; i < ScheduleItem.WEEK_DAYS.length; i++) {
-            days.add(new Day(ScheduleItem.WEEK_DAYS[i], new ArrayList<Event>()));
+        for (int i = 0; i < WEEK_DAYS.length; i++) {
+            days.add(new Day(WEEK_DAYS[i], new ArrayList<>()));
         }
         SchedulesList.getInstance().add(0, new ScheduleItem(name, days));
         mAdapter.notifyItemInserted(0);

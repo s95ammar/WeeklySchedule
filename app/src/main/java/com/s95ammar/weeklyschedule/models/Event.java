@@ -8,18 +8,31 @@ import java.util.Comparator;
 
 public class Event implements Serializable, Comparable<Event> {
     private String name;
-    private Category category;
-    private Day day;
+    private int categoryIndex;
+    private int dayIndex;
+
+//    private Category category;
+//    private Day day;
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public Event(String name, Category category, Day day, LocalTime startTime, LocalTime endTime) {
+    public Event(String name, int categoryIndex, int dayIndex, LocalTime startTime, LocalTime endTime) {
         this.name = name;
-        this.category = category;
-        this.day = day;
+        this.categoryIndex = categoryIndex;
+        this.dayIndex = dayIndex;
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+/*
+    public Event(String name, Category category, Day day, LocalTime startTime, LocalTime endTime) {
+        this.name = name;
+//        this.category = category;
+//        this.day = day;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+*/
 
     public String getName() {
         return name;
@@ -29,21 +42,37 @@ public class Event implements Serializable, Comparable<Event> {
         this.name = name;
     }
 
-    public Category getCategory() {
-        return category;
+    public int getCategoryIndex() {
+        return categoryIndex;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryIndex(int categoryIndex) {
+        this.categoryIndex = categoryIndex;
     }
 
-    public Day getDay() {
-        return day;
+    public int getDayIndex() {
+        return dayIndex;
     }
 
-    public void setDay(Day day) {
-        this.day = day;
+    public void setDayIndex(int dayIndex) {
+        this.dayIndex = dayIndex;
     }
+
+//    public Category getCategory() {
+//        return category;
+//    }
+
+//    public void setCategory(Category category) {
+//        this.category = category;
+//    }
+
+//    public Day getDay() {
+//        return day;
+//    }
+
+//    public void setDay(Day day) {
+//        this.day = day;
+//    }
 
     public LocalTime getStartTime() {
         return startTime;
@@ -85,21 +114,21 @@ public class Event implements Serializable, Comparable<Event> {
     public String toString() {
         return "Event{" +
                 "name='" + name + '\'' +
-                ", category=" + category.getName() +
-                ", day=" + day.getDayOfWeek() +
+//                ", category=" + category.getName() +
+//                ", day=" + day.getDayOfWeek() +
                 ", startTime=" + startTime.toString("HH:mm") +
                 ", endTime=" + endTime.toString("HH:mm") +
                 '}';
     }
 
-    public static class EventNameComparator implements Comparator<Event> {
+    public static class EventNameComparator implements Comparator<Event>, Serializable {
         @Override
         public int compare(Event o1, Event o2) {
             return o1.getName().compareToIgnoreCase(o2.getName());
         }
     }
 
-    public static class EventTimeComparator implements Comparator<Event> {
+    public static class EventTimeComparator implements Comparator<Event>, Serializable {
         @Override
         public int compare(Event o1, Event o2) {
             return o1.getStartTime().compareTo(o2.getStartTime());

@@ -45,7 +45,8 @@ public class EventRefactorActivity extends AppCompatActivity {
     private static final String TAG = "EventRefactorActivity";
     public static final int ADD = 0;
     public static final int EDIT = 1;
-    private @Mode int mode;
+    private @Mode
+    int mode;
     private Event event;
     private ScheduleItem schedule;
     private String timePattern;
@@ -119,23 +120,19 @@ public class EventRefactorActivity extends AppCompatActivity {
     private void setViews() {
         switch (mode) {
             case ADD:
-                defaultTime = new LocalTime(12,00);
+                defaultTime = new LocalTime(12, 00);
                 mTextViewStart.setText(defaultTime.toString(timePattern));
                 mTextViewEnd.setText(defaultTime.toString(timePattern));
                 findViewById(R.id.button_delete).setVisibility(View.GONE);
 
 
-
                 break;
             case EDIT:
                 mEditTextName.setText(event.getName());
-                mSpinnerCategory.setSelection(CategoriesList.getInstance().indexOf(event.getCategory()));
-                defaultTime = new LocalTime(12,00);
+                mSpinnerCategory.setSelection(event.getCategoryIndex());
+                defaultTime = new LocalTime(12, 00);
                 mTextViewStart.setText(event.getStartTime().toString(timePattern));
                 mTextViewEnd.setText(event.getEndTime().toString(timePattern));
-
-
-
 
 
                 break;
@@ -207,7 +204,7 @@ public class EventRefactorActivity extends AppCompatActivity {
     }
 
     private void setUpDaySpinner() {
-        mSpinnerDay= findViewById(R.id.spinner_day);
+        mSpinnerDay = findViewById(R.id.spinner_day);
         CategorySpinnerAdapter mAdapter = new CategorySpinnerAdapter(this, CategoriesList.getInstance());
         mSpinnerDay.setAdapter(mAdapter);
         ArrayAdapter<Day> adapter = new ArrayAdapter<>(this,
@@ -223,31 +220,33 @@ public class EventRefactorActivity extends AppCompatActivity {
         LocalTime eventEndTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(timePattern));
         Category eventCategory = (Category) mSpinnerCategory.getSelectedItem();
         Day eventDay = (Day) mSpinnerDay.getSelectedItem(); // TODO: make sure this works correctly
-        Event event = new Event(eventName, eventCategory, eventDay, eventStartTime, eventEndTime);
-        for (int i = 0; i < eventDay.getEvents().size(); i++) {
-            if (event.overlapsWith(eventDay.getEvents().get(i))) {
-                Toast.makeText(this, R.string.event_overlap_error, Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
+        int categoryIndex = mSpinnerCategory.getSelectedItemPosition();
+        int dayIndex = mSpinnerDay.getSelectedItemPosition();
+        Event event = new Event(eventName, categoryIndex, dayIndex, eventStartTime, eventEndTime);
+
         if (!event.isNameValid()) {
             Toast.makeText(this, R.string.empty_name_error, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!event.isTimeValid()) {
+        } else if (!event.isTimeValid()) {
             Toast.makeText(this, R.string.start_end_time_error, Toast.LENGTH_SHORT).show();
-            return;
+        } else {
+            for (int i = 0; i < eventDay.getEvents().size(); i++) {
+                if (event.overlapsWith(eventDay.getEvents().get(i))) {
+                    Toast.makeText(this, R.string.event_overlap_error, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            eventDay.getEvents().add(event);
+            Collections.sort(eventDay.getEvents(), new Event.EventTimeComparator());
+            eventCategory.getCategoryEvents().add(event);
+            event.setDayIndex(dayIndex);
+            event.setCategoryIndex(categoryIndex);
+
+            Log.d(TAG, "submitEvent: added event:" + event);
+            Log.d(TAG, "submitEvent: day:" + eventDay.getEvents());
+            Log.d(TAG, "submitEvent: category" + eventCategory.getCategoryEvents());
+            finish();
         }
 
-        eventDay.getEvents().add(event);
-        Collections.sort(eventDay.getEvents(), new Event.EventTimeComparator());
-        eventCategory.getCategoryEvents().add(event);
-        event.setDay(eventDay);
-        event.setCategory(eventCategory);
-
-        Log.d(TAG, "submitEvent: added event:" + event);
-        Log.d(TAG, "submitEvent: day:" + eventDay.getEvents());
-        Log.d(TAG, "submitEvent: category" + eventCategory.getCategoryEvents());
     }
 
     public void deleteEvent(View view) {
@@ -259,6 +258,7 @@ public class EventRefactorActivity extends AppCompatActivity {
 
     @IntDef({EDIT, ADD})
     @Retention(RetentionPolicy.SOURCE)
-    private @interface Mode {}
+    private @interface Mode {
+    }
 
 }

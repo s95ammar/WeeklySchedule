@@ -14,14 +14,18 @@ import android.view.MenuItem;
 import android.widget.TimePicker;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
 import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Event;
+import com.s95ammar.weeklyschedule.models.LocalTimeSerializer;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 //import com.s95ammar.weeklyschedule.views.fragments.EventRefactorDialog;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
+
+import org.joda.time.LocalTime;
 
 import java.util.Calendar;
 
@@ -94,11 +98,12 @@ public class ParentActivity extends AppCompatActivity implements
 
     public void saveData() {
         Log.d(TAG, "saveData: Saving data");
+        Gson gson = LocalTimeSerializer.getGsonLocalTimeSerializer();
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         int activeScheduleIndex = SchedulesList.getInstance().indexOf(SchedulesList.getInstance().getActiveSchedule());
-        String schedulesJson = new Gson().toJson(SchedulesList.getInstance());
-        String categoriesJson = new Gson().toJson(CategoriesList.getInstance());
+        String schedulesJson = gson.toJson(SchedulesList.getInstance());
+        String categoriesJson = gson.toJson(CategoriesList.getInstance());
         Log.d(TAG, "saveData: categories list" + categoriesJson);
         Log.d(TAG, "saveData: schedules list" + schedulesJson);
         Log.d(TAG, "saveData: active schedule index: " + activeScheduleIndex + " : " + SchedulesList.getInstance().getActiveSchedule());
@@ -123,6 +128,5 @@ public class ParentActivity extends AppCompatActivity implements
         saveData();
         super.onStop();
     }
-
 
 }
