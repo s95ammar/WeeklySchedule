@@ -52,7 +52,6 @@ public class CategoriesListFragment extends Fragment implements CategoryRecViewA
 
     private void refreshLayout() {
         getView().findViewById(R.id.textView_no_categories).setVisibility(CategoriesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
-//        getView().findViewById(R.id.recyclerView_categories).setBackgroundColor(CategoriesList.getInstance().isEmpty() ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
     }
 
     private void buildRecyclerView() {
@@ -70,7 +69,6 @@ public class CategoriesListFragment extends Fragment implements CategoryRecViewA
     @Override
     public void onItemClicked(int i) {
         mListener.showCategoryRefactorDialog(CategoriesList.getInstance().get(i), i);
-        Log.d(TAG, "onItemClicked: " + CategoriesList.getInstance().get(i).getName());
     }
 
 
@@ -103,20 +101,17 @@ public class CategoriesListFragment extends Fragment implements CategoryRecViewA
         mAdapter.notifyItemInserted(0);
         mLayoutManager.scrollToPosition(0);
         refreshLayout();
-        Log.d(TAG, "addCategory: " + CategoriesList.getInstance());
     }
 
     public void editCategory(Category category, int i) {
         CategoriesList.getInstance().set(i, category);
         mAdapter.notifyItemChanged(i);
-        Log.d(TAG, "editCategory: " + CategoriesList.getInstance());
     }
 
     public void deleteCategory(int i) {
         CategoriesList.getInstance().remove(i);
         mAdapter.notifyItemRemoved(i);
         refreshLayout();
-        Log.d(TAG, "deleteCategory: " + CategoriesList.getInstance());
     }
 
 

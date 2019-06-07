@@ -39,6 +39,7 @@ public class CategoryRecViewAdapter extends RecyclerView.Adapter<CategoryRecView
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int i) {
         Category currentItem = mCategoryItems.get(i);
         holder.tvCategoryName.setText(currentItem.getName());
+//        holder.cardView.getBackground().mutate().setTint(currentItem.getFillColor());
         holder.cardView.setCardBackgroundColor(currentItem.getFillColor());
         holder.tvCategoryName.setTextColor(currentItem.getTextColor());
         holder.buttonMore.getBackground().mutate().setTint(currentItem.getTextColor());

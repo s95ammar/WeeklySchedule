@@ -3,6 +3,7 @@ package com.s95ammar.weeklyschedule.models;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,6 +11,7 @@ import java.util.Iterator;
 public class SchedulesList extends ArrayList<ScheduleItem> {
     private static final String TAG = "SchedulesList";
     private static SchedulesList instance;
+    @Expose
     private ScheduleItem activeSchedule;
 
     private SchedulesList() {
@@ -35,18 +37,13 @@ public class SchedulesList extends ArrayList<ScheduleItem> {
         if (instance == null) {
             Gson gson = LocalTimeSerializer.getGsonLocalTimeSerializer();
             instance = gson.fromJson(json, SchedulesList.class);
-            Log.d(TAG, "createFromJson: " + getInstance().toString());
-        } else {
-            Log.d(TAG, "createFromJson: Schedules list already exists");
         }
-
     }
 
     public void loadActiveSchedule(int activeScheduleIndex) {
         if (activeScheduleIndex != -1) {
             activeSchedule = instance.get(activeScheduleIndex);
         }
-        Log.d(TAG, "loadActiveSchedule: index: " + activeScheduleIndex + " : " + activeSchedule);
     }
 
     public boolean hasActiveSchedule() {

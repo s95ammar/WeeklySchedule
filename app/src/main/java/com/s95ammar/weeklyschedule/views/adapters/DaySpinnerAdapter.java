@@ -3,7 +3,6 @@ package com.s95ammar.weeklyschedule.views.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,13 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.s95ammar.weeklyschedule.R;
-import com.s95ammar.weeklyschedule.models.Category;
+import com.s95ammar.weeklyschedule.models.Day;
 
 import java.util.ArrayList;
 
-public class CategorySpinnerAdapter extends ArrayAdapter<Category> {
+public class DaySpinnerAdapter extends ArrayAdapter<Day> {
 
-    public CategorySpinnerAdapter(Context context, ArrayList<Category> categoriesList) {
+    public DaySpinnerAdapter(Context context, ArrayList<Day> categoriesList) {
         super(context, 0, categoriesList);
     }
 
@@ -35,18 +34,15 @@ public class CategorySpinnerAdapter extends ArrayAdapter<Category> {
     private View initView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.spinner_row_category, parent, false);
+                    R.layout.spinner_row_day, parent, false);
         }
 
-        TextView textViewName = convertView.findViewById(R.id.textView_category_spinner);
+        TextView textViewName = convertView.findViewById(R.id.textView_day_spinner);
 
-        Category currentItem = getItem(position);
+        Day currentItem = getItem(position);
 
         if (currentItem != null) {
-            textViewName.setText(currentItem.getName());
-            textViewName.setTextColor(currentItem.getTextColor());
-            DrawableCompat.setTint(textViewName.getBackground(), currentItem.getFillColor());
-
+            textViewName.setText(currentItem.getDayOfWeek());
         }
 
         return convertView;

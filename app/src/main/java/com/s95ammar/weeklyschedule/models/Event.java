@@ -1,21 +1,28 @@
 package com.s95ammar.weeklyschedule.models;
 
 
+import com.google.gson.annotations.Expose;
+
 import org.joda.time.LocalTime;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
 public class Event implements Serializable, Comparable<Event> {
+    @Expose
     private String name;
-    private int categoryIndex;
-    private int dayIndex;
+//    private int categoryIndex;
+//    private int dayIndex;
 
-//    private Category category;
-//    private Day day;
+    @Expose
+    private Category category;
+    private Day day;
+    @Expose
     private LocalTime startTime;
+    @Expose
     private LocalTime endTime;
 
+/*
     public Event(String name, int categoryIndex, int dayIndex, LocalTime startTime, LocalTime endTime) {
         this.name = name;
         this.categoryIndex = categoryIndex;
@@ -23,16 +30,17 @@ public class Event implements Serializable, Comparable<Event> {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+*/
 
-/*
+
     public Event(String name, Category category, Day day, LocalTime startTime, LocalTime endTime) {
         this.name = name;
-//        this.category = category;
-//        this.day = day;
+        this.category = category;
+        this.day = day;
         this.startTime = startTime;
         this.endTime = endTime;
     }
-*/
+
 
     public String getName() {
         return name;
@@ -42,37 +50,37 @@ public class Event implements Serializable, Comparable<Event> {
         this.name = name;
     }
 
-    public int getCategoryIndex() {
-        return categoryIndex;
-    }
-
-    public void setCategoryIndex(int categoryIndex) {
-        this.categoryIndex = categoryIndex;
-    }
-
-    public int getDayIndex() {
-        return dayIndex;
-    }
-
-    public void setDayIndex(int dayIndex) {
-        this.dayIndex = dayIndex;
-    }
-
-//    public Category getCategory() {
-//        return category;
+//    public int getCategoryIndex() {
+//        return categoryIndex;
+//    }
+//
+//    public void setCategoryIndex(int categoryIndex) {
+//        this.categoryIndex = categoryIndex;
+//    }
+//
+//    public int getDayIndex() {
+//        return dayIndex;
+//    }
+//
+//    public void setDayIndex(int dayIndex) {
+//        this.dayIndex = dayIndex;
 //    }
 
-//    public void setCategory(Category category) {
-//        this.category = category;
-//    }
-
-//    public Day getDay() {
-//        return day;
-//    }
-
-//    public void setDay(Day day) {
-//        this.day = day;
-//    }
+    public Category getCategory() {
+        return category;
+    }
+//
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+//
+    public Day getDay() {
+        return day;
+    }
+//
+    public void setDay(Day day) {
+        this.day = day;
+    }
 
     public LocalTime getStartTime() {
         return startTime;
@@ -90,12 +98,24 @@ public class Event implements Serializable, Comparable<Event> {
         this.endTime = endTime;
     }
 
-    public boolean isNameValid() {
+    public static boolean isNameValid(String name) {
         return !name.isEmpty();
     }
 
-    public boolean isTimeValid() {
+    public static boolean isTimeValid(LocalTime startTime, LocalTime endTime) {
         return endTime.isAfter(startTime);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Event) {
+            Event other = (Event) obj;
+            return name.equals(other.name) &&
+                    category.equals(other.category) &&
+                    startTime.equals(other.startTime) &&
+                    endTime.equals(other.endTime);
+        }
+        return false;
     }
 
     @Override
@@ -112,10 +132,10 @@ public class Event implements Serializable, Comparable<Event> {
 
     @Override
     public String toString() {
-        return "Event{" +
+        return '{' +
                 "name='" + name + '\'' +
-//                ", category=" + category.getName() +
-//                ", day=" + day.getDayOfWeek() +
+                ", category=" + category +
+                ", day=" + day.getDayOfWeek() +
                 ", startTime=" + startTime.toString("HH:mm") +
                 ", endTime=" + endTime.toString("HH:mm") +
                 '}';

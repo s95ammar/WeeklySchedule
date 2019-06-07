@@ -28,13 +28,14 @@ import com.s95ammar.weeklyschedule.models.ScheduleItem;
 
 import java.util.ArrayList;
 
+import static com.s95ammar.weeklyschedule.models.ScheduleItem.WEEK_DAYS;
+
 public class SchedulesListFragment extends Fragment implements ScheduleRecViewAdapter.OnItemClickListener{
     private static final String TAG = "SchedulesListFragment";
     private SchedulesListManager mListener;
     private RecyclerView mRecyclerView;
     private ScheduleRecViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    public static final String [] WEEK_DAYS = {"Sunday" , "Monday" , "Tuesday" , "Wednesday" , "Thursday" , "Friday" , "Saturday"};
 
 
     public SchedulesListFragment() {
@@ -76,7 +77,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
     @Override
     public void onItemClicked(int i) {
         mListener.showScheduleInActivity(i);
-        Log.d(TAG, "onItemClicked: " + SchedulesList.getInstance().get(i).getName());
+        Log.d(TAG, "onItemClicked: " + SchedulesList.getInstance().get(i));
     }
 
     @Override
@@ -138,13 +139,11 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
         mAdapter.notifyItemInserted(0);
         mLayoutManager.scrollToPosition(0);
         refreshLayout();
-        Log.d(TAG, "addSchedule: " + SchedulesList.getInstance());
     }
 
     public void renameSchedule(String newName, int i) {
         SchedulesList.getInstance().get(i).setName(newName);
         mAdapter.notifyItemChanged(i);
-        Log.d(TAG, "editCategory: " + SchedulesList.getInstance());
     }
 
     public void deleteSchedule(int i) {
@@ -154,7 +153,6 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
         SchedulesList.getInstance().remove(i);
         mAdapter.notifyItemRemoved(i);
         refreshLayout();
-        Log.d(TAG, "deleteCategory: " + SchedulesList.getInstance());
     }
 
 

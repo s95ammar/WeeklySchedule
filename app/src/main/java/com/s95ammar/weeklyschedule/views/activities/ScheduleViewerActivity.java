@@ -10,8 +10,7 @@ import android.view.MenuItem;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
-
-import java.io.Serializable;
+import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment;
 
 import static com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment.SchedulesListManager.KEY_INDEX;
 
@@ -34,7 +33,7 @@ public class ScheduleViewerActivity extends ParentActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu, menu);
         super.menu = menu;
-        showSchedule();
+        showScheduleViewerFragment();
         return true;
     }
 
@@ -52,10 +51,12 @@ public class ScheduleViewerActivity extends ParentActivity {
 
     }
 
-    private void showSchedule() {
+    private void showScheduleViewerFragment() {
         ScheduleItem schedule = SchedulesList.getInstance().get(getIntent().getIntExtra(KEY_INDEX, -1));
-        Serializable object = getIntent().getSerializableExtra(KEY_SCHEDULE);
+//        Serializable object = getIntent().getSerializableExtra(KEY_SCHEDULE);
         openScheduleViewerFragment(schedule, R.id.fragment_container_schedule_viewer_activity);
     }
+
+
 
 }

@@ -1,8 +1,6 @@
 package com.s95ammar.weeklyschedule.views.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +16,7 @@ import android.view.MenuItem;
 
 import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
 import com.s95ammar.weeklyschedule.models.Category;
+import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 import com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment;
 import com.s95ammar.weeklyschedule.views.fragments.CategoryRefactorDialog;
@@ -35,7 +35,7 @@ public class MainActivity extends ParentActivity implements
         CategoriesListFragment.CategoriesListManager,
         CategoryRefactorDialog.CategoryRefactor {
 
-    private static final int REQUEST_CODE = 0;
+    private static final int REQUEST_BACK_TO_SCHEDULES = 1;
     private static final String TAG = "MainActivity";
     private DrawerLayout drawer;
     private SchedulesListFragment schedulesListFragment;
@@ -57,6 +57,11 @@ public class MainActivity extends ParentActivity implements
         loadData();
         Toolbar toolbar = findViewById(R.id.toolbar_main_activity);
         setSupportActionBar(toolbar);
+        setTimePattern();
+    }
+
+    private void setTimePattern() {
+        ScheduleItem.timePattern = DateFormat.is24HourFormat(this) ? "HH:mm" : "hh:mm aa";
     }
 
     @Override
@@ -84,11 +89,10 @@ public class MainActivity extends ParentActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_BACK_TO_SCHEDULES) {
             if(resultCode == RESULT_OK) {
                 switchToFragment(schedulesListFragment != null ? schedulesListFragment : (schedulesListFragment = new SchedulesListFragment()),
                         R.id.fragment_container_main_activity, null);
-
             }
         }
     }
@@ -149,7 +153,7 @@ public class MainActivity extends ParentActivity implements
     public void showScheduleInActivity(int i) {
         Intent intent = new Intent(this, ScheduleViewerActivity.class);
         intent.putExtra(SchedulesListFragment.SchedulesListManager.KEY_INDEX, i);
-        startActivityForResult(intent, REQUEST_CODE);
+        startActivityForResult(intent, REQUEST_BACK_TO_SCHEDULES);
     }
 
     @Override

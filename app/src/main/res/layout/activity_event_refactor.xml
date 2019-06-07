@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:gravity="right"
+                android:gravity="end"
                 app:layout_constraintBottom_toBottomOf="@+id/tView_event_category"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tView_event_category" />
@@ -66,8 +66,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="8dp"
-                android:inputType="text"
                 android:completionThreshold="1"
+                android:inputType="text"
                 android:maxLength="25"
                 android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="@+id/tView_event_name"
@@ -88,10 +88,11 @@
                 app:layout_constraintTop_toBottomOf="@+id/tView_event_name" />
 
             <Spinner
-                android:id="@+id/spinner_day"
+                android:id="@+id/spinner_days"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:gravity="end"
                 app:layout_constraintBottom_toBottomOf="@+id/tView_event_day"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tView_event_day" />
@@ -114,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:onClick="setTime"
+                android:onClick="openTimePicker"
                 android:text="@string/default_time"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
@@ -138,7 +139,7 @@
                 android:id="@+id/tView_event_end_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="setTime"
+                android:onClick="openTimePicker"
                 android:text="@string/default_time"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"

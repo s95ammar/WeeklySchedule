@@ -18,6 +18,8 @@ import com.google.gson.GsonBuilder;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
 import com.s95ammar.weeklyschedule.models.CategoriesList;
+import com.s95ammar.weeklyschedule.models.Category;
+import com.s95ammar.weeklyschedule.models.Day;
 import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.LocalTimeSerializer;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
@@ -28,6 +30,7 @@ import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 import org.joda.time.LocalTime;
 
 import java.util.Calendar;
+import java.util.TreeSet;
 
 public class ParentActivity extends AppCompatActivity implements
         ScheduleViewerFragment.ScheduleEditor,
@@ -36,6 +39,7 @@ public class ParentActivity extends AppCompatActivity implements
         /*TimePickerDialog.OnTimeSetListener*/ {
 
     private static final String TAG = "ParentActivity";
+    protected static final int REQUEST_APPLY_CHANGES = 0;
     protected ScheduleViewerFragment scheduleViewerFragment;
     protected Menu menu;
 //    protected EventRefactorDialog eventRefactorDialog; TODO: replace dialog with activity
@@ -81,46 +85,74 @@ public class ParentActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_APPLY_CHANGES) {
+            if(resultCode == RESULT_OK) {
+                if (scheduleViewerFragment != null) {
+                    scheduleViewerFragment.showSchedule();
+                } else {
+                    throw new RuntimeException("scheduleViewerFragment not instantiated");
+                }
+            }
+        }
+    }
+
+    @Override
     public void openEventRefactorActivity(Event event, int scheduleIndex) {
         Intent intent = new Intent(this, EventRefactorActivity.class);
         intent.putExtra(KEY_EVENT, event);
         intent.putExtra(KEY_SCHEDULE_INDEX, scheduleIndex);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_APPLY_CHANGES);
     }
-
-/*
-    @Override
-    public void createEvent(String day, String name, String startTime, String endTime) {
-        Log.d(TAG, "createEvent: " + day + ", " + name + ", " + startTime + ", " + endTime);
-    }
-*/
-
 
     public void saveData() {
-        Log.d(TAG, "saveData: Saving data");
-        Gson gson = LocalTimeSerializer.getGsonLocalTimeSerializer();
+        Log.d(TAG, "saveData: Saving data...");
+        GsonBuilder builder = new GsonBuilder()
+                .registerTypeAdapter(LocalTime.class, new LocalTimeSerializer())
+                .excludeFieldsWithoutExposeAnnotation();
+        Gson gson = builder.create();
+
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         int activeScheduleIndex = SchedulesList.getInstance().indexOf(SchedulesList.getInstance().getActiveSchedule());
         String schedulesJson = gson.toJson(SchedulesList.getInstance());
-        String categoriesJson = gson.toJson(CategoriesList.getInstance());
-        Log.d(TAG, "saveData: categories list" + categoriesJson);
         Log.d(TAG, "saveData: schedules list" + schedulesJson);
         Log.d(TAG, "saveData: active schedule index: " + activeScheduleIndex + " : " + SchedulesList.getInstance().getActiveSchedule());
         editor.putInt("active schedule index", activeScheduleIndex);
         editor.putString("schedules list", schedulesJson);
-        editor.putString("categories list", categoriesJson);
+//        editor.putString("categories list", categoriesJson);
         editor.apply();
     }
 
     public void loadData() {
+        Log.d(TAG, "loadData: Loading data...");
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         int activeScheduleIndex = sharedPreferences.getInt("active schedule index", -1);
         String schedulesJson = sharedPreferences.getString("schedules list", null);
-        String categoriesJson = sharedPreferences.getString("categories list", null);
         SchedulesList.createFromJson(schedulesJson);
-        CategoriesList.createFromJson(categoriesJson);
         SchedulesList.getInstance().loadActiveSchedule(activeScheduleIndex);
+        rebuildEventLinks();
+        Log.d(TAG, "loadData: " + SchedulesList.getInstance());
+    }
+
+    private void rebuildEventLinks() {
+        for (int i = 0; i < SchedulesList.getInstance().size(); i++) {
+            ScheduleItem schedule = SchedulesList.getInstance().get(i);
+            for (int j = 0; j < schedule.getDays().size(); j++) {
+                Day day = schedule.getDays().get(j);
+                for (int k = 0; k < day.getEvents().size(); k++) {
+                    Event event = day.getEvents().get(k);
+                    event.setDay(day);
+                    if (!CategoriesList.getInstance().contains(event.getCategory()))
+                        CategoriesList.getInstance().add(event.getCategory());
+                    Category category = CategoriesList.getInstance().get(CategoriesList.getInstance().indexOf(event.getCategory()));
+                    if (category.getCategoryEvents() == null)
+                        category.setCategoryEvents(new TreeSet<>(new Event.EventNameComparator()));
+                    category.getCategoryEvents().add(event);
+                }
+            }
+        }
     }
 
     @Override

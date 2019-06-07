@@ -1,17 +1,17 @@
 package com.s95ammar.weeklyschedule.models;
 
-import android.support.annotation.StringDef;
+import com.google.gson.annotations.Expose;
+
+import org.joda.time.LocalTime;
 
 import java.io.Serializable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Day implements Serializable {
-
+    public static final int TOTAL_HOURS = 24;
+    @Expose
     private String dayOfWeek;
-
+    @Expose
     private ArrayList<Event> events;
 
     public Day(String dayOfWeek, ArrayList<Event> events) {
@@ -35,6 +35,14 @@ public class Day implements Serializable {
         this.events = events;
     }
 
+    public static String[] getHoursStringArray() {
+        String[] hours = new String[TOTAL_HOURS];
+        for (int i = 0; i < hours.length; i++) {
+            hours[i] = LocalTime.MIDNIGHT.plusHours(i).toString(ScheduleItem.timePattern);
+        }
+        return hours;
+    }
+
 
     @Override
     public boolean equals(Object that) {
@@ -46,7 +54,7 @@ public class Day implements Serializable {
 
     @Override
     public String toString() {
-        return dayOfWeek;
+        return '{' + dayOfWeek + ", events: " + events + '}';
 
     }
 }
