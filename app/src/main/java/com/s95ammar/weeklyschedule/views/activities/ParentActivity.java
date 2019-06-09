@@ -24,14 +24,16 @@ import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 
 import org.joda.time.LocalTime;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 
 public class ParentActivity extends AppCompatActivity implements
         ScheduleViewerFragment.ScheduleEditor {
 
     private static final String TAG = "ParentActivity";
+    private static final String SHARED_PREFERENCES = "shared preferences";
+    private static final String KEY_SCHEDULES_LIST = "schedules list";
+    private static final String KEY_ACTIVE_SCHEDULE_INDEX = "active schedule index";
+    private static final String KEY_CATEGORIES_LIST = "categories list";
     protected static final int REQUEST_APPLY_CHANGES = 0;
     protected ScheduleViewerFragment scheduleViewerFragment;
     protected Menu menu;
@@ -98,7 +100,7 @@ public class ParentActivity extends AppCompatActivity implements
                 .excludeFieldsWithoutExposeAnnotation();
         Gson gson = builder.create();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String schedulesJson = gson.toJson(SchedulesList.getInstance());
         int activeScheduleIndex = SchedulesList.getInstance().indexOf(SchedulesList.getInstance().getActiveSchedule());
@@ -106,18 +108,19 @@ public class ParentActivity extends AppCompatActivity implements
         Log.d(TAG, "saveData: schedules list" + schedulesJson);
         Log.d(TAG, "saveData: active schedule index: " + activeScheduleIndex + " : " + SchedulesList.getInstance().getActiveSchedule());
         Log.d(TAG, "saveData: categories list" + categoriesJson);
-        editor.putString("schedules list", schedulesJson);
-        editor.putInt("active schedule index", activeScheduleIndex);
-        editor.putString("categories list", categoriesJson);
+        editor.putString(KEY_SCHEDULES_LIST, schedulesJson);
+        editor.putInt(KEY_ACTIVE_SCHEDULE_INDEX, activeScheduleIndex);
+        editor.putString(KEY_CATEGORIES_LIST, categoriesJson);
         editor.apply();
     }
 
+
     public void loadData() {
         Log.d(TAG, "loadData: Loading data...");
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        int activeScheduleIndex = sharedPreferences.getInt("active schedule index", -1);
-        String schedulesJson = sharedPreferences.getString("schedules list", null);
-        String categoriesJson = sharedPreferences.getString("categories list", null);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+        String schedulesJson = sharedPreferences.getString(KEY_SCHEDULES_LIST, null);
+        int activeScheduleIndex = sharedPreferences.getInt(KEY_ACTIVE_SCHEDULE_INDEX, -1);
+        String categoriesJson = sharedPreferences.getString(KEY_CATEGORIES_LIST, null);
         SchedulesList.createFromJson(schedulesJson);
         SchedulesList.getInstance().loadActiveSchedule(activeScheduleIndex);
         CategoriesList.createFromJson(categoriesJson);
