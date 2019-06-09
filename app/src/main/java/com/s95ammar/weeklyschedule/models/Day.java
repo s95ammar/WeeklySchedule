@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class Day implements Serializable {
     public static final int TOTAL_HOURS = 24;
+    public static final int MINUTES_IN_HOUR = 60;
     @Expose
     private String dayOfWeek;
     @Expose

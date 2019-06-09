@@ -1,22 +1,19 @@
 package com.s95ammar.weeklyschedule.views.activities;
 
-import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TimePicker;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.s95ammar.weeklyschedule.R;
-import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
 import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Category;
 import com.s95ammar.weeklyschedule.models.Day;
@@ -26,23 +23,19 @@ import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 //import com.s95ammar.weeklyschedule.views.fragments.EventRefactorDialog;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
+import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment;
 
 import org.joda.time.LocalTime;
 
-import java.util.Calendar;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 public class ParentActivity extends AppCompatActivity implements
-        ScheduleViewerFragment.ScheduleEditor,
-        ScheduleViewer
-//        EventRefactorDialog.EventCreatorListener, TODO: replace dialog with activity
-        /*TimePickerDialog.OnTimeSetListener*/ {
+        ScheduleViewerFragment.ScheduleEditor {
 
     private static final String TAG = "ParentActivity";
     protected static final int REQUEST_APPLY_CHANGES = 0;
     protected ScheduleViewerFragment scheduleViewerFragment;
     protected Menu menu;
-//    protected EventRefactorDialog eventRefactorDialog; TODO: replace dialog with activity
 
     protected void switchToFragment(@NonNull Fragment fragment, int containerId, Bundle args) {
         if (args != null) {
@@ -61,7 +54,6 @@ public class ParentActivity extends AppCompatActivity implements
         setDoneCancelVisibility(false);
         setEditVisibility(true);
         scheduleViewerFragment.setMode(ScheduleViewerFragment.VIEW);
-//        TODO: apply changes
     }
 
 
@@ -76,34 +68,28 @@ public class ParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void openScheduleViewerFragment(ScheduleItem schedule, int fragContainerId) {
+    public void openScheduleViewerFragment(ScheduleItem schedule, int mode, int fragContainerId) {
         Bundle scheduleBundle = new Bundle();
         scheduleBundle.putSerializable(KEY_SCHEDULE, schedule);
+        scheduleBundle.putInt(ScheduleViewerFragment.ScheduleEditor.KEY_MODE, mode);
         switchToFragment(scheduleViewerFragment = new ScheduleViewerFragment(),
                 fragContainerId, scheduleBundle);
 
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_APPLY_CHANGES) {
-            if(resultCode == RESULT_OK) {
-                if (scheduleViewerFragment != null) {
-                    scheduleViewerFragment.showSchedule();
-                } else {
-                    throw new RuntimeException("scheduleViewerFragment not instantiated");
-                }
-            }
-        }
-    }
-
-    @Override
-    public void openEventRefactorActivity(Event event, int scheduleIndex) {
+    public void startEventRefactorActivity(Event event, int scheduleIndex) {
         Intent intent = new Intent(this, EventRefactorActivity.class);
         intent.putExtra(KEY_EVENT, event);
         intent.putExtra(KEY_SCHEDULE_INDEX, scheduleIndex);
         startActivityForResult(intent, REQUEST_APPLY_CHANGES);
+    }
+
+    protected void applyEventChanges(int editedScheduleIndex, int fragmentContainerId) {
+        if (editedScheduleIndex != -1) {
+            ScheduleItem editedSchedule = SchedulesList.getInstance().get(editedScheduleIndex);
+            openScheduleViewerFragment(editedSchedule, ScheduleViewerFragment.EDIT, fragmentContainerId);
+        }
     }
 
     public void saveData() {
@@ -148,7 +134,7 @@ public class ParentActivity extends AppCompatActivity implements
                         CategoriesList.getInstance().add(event.getCategory());
                     Category category = CategoriesList.getInstance().get(CategoriesList.getInstance().indexOf(event.getCategory()));
                     if (category.getCategoryEvents() == null)
-                        category.setCategoryEvents(new TreeSet<>(new Event.EventNameComparator()));
+                        category.setCategoryEvents(new HashSet<>());
                     category.getCategoryEvents().add(event);
                 }
             }

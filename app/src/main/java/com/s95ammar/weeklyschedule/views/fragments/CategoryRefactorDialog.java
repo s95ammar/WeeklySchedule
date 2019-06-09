@@ -20,7 +20,7 @@ import com.s95ammar.weeklyschedule.models.Event;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 import static com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment.CategoriesListManager.KEY_CATEGORY;
 import static com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment.CategoriesListManager.KEY_INDEX;
@@ -112,7 +112,7 @@ public class CategoryRefactorDialog extends AppCompatDialogFragment implements V
                     Category category = new Category(name,
                             ((ColorDrawable) mViewFillColor.getBackground()).getColor(),
                             ((ColorDrawable) mViewTextColor.getBackground()).getColor(),
-                            new TreeSet<>(new Event.EventNameComparator()));
+                            new HashSet<>());
                     mListener.applyCategory(category, i);
                 } else {
                     Toast.makeText(getActivity(), R.string.category_empty_name, Toast.LENGTH_SHORT).show();

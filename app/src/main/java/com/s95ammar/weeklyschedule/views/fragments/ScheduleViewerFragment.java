@@ -10,7 +10,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +34,10 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     private static final String TAG = "ScheduleViewerFragment";
     public static final int VIEW = 0;
     public static final int EDIT = 1;
+    private static final int TEXT_VIEW_HEADER_HEIGHT = 100;
+    private static final int TEXT_SIZE = 20;
+    private static final int TEXT_VIEWS_WIDTH = 300;
+    private static final int PADDING = 8;
     private ScheduleEditor mListener;
     private ScheduleItem schedule;
     private ConstraintLayout layoutScheduleViewer;
@@ -64,15 +67,13 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
         super.onViewCreated(view, savedInstanceState);
         setUpLayout();
         setUpActionButtonListener();
-//        getView().findViewById(R.id.button_add_event).setOnClickListener(this);
     }
 
     private void setUpLayout() {
-//        boolean hasActiveSchedule = SchedulesList.getInstance().hasActiveSchedule();
         getActivity().setTitle(schedule != null ? schedule.getName() : getString(R.string.title_active_schedule));
         getView().findViewById(R.id.textView_no_active_schedule).setVisibility(schedule != null ? View.GONE : View.VISIBLE);
         if (schedule != null) {
-            setMode(VIEW);
+            setMode(getArguments().getInt(ScheduleEditor.KEY_MODE, VIEW));
             showSchedule();
         }
     }
@@ -118,62 +119,36 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     }
 
     public void showSchedule() {
-
         layoutScheduleViewer = getView().findViewById(R.id.layout_schedule_viewer);
         prepareHeaderTextViews(textViewsHours = new ArrayList<>(), Day.TOTAL_HOURS, Day.getHoursStringArray());
         prepareHeaderTextViews(textViewsDays = new ArrayList<>(), ScheduleItem.WEEK_DAYS.length, ScheduleItem.WEEK_DAYS);
         prepareEventTextViews();
         connectTextViews();
-
-
-/*        layoutScheduleViewer = getView().findViewById(R.id.layout_schedule_viewer);
-
-        textViewsHours = new ArrayList<>();
-        textViewsDays = new ArrayList<>();
-        hashMapEvents = new HashMap<>();
-        for (int i = 0; i < Day.TOTAL_HOURS; i++) {
-            TextView tv = getHeaderTextView(LocalTime.MIDNIGHT.plusHours(i).toString(ScheduleItem.timePattern));
-            textViewsHours.add(tv);
-            layoutScheduleViewer.addView(tv);
-        }
-
-        for (int i = 0; i < WEEK_DAYS.length; i++) {
-            TextView tv = getHeaderTextView(WEEK_DAYS[i]);
-            textViewsDays.add(tv);
-            layoutScheduleViewer.addView(tv);
-        }
-
-        for (int i = 0; i < schedule.getDays().size(); i++) {
-            Day day = schedule.getDays().get(i);
-            for (int j = 0; j < day.getEvents().size(); j++) {
-                Event event = day.getEvents().get(j);
-                TextView tv = getEventTextView(event);
-                hashMapEvents.put(event, tv);
-                layoutScheduleViewer.addView(tv);
-            }
-        }
-
-
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(layoutScheduleViewer);
-        connectHeaderTextViews(textViewsHours, constraintSet, false);
-        connectHeaderTextViews(textViewsDays, constraintSet, true);
-        connectEventTextViews(constraintSet);
-        constraintSet.applyTo(layoutScheduleViewer);*/
     }
+
+/*
+    private void setTextViewHeight(TextView textView) {
+        if (textView != null) {
+            textView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                TEXT_VIEW_HEADER_HEIGHT = textView.getHeight();
+            });
+        }
+    }
+*/
 
     private TextView getTableTextView() {
         TextView tv = new TextView(getActivity());
         tv.setId(View.generateViewId());
-        tv.setTextSize(20);
-        tv.setMinWidth(300);
+        tv.setMinWidth(TEXT_VIEWS_WIDTH);
+        tv.setTextSize(TEXT_SIZE);
         tv.setBackground(getActivity().getDrawable(R.drawable.shape_rounded_rectangle).mutate());
-        tv.setPaddingRelative(8, 8, 8, 8);
+        tv.setPaddingRelative(PADDING, PADDING, PADDING, PADDING);
         tv.setGravity(Gravity.CENTER);
         return tv;
     }
 
     private void formatHeaderTextView(TextView tv, String text) {
+        tv.setMinHeight(TEXT_VIEW_HEADER_HEIGHT);
         tv.setText(text);
         tv.setTextColor(Color.BLACK);
         tv.getBackground().mutate().setTint(Color.GRAY);
@@ -183,53 +158,12 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     private void formatEventTextView(TextView tv, Event event) {
         tv.setText(event.getName());
         tv.setTextColor(event.getCategory().getTextColor());
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.openEventRefactorActivity(event, SchedulesList.getInstance().indexOf(schedule));
-            }
-        });
-//            DrawableCompat.setTint(tv.getBackground().mutate(), CategoriesList.getInstance().get(event.getCategoryIndex()).getFillColor());
+        tv.setOnClickListener(v -> mListener.startEventRefactorActivity(event, SchedulesList.getInstance().indexOf(schedule)));
         tv.getBackground().mutate().setTint(event.getCategory().getFillColor());
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(300, 0);
+        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(TEXT_VIEWS_WIDTH, 0);
         tv.setLayoutParams(layoutParams);
 
     }
-
-
-/*
-    private TextView getHeaderTextView(String text) {
-        TextView tv = new TextView(getActivity());
-        tv.setId(View.generateViewId());
-        tv.setTextSize(20);
-        tv.setMinWidth(300);
-//        drawable.setTint(Color);
-        tv.setBackground(getActivity().getDrawable(R.drawable.shape_rounded_rectangle).mutate());
-        tv.setPaddingRelative(8, 8, 8, 8);
-        tv.setGravity(Gravity.CENTER);
-        tv.setText(text);
-        tv.setTextColor(Color.BLACK);
-        return tv;
-    }
-
-    private TextView getEventTextView(Event event) {
-        TextView tv = new TextView(getActivity());
-        tv.setId(View.generateViewId());
-        tv.setTextSize(20);
-        tv.setMinWidth(300);
-        tv.setBackground(getActivity().getDrawable(R.drawable.shape_rounded_rectangle).mutate());
-        tv.setPaddingRelative(8, 8, 8, 8);
-        tv.setGravity(Gravity.CENTER);
-        tv.setText(event.getName());
-        tv.setTextColor(CategoriesList.getInstance().get(event.getCategoryIndex()).getTextColor());
-//            DrawableCompat.setTint(tv.getBackground().mutate(), CategoriesList.getInstance().get(event.getCategoryIndex()).getFillColor());
-        tv.getBackground().mutate().setTint(CategoriesList.getInstance().get(event.getCategoryIndex()).getFillColor());
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(300, 0);
-        tv.setLayoutParams(layoutParams);
-
-        return tv;
-    }
-*/
 
     private void connectHeaderTextViews(ArrayList<TextView> arrayList, ConstraintSet constraintSet, boolean horizontal) {
         for (int i = 0; i < arrayList.size(); i++) {
@@ -252,7 +186,6 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     }
 
     private void connectEventTextViews(ConstraintSet constraintSet) {
-
         for (int i = 0; i < schedule.getDays().size(); i++) {
             Day day = schedule.getDays().get(i);
             for (int j = 0; j < day.getEvents().size(); j++) {
@@ -261,8 +194,11 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
                 TextView targetDay = textViewsDays.get(schedule.getIndexOfDay(event.getDay()));
                 TextView targetStartHour = textViewsHours.get(event.getStartTime().getHourOfDay());
                 TextView targetEndHour = textViewsHours.get(event.getEndTime().getHourOfDay());
-                constraintSet.connect(eventTextView.getId(), ConstraintSet.TOP, targetStartHour.getId(), ConstraintSet.TOP);
-                constraintSet.connect(eventTextView.getId(), ConstraintSet.BOTTOM, targetEndHour.getId(), ConstraintSet.BOTTOM);
+                double headerHeight = TEXT_VIEW_HEADER_HEIGHT;
+                constraintSet.connect(eventTextView.getId(), ConstraintSet.TOP, targetStartHour.getId(), ConstraintSet.TOP,
+                        (int) ((headerHeight /Day.MINUTES_IN_HOUR) * event.getStartTime().getMinuteOfHour()));
+                constraintSet.connect(eventTextView.getId(), ConstraintSet.BOTTOM, targetEndHour.getId(), ConstraintSet.BOTTOM,
+                        (int) ((headerHeight /Day.MINUTES_IN_HOUR) * (Day.MINUTES_IN_HOUR - event.getEndTime().getMinuteOfHour())));
                 constraintSet.connect(eventTextView.getId(), ConstraintSet.LEFT, targetDay.getId(), ConstraintSet.LEFT);
                 constraintSet.connect(eventTextView.getId(), ConstraintSet.RIGHT, targetDay.getId(), ConstraintSet.RIGHT);
                 constraintSet.constrainDefaultHeight(eventTextView.getId(), ConstraintSet.MATCH_CONSTRAINT_SPREAD);
@@ -295,7 +231,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.button_add_event:
                 if (!CategoriesList.getInstance().isEmpty()) {
-                    mListener.openEventRefactorActivity(null, SchedulesList.getInstance().indexOf(schedule));  // TODO: onOk -> addEvent(name)
+                    mListener.startEventRefactorActivity(null, SchedulesList.getInstance().indexOf(schedule));
                 } else {
                     Toast.makeText(getActivity(), R.string.category_list_empty_error, Toast.LENGTH_SHORT).show();
                 }
@@ -312,21 +248,19 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
 
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
-
         void setDoneCancelVisibility(boolean visibility);
-
-        void openEventRefactorActivity(Event event, int scheduleIndex);
-
+        void startEventRefactorActivity(Event event, int scheduleIndex);
+        void openScheduleViewerFragment(ScheduleItem schedule, @Mode int mode, int fragContainerId);
+        String KEY_MODE = "mode";
         String KEY_SCHEDULE = "schedule";
         String KEY_SCHEDULE_INDEX = "schedule index";
         String KEY_EVENT = "event";
-
     }
 
 
     @IntDef({EDIT, VIEW})
     @Retention(RetentionPolicy.SOURCE)
-    private @interface Mode {
+    public @interface Mode {
     }
 
 

@@ -35,6 +35,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import static com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment.ScheduleEditor.KEY_EVENT;
 import static com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment.ScheduleEditor.KEY_SCHEDULE_INDEX;
@@ -188,55 +189,64 @@ public class EventRefactorActivity extends AppCompatActivity {
 
 	public void submitEvent(View view) {
 		String eventName = mEditTextName.getText().toString();
+		Log.d(TAG, "submitEvent: " + eventName);
 		LocalTime eventStartTime = LocalTime.parse(mTextViewStart.getText().toString(), DateTimeFormat.forPattern(ScheduleItem.timePattern));
 		LocalTime eventEndTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(ScheduleItem.timePattern));
 		Category eventCategory = (Category) mSpinnerCategory.getSelectedItem();
-		Day eventDay = (Day) mSpinnerDay.getSelectedItem(); // TODO: make sure this works correctly
+		Day eventDay = (Day) mSpinnerDay.getSelectedItem();
 
-		if (!Event.isNameValid(eventName)) {
-			Toast.makeText(this, R.string.empty_name_error, Toast.LENGTH_SHORT).show();
-		} else if (!Event.isTimeValid(eventStartTime, eventEndTime)) {
+		if (!Event.isTimeValid(eventStartTime, eventEndTime)) {
 			Toast.makeText(this, R.string.start_end_time_error, Toast.LENGTH_SHORT).show();
-		} else {
+		} else { //TODO: simplify
 			Event event = new Event(eventName, eventCategory, eventDay, eventStartTime, eventEndTime);
-			if (mode == EDIT) {
-				schedule.getDays().get(schedule.getDays().indexOf(editedEvent.getDay())).getEvents().remove(editedEvent);
-			}
 			for (int i = 0; i < eventDay.getEvents().size(); i++) {
-				if (event.overlapsWith(eventDay.getEvents().get(i))) {
-					Toast.makeText(this, R.string.event_overlap_error, Toast.LENGTH_SHORT).show();
-					return;
+				switch (mode) {
+					case ADD:
+						if (event.overlapsWith(eventDay.getEvents().get(i))) {
+							Toast.makeText(this, R.string.event_overlap_error, Toast.LENGTH_SHORT).show();
+							return;
+						}
+						break;
+					case EDIT:
+						if (!editedEvent.equals(eventDay.getEvents().get(i)) && event.overlapsWith(eventDay.getEvents().get(i))) {
+							Toast.makeText(this, R.string.event_overlap_error, Toast.LENGTH_SHORT).show();
+							return;
+						}
+						break;
 				}
 			}
-/*
 			switch (mode) {
 				case ADD:
 					eventDay.getEvents().add(event);
 					break;
 				case EDIT:
-					if (eventDay.equals(editedEvent.getDay())) {
-					    eventDay.getEvents().set(eventDay.getEvents().indexOf(editedEvent), event);
-					} else {
-						editedEvent.getDay().getEvents().remove(event);
-						eventDay.getEvents().add(event);
-					}
+					eventDay.getEvents().set(eventDay.getEvents().indexOf(editedEvent), event);
 					break;
 			}
-*/
-			eventDay.getEvents().add(event);
-			Collections.sort(eventDay.getEvents(), new Event.EventTimeComparator());
+
+			Collections.sort(eventDay.getEvents(), new /*Event.EventNameComparator()*/ Comparator<Event>() { // TODO: restore this
+				@Override
+				public int compare(Event o1, Event o2) {
+					return o1.getStartTime().compareTo(o2.getStartTime());
+				}
+			});
 			eventCategory.getCategoryEvents().add(event);
-			Log.d(TAG, "submitEvent: " + schedule);
-            setResult(RESULT_OK, new Intent());
+			Intent intent = new Intent();
+			intent.putExtra(KEY_SCHEDULE_INDEX, SchedulesList.getInstance().indexOf(schedule));
+            setResult(RESULT_OK, intent);
             finish();
 		}
 
 	}
 
 	public void deleteEvent(View view) {
-//        Day eventDay = editedEvent.getDay();
-//        eventDay.getEvents().remove(editedEvent);
-	}
+		int dayIndex = schedule.getDays().indexOf(editedEvent.getDay());
+		schedule.getDays().get(dayIndex).getEvents().remove(editedEvent);
+        Intent intent = new Intent();
+        intent.putExtra(KEY_SCHEDULE_INDEX, SchedulesList.getInstance().indexOf(schedule));
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
 	public void cancelListener(View view) {
 		finish();

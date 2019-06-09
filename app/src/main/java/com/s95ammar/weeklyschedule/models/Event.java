@@ -8,12 +8,9 @@ import org.joda.time.LocalTime;
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class Event implements Serializable, Comparable<Event> {
+public class Event implements Serializable/*, Comparable<Event>*/ {
     @Expose
     private String name;
-//    private int categoryIndex;
-//    private int dayIndex;
-
     @Expose
     private Category category;
     private Day day;
@@ -21,17 +18,6 @@ public class Event implements Serializable, Comparable<Event> {
     private LocalTime startTime;
     @Expose
     private LocalTime endTime;
-
-/*
-    public Event(String name, int categoryIndex, int dayIndex, LocalTime startTime, LocalTime endTime) {
-        this.name = name;
-        this.categoryIndex = categoryIndex;
-        this.dayIndex = dayIndex;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-*/
-
 
     public Event(String name, Category category, Day day, LocalTime startTime, LocalTime endTime) {
         this.name = name;
@@ -50,34 +36,19 @@ public class Event implements Serializable, Comparable<Event> {
         this.name = name;
     }
 
-//    public int getCategoryIndex() {
-//        return categoryIndex;
-//    }
-//
-//    public void setCategoryIndex(int categoryIndex) {
-//        this.categoryIndex = categoryIndex;
-//    }
-//
-//    public int getDayIndex() {
-//        return dayIndex;
-//    }
-//
-//    public void setDayIndex(int dayIndex) {
-//        this.dayIndex = dayIndex;
-//    }
 
     public Category getCategory() {
         return category;
     }
-//
+
     public void setCategory(Category category) {
         this.category = category;
     }
-//
+
     public Day getDay() {
         return day;
     }
-//
+
     public void setDay(Day day) {
         this.day = day;
     }
@@ -98,10 +69,6 @@ public class Event implements Serializable, Comparable<Event> {
         this.endTime = endTime;
     }
 
-    public static boolean isNameValid(String name) {
-        return !name.isEmpty();
-    }
-
     public static boolean isTimeValid(LocalTime startTime, LocalTime endTime) {
         return endTime.isAfter(startTime);
     }
@@ -112,16 +79,19 @@ public class Event implements Serializable, Comparable<Event> {
             Event other = (Event) obj;
             return name.equals(other.name) &&
                     category.equals(other.category) &&
+                    day.equals(other.day) &&
                     startTime.equals(other.startTime) &&
                     endTime.equals(other.endTime);
         }
         return false;
     }
 
+/*
     @Override
     public int compareTo(Event that) {
         return name.compareTo(that.getName());
     }
+*/
 
     public boolean overlapsWith(Event other) {
         return (startTime.isEqual(other.startTime)) ||
@@ -134,13 +104,14 @@ public class Event implements Serializable, Comparable<Event> {
     public String toString() {
         return '{' +
                 "name='" + name + '\'' +
-                ", category=" + category +
+                ", category=" + category.getName() +
                 ", day=" + day.getDayOfWeek() +
                 ", startTime=" + startTime.toString("HH:mm") +
                 ", endTime=" + endTime.toString("HH:mm") +
                 '}';
     }
 
+/*
     public static class EventNameComparator implements Comparator<Event>, Serializable {
         @Override
         public int compare(Event o1, Event o2) {
@@ -154,5 +125,6 @@ public class Event implements Serializable, Comparable<Event> {
             return o1.getStartTime().compareTo(o2.getStartTime());
         }
     }
+*/
 
 }

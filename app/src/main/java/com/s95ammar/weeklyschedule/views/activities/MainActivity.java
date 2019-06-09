@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.s95ammar.weeklyschedule.interfaces.ScheduleViewer;
 import com.s95ammar.weeklyschedule.models.Category;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
@@ -22,6 +21,7 @@ import com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment;
 import com.s95ammar.weeklyschedule.views.fragments.CategoryRefactorDialog;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleNamerDialog;
 import com.s95ammar.weeklyschedule.R;
+import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
@@ -31,7 +31,6 @@ public class MainActivity extends ParentActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         SchedulesListFragment.SchedulesListManager,
         ScheduleNamerDialog.ScheduleNamerListener,
-        ScheduleViewer,
         CategoriesListFragment.CategoriesListManager,
         CategoryRefactorDialog.CategoryRefactor {
 
@@ -78,7 +77,7 @@ public class MainActivity extends ParentActivity implements
     private void checkActiveSchedule() {
         if (SchedulesList.getInstance().hasActiveSchedule()) {
             Log.d(TAG, "checkActiveSchedule: Active schedule found " + SchedulesList.getInstance().getActiveSchedule());
-            openScheduleViewerFragment(SchedulesList.getInstance().getActiveSchedule(), R.id.fragment_container_main_activity);
+            openScheduleViewerFragment(SchedulesList.getInstance().getActiveSchedule(), ScheduleViewerFragment.VIEW, R.id.fragment_container_main_activity);
         } else {
             Log.d(TAG, "checkActiveSchedule: Active schedule not found");
             switchToFragment(schedulesListFragment != null ? schedulesListFragment : (schedulesListFragment = new SchedulesListFragment()),
@@ -94,7 +93,12 @@ public class MainActivity extends ParentActivity implements
                 switchToFragment(schedulesListFragment != null ? schedulesListFragment : (schedulesListFragment = new SchedulesListFragment()),
                         R.id.fragment_container_main_activity, null);
             }
+        } else if (requestCode == REQUEST_APPLY_CHANGES) {
+            if (resultCode == RESULT_OK) {
+                applyEventChanges(data.getIntExtra(KEY_SCHEDULE_INDEX, -1), R.id.fragment_container_main_activity);
+            }
         }
+
     }
 
 
@@ -126,7 +130,7 @@ public class MainActivity extends ParentActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_active_schedule:
-                openScheduleViewerFragment(SchedulesList.getInstance().getActiveSchedule(), R.id.fragment_container_main_activity);
+                openScheduleViewerFragment(SchedulesList.getInstance().getActiveSchedule(), ScheduleViewerFragment.VIEW, R.id.fragment_container_main_activity);
                 break;
             case R.id.nav_schedules:
                 switchToFragment(schedulesListFragment != null ? schedulesListFragment : (schedulesListFragment = new SchedulesListFragment()),

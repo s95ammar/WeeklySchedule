@@ -6,7 +6,9 @@ import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class Category implements Serializable {
     @Expose
@@ -15,9 +17,9 @@ public class Category implements Serializable {
     private int fillColor;
     @Expose
     private int textColor;
-    private TreeSet<Event> categoryEvents;
+    private HashSet<Event> categoryEvents;
 
-    public Category(String name, int fillColor, int textColor, TreeSet<Event> categoryEvents) {
+    public Category(String name, int fillColor, int textColor, HashSet<Event> categoryEvents) {
         this.name = name;
         this.fillColor = fillColor;
         this.textColor = textColor;
@@ -48,11 +50,11 @@ public class Category implements Serializable {
         this.textColor = textColor;
     }
 
-    public TreeSet<Event> getCategoryEvents() {
+    public HashSet<Event> getCategoryEvents() {
         return categoryEvents;
     }
 
-    public void setCategoryEvents(TreeSet<Event> categoryEvents) {
+    public void setCategoryEvents(HashSet<Event> categoryEvents) {
         this.categoryEvents = categoryEvents;
     }
 
@@ -70,6 +72,7 @@ public class Category implements Serializable {
         for (int i = 0; i < events.size(); i++) {
             names.add(events.get(i).getName());
         }
+        Collections.sort(names);
         return names;
     }
 

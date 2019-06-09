@@ -10,13 +10,12 @@ import android.view.MenuItem;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.ScheduleItem;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
-import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment;
+import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 
 import static com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment.SchedulesListManager.KEY_INDEX;
 
 public class ScheduleViewerActivity extends ParentActivity {
     private static final String TAG = "ScheduleViewerActivity";
-//    protected ScheduleViewerFragment scheduleViewerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +50,21 @@ public class ScheduleViewerActivity extends ParentActivity {
 
     }
 
-    private void showScheduleViewerFragment() {
-        ScheduleItem schedule = SchedulesList.getInstance().get(getIntent().getIntExtra(KEY_INDEX, -1));
-//        Serializable object = getIntent().getSerializableExtra(KEY_SCHEDULE);
-        openScheduleViewerFragment(schedule, R.id.fragment_container_schedule_viewer_activity);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_APPLY_CHANGES) {
+            if (resultCode == RESULT_OK) {
+                applyEventChanges(data.getIntExtra(KEY_SCHEDULE_INDEX, -1), R.id.fragment_container_schedule_viewer_activity);
+            }
+        }
+
     }
 
+    private void showScheduleViewerFragment() {
+        ScheduleItem schedule = SchedulesList.getInstance().get(getIntent().getIntExtra(KEY_INDEX, -1));
+        openScheduleViewerFragment(schedule, ScheduleViewerFragment.VIEW, R.id.fragment_container_schedule_viewer_activity);
+    }
 
 
 }

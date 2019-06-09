@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class SchedulesList extends ArrayList<ScheduleItem> {
     private static final String TAG = "SchedulesList";
