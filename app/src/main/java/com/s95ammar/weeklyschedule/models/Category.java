@@ -61,7 +61,7 @@ public class Category implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Category) {
-            return name.equals(((Category) obj).getName()) && fillColor == ((Category) obj).fillColor && textColor == ((Category) obj).textColor;
+            return name.equals(((Category) obj).getName());
         }
         return false;
     }
@@ -78,7 +78,7 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        return '{' + name + ':' + fillColor + ", " + textColor +  '}';
+        return '{' + name + ':' + fillColor + ", " + textColor + ", " + categoryEvents +  '}';
     }
 
 }
