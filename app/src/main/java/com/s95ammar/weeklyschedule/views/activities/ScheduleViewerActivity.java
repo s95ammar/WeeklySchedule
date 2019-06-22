@@ -8,13 +8,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.s95ammar.weeklyschedule.R;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.models.Schedule;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 
 import static com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment.SchedulesListManager.KEY_INDEX;
 
-public class ScheduleViewerActivity extends ParentActivity {
+public class ScheduleViewerActivity extends AbstractScheduleActivity {
     private static final String TAG = "ScheduleViewerActivity";
 
     @Override
@@ -62,7 +62,7 @@ public class ScheduleViewerActivity extends ParentActivity {
     }
 
     private void showScheduleViewerFragment() {
-        ScheduleItem schedule = SchedulesList.getInstance().get(getIntent().getIntExtra(KEY_INDEX, -1));
+        Schedule schedule = SchedulesList.getInstance().get(getIntent().getIntExtra(KEY_INDEX, -1));
         openScheduleViewerFragment(schedule, ScheduleViewerFragment.VIEW, R.id.fragment_container_schedule_viewer_activity);
     }
 

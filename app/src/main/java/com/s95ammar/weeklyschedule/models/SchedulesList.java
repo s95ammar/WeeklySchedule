@@ -3,15 +3,18 @@ package com.s95ammar.weeklyschedule.models;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+
+import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
 
-public class SchedulesList extends ArrayList<ScheduleItem> {
+public class SchedulesList extends ArrayList<Schedule> {
     private static final String TAG = "SchedulesList";
     private static SchedulesList instance;
     @Expose
-    private ScheduleItem activeSchedule;
+    private Schedule activeSchedule;
 
     private SchedulesList() {
     }
@@ -23,18 +26,20 @@ public class SchedulesList extends ArrayList<ScheduleItem> {
         return instance;
     }
 
-    public ScheduleItem getActiveSchedule() {
+    public Schedule getActiveSchedule() {
         return activeSchedule;
     }
 
-    public void setActiveSchedule(ScheduleItem activeSchedule) {
+    public void setActiveSchedule(Schedule activeSchedule) {
         this.activeSchedule = activeSchedule;
     }
 
     public static void createFromJson(String json) {
         Log.d(TAG, "createFromJson: " + json);
         if (instance == null) {
-            Gson gson = LocalTimeSerializer.getGsonLocalTimeSerializer();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalTime.class, new LocalTimeSerializer())
+                    .create();
             instance = gson.fromJson(json, SchedulesList.class);
         }
     }

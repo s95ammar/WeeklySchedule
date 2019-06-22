@@ -39,7 +39,7 @@ public class Day implements Serializable {
     public static String[] getHoursStringArray() {
         String[] hours = new String[TOTAL_HOURS];
         for (int i = 0; i < hours.length; i++) {
-            hours[i] = LocalTime.MIDNIGHT.plusHours(i).toString(ScheduleItem.timePattern);
+            hours[i] = LocalTime.MIDNIGHT.plusHours(i).toString(Schedule.timePattern);
         }
         return hours;
     }

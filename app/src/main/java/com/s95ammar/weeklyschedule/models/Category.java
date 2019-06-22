@@ -1,12 +1,9 @@
 package com.s95ammar.weeklyschedule.models;
 
-import android.util.Log;
-
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -66,11 +63,13 @@ public class Category implements Serializable {
         return false;
     }
 
-    public ArrayList<String> getCategoryEventsNames() {
+    public ArrayList<String> getCategoryEventsNames() { // TODO: replace with HashSet & EventNameComparator
         ArrayList<Event> events = new ArrayList<>(categoryEvents);
         ArrayList<String> names = new ArrayList<>();
         for (int i = 0; i < events.size(); i++) {
-            names.add(events.get(i).getName());
+            if (!names.contains(events.get(i).getName())) {
+                names.add(events.get(i).getName());
+            }
         }
         Collections.sort(names);
         return names;

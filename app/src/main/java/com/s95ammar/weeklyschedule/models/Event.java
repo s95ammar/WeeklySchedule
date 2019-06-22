@@ -2,11 +2,8 @@ package com.s95ammar.weeklyschedule.models;
 
 
 import com.google.gson.annotations.Expose;
-
 import org.joda.time.LocalTime;
-
 import java.io.Serializable;
-import java.util.Comparator;
 
 public class Event implements Serializable/*, Comparable<Event>*/ {
     @Expose
@@ -18,6 +15,7 @@ public class Event implements Serializable/*, Comparable<Event>*/ {
     private LocalTime startTime;
     @Expose
     private LocalTime endTime;
+    public static final LocalTime DEFAULT_TIME = new LocalTime(12, 00);
 
     public Event(String name, Category category, Day day, LocalTime startTime, LocalTime endTime) {
         this.name = name;
@@ -86,12 +84,6 @@ public class Event implements Serializable/*, Comparable<Event>*/ {
         return false;
     }
 
-/*
-    @Override
-    public int compareTo(Event that) {
-        return name.compareTo(that.getName());
-    }
-*/
 
     public boolean overlapsWith(Event other) {
         return (startTime.isEqual(other.startTime)) ||
@@ -111,7 +103,9 @@ public class Event implements Serializable/*, Comparable<Event>*/ {
                 '}';
     }
 
+}
 /*
+TODO: implement comparators
     public static class EventNameComparator implements Comparator<Event>, Serializable {
         @Override
         public int compare(Event o1, Event o2) {
@@ -127,4 +121,3 @@ public class Event implements Serializable/*, Comparable<Event>*/ {
     }
 */
 
-}

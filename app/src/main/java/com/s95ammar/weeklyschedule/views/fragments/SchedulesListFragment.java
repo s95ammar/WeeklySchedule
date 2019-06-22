@@ -21,14 +21,13 @@ import android.widget.Button;
 
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.Day;
-import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
-import com.s95ammar.weeklyschedule.views.adapters.ScheduleRecViewAdapter;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.adapters.ScheduleRecViewAdapter;
+import com.s95ammar.weeklyschedule.models.Schedule;
 
 import java.util.ArrayList;
 
-import static com.s95ammar.weeklyschedule.models.ScheduleItem.WEEK_DAYS;
+import static com.s95ammar.weeklyschedule.models.Schedule.WEEK_DAYS;
 
 public class SchedulesListFragment extends Fragment implements ScheduleRecViewAdapter.OnItemClickListener{
     private static final String TAG = "SchedulesListFragment";
@@ -135,7 +134,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
         for (int i = 0; i < WEEK_DAYS.length; i++) {
             days.add(new Day(WEEK_DAYS[i], new ArrayList<>()));
         }
-        SchedulesList.getInstance().add(0, new ScheduleItem(name, days));
+        SchedulesList.getInstance().add(0, new Schedule(name, days));
         mAdapter.notifyItemInserted(0);
         mLayoutManager.scrollToPosition(0);
         refreshLayout();

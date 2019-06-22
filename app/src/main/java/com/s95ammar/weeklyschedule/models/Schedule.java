@@ -5,17 +5,17 @@ import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ScheduleItem implements Serializable {
+public class Schedule implements Serializable {
     @Expose
     private String name;
     @Expose
     private boolean isActive;
     @Expose
     private ArrayList<Day> days;
-    public static final String [] WEEK_DAYS = {"Sunday" , "Monday" , "Tuesday" , "Wednesday" , "Thursday" , "Friday" , "Saturday"};
+    public static final String [] WEEK_DAYS = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     public static String timePattern;
 
-    public ScheduleItem(String name, ArrayList<Day> days) {
+    public Schedule(String name, ArrayList<Day> days) {
         this.name = name;
         this.days = days;
     }

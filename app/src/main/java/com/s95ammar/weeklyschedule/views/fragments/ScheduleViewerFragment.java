@@ -21,7 +21,7 @@ import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Day;
 import com.s95ammar.weeklyschedule.models.Event;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.models.Schedule;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 
 import java.io.Serializable;
@@ -39,7 +39,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     private static final int TEXT_VIEWS_WIDTH = 300;
     private static final int PADDING = 8;
     private ScheduleEditor mListener;
-    private ScheduleItem schedule;
+    private Schedule schedule;
     private ConstraintLayout layoutScheduleViewer;
     private ArrayList<TextView> textViewsDays;
     private ArrayList<TextView> textViewsHours;
@@ -54,8 +54,8 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
         Bundle bundle = getArguments();
         if (bundle != null && schedule == null) {
             Serializable object = bundle.getSerializable(ScheduleEditor.KEY_SCHEDULE);
-            if (object instanceof ScheduleItem) {
-                schedule = (ScheduleItem) object;
+            if (object instanceof Schedule) {
+                schedule = (Schedule) object;
             }
         }
         return inflater.inflate(R.layout.fragment_schedule_viewer, container, false);
@@ -78,7 +78,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     }
 
     public void setMode(@Mode int mode) {
-        mListener.setDoneCancelVisibility(mode == EDIT);
+        mListener.setDoneVisibility(mode == EDIT);
         mListener.setEditVisibility(mode == VIEW);
         getView().findViewById(R.id.button_add_event).setVisibility(mode == EDIT ? View.VISIBLE : View.GONE);
         setEventsTextViewsOnClickListeners(mode);
@@ -87,7 +87,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public void showSchedule() {
         layoutScheduleViewer = getView().findViewById(R.id.layout_schedule_viewer);
         prepareHeaderTextViews(textViewsHours = new ArrayList<>(), Day.TOTAL_HOURS, Day.getHoursStringArray());
-        prepareHeaderTextViews(textViewsDays = new ArrayList<>(), ScheduleItem.WEEK_DAYS.length, ScheduleItem.WEEK_DAYS);
+        prepareHeaderTextViews(textViewsDays = new ArrayList<>(), Schedule.WEEK_DAYS.length, Schedule.WEEK_DAYS);
         prepareEventTextViews();
         connectTextViews();
     }
@@ -227,7 +227,7 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
     public void onDetach() {
         super.onDetach();
         mListener.setEditVisibility(false);
-        mListener.setDoneCancelVisibility(false);
+        mListener.setDoneVisibility(false);
         mListener = null;
     }
 
@@ -253,9 +253,9 @@ public class ScheduleViewerFragment extends Fragment implements View.OnClickList
 
     public interface ScheduleEditor {
         void setEditVisibility(boolean visibility);
-        void setDoneCancelVisibility(boolean visibility);
+        void setDoneVisibility(boolean visibility);
         void startEventRefactorActivity(Event event, int scheduleIndex);
-        void openScheduleViewerFragment(ScheduleItem schedule, @Mode int mode, int fragContainerId);
+        void openScheduleViewerFragment(Schedule schedule, @Mode int mode, int fragContainerId);
         String KEY_MODE = "mode";
         String KEY_SCHEDULE = "schedule";
         String KEY_SCHEDULE_INDEX = "schedule index";

@@ -15,11 +15,8 @@ import android.widget.Toast;
 
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.Category;
-import com.s95ammar.weeklyschedule.models.Event;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 
 import static com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment.CategoriesListManager.KEY_CATEGORY;
@@ -94,7 +91,6 @@ public class CategoryRefactorDialog extends AppCompatDialogFragment implements V
     }
 
     private void setViews(Category category) {
-//        mTextViewPreview.setText(category.getName());
         mTextViewPreview.setTextColor(category.getTextColor());
         mTextViewPreview.setBackgroundColor(category.getFillColor());
         mEditTextName.setText(category.getName());

@@ -43,6 +43,12 @@
     <string name="category_empty_name">Category was not created because name was empty</string>
     <string name="category_list_empty_error">At least 1 category needed to create an event</string>
     <string name="event_overlap_error">An event already exists within this period</string>
+    <string name="developer">Developer:</string>
+    <string name="my_name">Ammar Seud</string>
+    <string name="development_start_date">Development start date:</string>
+    <string name="development_start_date_value">30.04.2019</string>
+    <string name="hours_spent">Total hours spent on coding:</string>
+    <string name="hours_spent_value">63 hours</string>
 
 
 </resources>

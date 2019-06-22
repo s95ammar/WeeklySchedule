@@ -18,7 +18,7 @@ import com.s95ammar.weeklyschedule.models.Category;
 import com.s95ammar.weeklyschedule.models.Day;
 import com.s95ammar.weeklyschedule.models.Event;
 import com.s95ammar.weeklyschedule.models.LocalTimeSerializer;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.models.Schedule;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment;
 
@@ -26,10 +26,10 @@ import org.joda.time.LocalTime;
 
 import java.util.HashSet;
 
-public class ParentActivity extends AppCompatActivity implements
+public abstract class AbstractScheduleActivity extends AppCompatActivity implements
         ScheduleViewerFragment.ScheduleEditor {
 
-    private static final String TAG = "ParentActivity";
+    private static final String TAG = "AbstractActivity";
     private static final String SHARED_PREFERENCES = "shared preferences";
     private static final String KEY_SCHEDULES_LIST = "schedules list";
     private static final String KEY_ACTIVE_SCHEDULE_INDEX = "active schedule index";
@@ -47,12 +47,12 @@ public class ParentActivity extends AppCompatActivity implements
 
     public void editListener(MenuItem item) {
         setEditVisibility(false);
-        setDoneCancelVisibility(true);
+        setDoneVisibility(true);
         scheduleViewerFragment.setMode(ScheduleViewerFragment.EDIT);
     }
 
     public void doneListener(MenuItem item) {
-        setDoneCancelVisibility(false);
+        setDoneVisibility(false);
         setEditVisibility(true);
         scheduleViewerFragment.setMode(ScheduleViewerFragment.VIEW);
     }
@@ -64,12 +64,12 @@ public class ParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void setDoneCancelVisibility(boolean visibility) {
+    public void setDoneVisibility(boolean visibility) {
         menu.findItem(R.id.button_done).setVisible(visibility);
     }
 
     @Override
-    public void openScheduleViewerFragment(ScheduleItem schedule, int mode, int fragContainerId) {
+    public void openScheduleViewerFragment(Schedule schedule, int mode, int fragContainerId) {
         Bundle scheduleBundle = new Bundle();
         scheduleBundle.putSerializable(KEY_SCHEDULE, schedule);
         scheduleBundle.putInt(ScheduleViewerFragment.ScheduleEditor.KEY_MODE, mode);
@@ -88,7 +88,7 @@ public class ParentActivity extends AppCompatActivity implements
 
     protected void applyEventChanges(int editedScheduleIndex, int fragmentContainerId) {
         if (editedScheduleIndex != -1) {
-            ScheduleItem editedSchedule = SchedulesList.getInstance().get(editedScheduleIndex);
+            Schedule editedSchedule = SchedulesList.getInstance().get(editedScheduleIndex);
             openScheduleViewerFragment(editedSchedule, ScheduleViewerFragment.EDIT, fragmentContainerId);
         }
     }
@@ -138,7 +138,7 @@ public class ParentActivity extends AppCompatActivity implements
         }
 
         for (int i = 0; i < SchedulesList.getInstance().size(); i++) {
-            ScheduleItem schedule = SchedulesList.getInstance().get(i);
+            Schedule schedule = SchedulesList.getInstance().get(i);
             for (int j = 0; j < schedule.getDays().size(); j++) {
                 Day day = schedule.getDays().get(j);
                 for (int k = 0; k < day.getEvents().size(); k++) {

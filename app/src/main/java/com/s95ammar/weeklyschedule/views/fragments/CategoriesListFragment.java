@@ -11,7 +11,6 @@ import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +20,7 @@ import android.widget.Button;
 import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Category;
-import com.s95ammar.weeklyschedule.views.adapters.CategoryRecViewAdapter;
+import com.s95ammar.weeklyschedule.adapters.CategoryRecViewAdapter;
 
 public class CategoriesListFragment extends Fragment implements CategoryRecViewAdapter.OnItemClickListener{
     private static final String TAG = "SchedulesListFragment";

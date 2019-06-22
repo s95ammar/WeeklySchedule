@@ -15,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.s95ammar.weeklyschedule.models.Category;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.models.Schedule;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
 import com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment;
 import com.s95ammar.weeklyschedule.views.fragments.CategoryRefactorDialog;
@@ -27,7 +27,7 @@ import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 
-public class MainActivity extends ParentActivity implements
+public class MainActivity extends AbstractScheduleActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         SchedulesListFragment.SchedulesListManager,
         ScheduleNamerDialog.ScheduleNamerListener,
@@ -60,7 +60,7 @@ public class MainActivity extends ParentActivity implements
     }
 
     private void setTimePattern() {
-        ScheduleItem.timePattern = DateFormat.is24HourFormat(this) ? "HH:mm" : "hh:mm aa";
+        Schedule.timePattern = DateFormat.is24HourFormat(this) ? "HH:mm" : "hh:mm aa";
     }
 
     @Override
@@ -139,10 +139,6 @@ public class MainActivity extends ParentActivity implements
             case R.id.nav_categories:
                 switchToFragment(categoriesListFragment != null ? categoriesListFragment : (categoriesListFragment = new CategoriesListFragment()),
                         R.id.fragment_container_main_activity, null);
-                break;
-            case R.id.nav_settings:
-                Intent intentSettings = new Intent(this, SettingsActivity.class);
-                startActivity(intentSettings);
                 break;
             case R.id.nav_info:
                 Intent intentInfo = new Intent(this, InfoActivity.class);

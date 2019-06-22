@@ -22,10 +22,10 @@ import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Category;
 import com.s95ammar.weeklyschedule.models.Day;
 import com.s95ammar.weeklyschedule.models.Event;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.models.Schedule;
 import com.s95ammar.weeklyschedule.models.SchedulesList;
-import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter;
-import com.s95ammar.weeklyschedule.views.adapters.DaySpinnerAdapter;
+import com.s95ammar.weeklyschedule.adapters.CategorySpinnerAdapter;
+import com.s95ammar.weeklyschedule.adapters.DaySpinnerAdapter;
 
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -46,7 +46,7 @@ public class EventRefactorActivity extends AppCompatActivity {
 	public static final int EDIT = 1;
 	private @Mode int mode;
 	private Event editedEvent;
-	private ScheduleItem schedule;
+	private Schedule schedule;
 	private AutoCompleteTextView mEditTextName;
 	private TextView mTextViewStart;
 	private TextView mTextViewEnd;
@@ -54,7 +54,6 @@ public class EventRefactorActivity extends AppCompatActivity {
 	private Spinner mSpinnerDay;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	private LocalTime defaultTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,9 +111,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 	private void setViews() {
 		switch (mode) {
 			case ADD:
-				defaultTime = new LocalTime(12, 00);
-				mTextViewStart.setText(defaultTime.toString(ScheduleItem.timePattern));
-				mTextViewEnd.setText(defaultTime.toString(ScheduleItem.timePattern));
+				mTextViewStart.setText(Event.DEFAULT_TIME.toString(Schedule.timePattern));
+				mTextViewEnd.setText(Event.DEFAULT_TIME.toString(Schedule.timePattern));
 				findViewById(R.id.button_delete).setVisibility(View.GONE);
 				break;
 			case EDIT:
@@ -122,9 +120,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 				mEditTextName.setSelection(mEditTextName.getText().length());
 				mSpinnerCategory.setSelection(CategoriesList.getInstance().indexOf(editedEvent.getCategory()));
 				mSpinnerDay.setSelection(schedule.getIndexOfDay(editedEvent.getDay()));
-				defaultTime = new LocalTime(12, 00);
-				mTextViewStart.setText(editedEvent.getStartTime().toString(ScheduleItem.timePattern));
-				mTextViewEnd.setText(editedEvent.getEndTime().toString(ScheduleItem.timePattern));
+				mTextViewStart.setText(editedEvent.getStartTime().toString(Schedule.timePattern));
+				mTextViewEnd.setText(editedEvent.getEndTime().toString(Schedule.timePattern));
 				break;
 		}
 	}
@@ -132,7 +129,7 @@ public class EventRefactorActivity extends AppCompatActivity {
 	public void openTimePicker(View view) {
 		final int viewId = view.getId();
 		String timeString = ((TextView) findViewById(viewId)).getText().toString();
-		LocalTime time = LocalTime.parse(timeString, DateTimeFormat.forPattern(ScheduleItem.timePattern));
+		LocalTime time = LocalTime.parse(timeString, DateTimeFormat.forPattern(Schedule.timePattern));
 		int hour = time.getHourOfDay();
 		int minute = time.getMinuteOfHour();
 		TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
@@ -141,15 +138,15 @@ public class EventRefactorActivity extends AppCompatActivity {
 				switch (viewId) {
 					case R.id.tView_event_start_value:
 						startTime = new LocalTime(hourOfDay, minute);
-						endTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(ScheduleItem.timePattern));
-						mTextViewStart.setText(startTime.toString(ScheduleItem.timePattern));
+						endTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
+						mTextViewStart.setText(startTime.toString(Schedule.timePattern));
 						if (startTime.isAfter(endTime)) {
-							mTextViewEnd.setText(startTime.toString(ScheduleItem.timePattern));
+							mTextViewEnd.setText(startTime.toString(Schedule.timePattern));
 						}
 						break;
 					case R.id.tView_event_end_value:
 						endTime = new LocalTime(hourOfDay, minute);
-						mTextViewEnd.setText(endTime.toString(ScheduleItem.timePattern));
+						mTextViewEnd.setText(endTime.toString(Schedule.timePattern));
 						break;
 				}
 			}
@@ -190,8 +187,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 	public void submitEvent(View view) {
 		String eventName = mEditTextName.getText().toString();
 		Log.d(TAG, "submitEvent: " + eventName);
-		LocalTime eventStartTime = LocalTime.parse(mTextViewStart.getText().toString(), DateTimeFormat.forPattern(ScheduleItem.timePattern));
-		LocalTime eventEndTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(ScheduleItem.timePattern));
+		LocalTime eventStartTime = LocalTime.parse(mTextViewStart.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
+		LocalTime eventEndTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
 		Category eventCategory = (Category) mSpinnerCategory.getSelectedItem();
 		Day eventDay = (Day) mSpinnerDay.getSelectedItem();
 
@@ -220,11 +217,17 @@ public class EventRefactorActivity extends AppCompatActivity {
 					eventDay.getEvents().add(event);
 					break;
 				case EDIT:
-					eventDay.getEvents().set(eventDay.getEvents().indexOf(editedEvent), event);
+					if (editedEvent.getDay().equals(eventDay)) {
+						eventDay.getEvents().set(eventDay.getEvents().indexOf(editedEvent), event);
+					} else {
+						int editedEventDayIndex = schedule.getDays().indexOf(editedEvent.getDay());
+						schedule.getDays().get(editedEventDayIndex).getEvents().remove(editedEvent);
+						eventDay.getEvents().add(event);
+					}
 					break;
 			}
 
-			Collections.sort(eventDay.getEvents(), new /*Event.EventNameComparator()*/ Comparator<Event>() { // TODO: restore this
+			Collections.sort(eventDay.getEvents(), new Comparator<Event>() {
 				@Override
 				public int compare(Event o1, Event o2) {
 					return o1.getStartTime().compareTo(o2.getStartTime());

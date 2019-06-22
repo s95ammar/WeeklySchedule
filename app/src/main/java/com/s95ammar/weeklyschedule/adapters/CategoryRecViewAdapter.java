@@ -1,7 +1,6 @@
-package com.s95ammar.weeklyschedule.views.adapters;
+package com.s95ammar.weeklyschedule.adapters;
 
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,11 +38,9 @@ public class CategoryRecViewAdapter extends RecyclerView.Adapter<CategoryRecView
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int i) {
         Category currentItem = mCategoryItems.get(i);
         holder.tvCategoryName.setText(currentItem.getName());
-//        holder.cardView.getBackground().mutate().setTint(currentItem.getFillColor());
         holder.cardView.setCardBackgroundColor(currentItem.getFillColor());
         holder.tvCategoryName.setTextColor(currentItem.getTextColor());
         holder.buttonMore.getBackground().mutate().setTint(currentItem.getTextColor());
-//        DrawableCompat.setTint(holder.buttonMore.getBackground(), currentItem.getTextColor());
     }
 
     @Override

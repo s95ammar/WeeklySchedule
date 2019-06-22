@@ -25,7 +25,6 @@ public class LocalTimeSerializer implements JsonDeserializer<LocalTime>, JsonSer
 	@Override
 	public LocalTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 			throws JsonParseException {
-		// Do not try to deserialize null or empty values
 		if (json.getAsString() == null || json.getAsString().isEmpty()) {
 			return null;
 		}
@@ -33,9 +32,4 @@ public class LocalTimeSerializer implements JsonDeserializer<LocalTime>, JsonSer
 		return LocalTime.parse(json.getAsString(), FORMATTER);
 	}
 
-	public static Gson getGsonLocalTimeSerializer() {
-		GsonBuilder builder = new GsonBuilder().registerTypeAdapter(LocalTime.class, new LocalTimeSerializer());
-		Gson gson = builder.create();
-		return gson;
-	}
 }

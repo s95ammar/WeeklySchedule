@@ -1,4 +1,4 @@
-package com.s95ammar.weeklyschedule.views.adapters;
+package com.s95ammar.weeklyschedule.adapters;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -12,17 +12,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.s95ammar.weeklyschedule.R;
-import com.s95ammar.weeklyschedule.models.ScheduleItem;
+import com.s95ammar.weeklyschedule.models.Schedule;
 
 import java.util.ArrayList;
 
 public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecViewAdapter.ScheduleViewHolder> {
     private static final String TAG = "ScheduleRecViewAdapter";
-    private ArrayList<ScheduleItem> mScheduleItems;
+    private ArrayList<Schedule> mSchedules;
     private OnItemClickListener mListener;
 
-    public ScheduleRecViewAdapter(ArrayList<ScheduleItem> ScheduleItems) {
-        mScheduleItems = ScheduleItems;
+    public ScheduleRecViewAdapter(ArrayList<Schedule> schedules) {
+        mSchedules = schedules;
     }
 
     @NonNull
@@ -38,14 +38,14 @@ public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecView
     @Override
     // Called by RecyclerView to display the data at the specified position
     public void onBindViewHolder(@NonNull ScheduleViewHolder holder, int i) {
-        ScheduleItem currentItem = mScheduleItems.get(i);
+        Schedule currentItem = mSchedules.get(i);
         holder.tvScheduleName.setText(currentItem.getName());
         holder.switchIsActive.setChecked(currentItem.isActive());
     }
 
     @Override
     public int getItemCount() {
-        return mScheduleItems == null ? 0 : mScheduleItems.size();
+        return mSchedules == null ? 0 : mSchedules.size();
     }
 
     public static class ScheduleViewHolder extends RecyclerView.ViewHolder {
