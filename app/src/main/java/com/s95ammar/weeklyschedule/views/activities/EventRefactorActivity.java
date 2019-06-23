@@ -2,10 +2,10 @@ package com.s95ammar.weeklyschedule.views.activities;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.support.annotation.IntDef;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.IntDef;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment.ScheduleEditor.KEY_EVENT;
 import static com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment.ScheduleEditor.KEY_SCHEDULE_INDEX;
 
@@ -47,18 +50,32 @@ public class EventRefactorActivity extends AppCompatActivity {
 	private @Mode int mode;
 	private Event editedEvent;
 	private Schedule schedule;
-	private AutoCompleteTextView mEditTextName;
-	private TextView mTextViewStart;
-	private TextView mTextViewEnd;
-	private Spinner mSpinnerCategory;
-	private Spinner mSpinnerDay;
+//	protected @BindView(R.id.eText_event_name) AutoCompleteTextView mEditTextName;
+//	protected @BindView(R.id.eText_event_name) TextView mTextViewStart;
+//	protected @BindView(R.id.tView_event_end_value) TextView mTextViewEnd;
+//	protected @BindView(R.id.spinner_categories) Spinner mSpinnerCategory;
+//	protected @BindView(R.id.spinner_days) Spinner mSpinnerDay;
+	protected AutoCompleteTextView mEditTextName;
+	protected TextView mTextViewStart;
+	protected TextView mTextViewEnd;
+	protected Spinner mSpinnerCategory;
+	protected Spinner mSpinnerDay;
 	private LocalTime startTime;
 	private LocalTime endTime;
+
+    private void initializeViews() {
+        mEditTextName = findViewById(R.id.eText_event_name);
+        mTextViewStart = findViewById(R.id.tView_event_start_value);
+        mTextViewEnd = findViewById(R.id.tView_event_end_value);
+        mSpinnerCategory = findViewById(R.id.spinner_categories);
+        mSpinnerDay = findViewById(R.id.spinner_days);
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_refactor);
+        ButterKnife.bind(this);
 		setMode();
 		setSchedule();
 		initializeViews();
@@ -98,14 +115,6 @@ public class EventRefactorActivity extends AppCompatActivity {
 				throw new RuntimeException();
 		}
 		setTitle(title);
-	}
-
-	private void initializeViews() {
-		mEditTextName = findViewById(R.id.eText_event_name);
-		mTextViewStart = findViewById(R.id.tView_event_start_value);
-		mTextViewEnd = findViewById(R.id.tView_event_end_value);
-		mSpinnerCategory = findViewById(R.id.spinner_categories);
-		mSpinnerDay = findViewById(R.id.spinner_days);
 	}
 
 	private void setViews() {

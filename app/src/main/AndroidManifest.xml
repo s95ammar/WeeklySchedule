@@ -14,7 +14,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name=".views.activities.AbstractScheduleActivity" />
         <activity
             android:name=".views.activities.ScheduleViewerActivity"
             android:parentActivityName=".views.activities.MainActivity"
