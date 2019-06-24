@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,7 +20,10 @@ import com.s95ammar.weeklyschedule.models.CategoriesList;
 import com.s95ammar.weeklyschedule.models.Category;
 import com.s95ammar.weeklyschedule.adapters.CategoryRecViewAdapter;
 
-public class CategoriesListFragment extends Fragment implements CategoryRecViewAdapter.OnItemClickListener{
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class CategoriesListFragment extends Fragment implements CategoryRecViewAdapter.OnItemClickListener {
     private static final String TAG = "SchedulesListFragment";
     private CategoriesListManager mListener;
     private RecyclerView mRecyclerView;
@@ -41,13 +42,11 @@ public class CategoriesListFragment extends Fragment implements CategoryRecViewA
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpActionButtonListener();
+        ButterKnife.bind(this, view);
         buildRecyclerView();
         refreshLayout();
         getActivity().setTitle(R.string.title_categories);
     }
-
-
 
     private void refreshLayout() {
         getView().findViewById(R.id.textView_no_categories).setVisibility(CategoriesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
@@ -61,33 +60,27 @@ public class CategoriesListFragment extends Fragment implements CategoryRecViewA
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickedListener(this);
-
     }
-
 
     @Override
     public void onItemClicked(int i) {
         mListener.showCategoryRefactorDialog(CategoriesList.getInstance().get(i), i);
     }
 
-
     @Override
     public void onMoreClicked(final int i, Button buttonMore) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), buttonMore);
         popupMenu.inflate(R.menu.categories_more_menu);
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.categories_more_edit:
-                        mListener.showCategoryRefactorDialog(CategoriesList.getInstance().get(i), i); // onOk -> applyCategory(Category category)
-                        break;
-                    case R.id.categories_more_delete:
-                        deleteCategory(i);
-                        break;
-                }
-                return true;
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.categories_more_edit:
+                    mListener.showCategoryRefactorDialog(CategoriesList.getInstance().get(i), i); // onOk -> applyCategory(Category category)
+                    break;
+                case R.id.categories_more_delete:
+                    deleteCategory(i);
+                    break;
             }
+            return true;
         });
         MenuPopupHelper menuHelper = new MenuPopupHelper(getActivity(), (MenuBuilder) popupMenu.getMenu(), buttonMore);
         menuHelper.setForceShowIcon(true);
@@ -113,17 +106,11 @@ public class CategoriesListFragment extends Fragment implements CategoryRecViewA
         refreshLayout();
     }
 
-
-    private void setUpActionButtonListener() {
-        FloatingActionButton fab = getView().findViewById(R.id.button_add_category);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.showCategoryRefactorDialog(null, ScheduleNamerDialog.Action.ADD);  // onOk -> addCategory(name)
-            }
-        });
-
+    @OnClick(R.id.button_add_category)
+    protected void showCategoryRefactorDialog(){
+        mListener.showCategoryRefactorDialog(null, CategoryRefactorDialog.Action.ADD);  // onOk -> addCategory(name)
     }
+
 
     @Override
     public void onAttach(Context context) {

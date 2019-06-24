@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +21,19 @@ import com.s95ammar.weeklyschedule.models.Category;
 import java.io.Serializable;
 import java.util.HashSet;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 import static com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment.CategoriesListManager.KEY_CATEGORY;
 import static com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment.CategoriesListManager.KEY_INDEX;
 
-public class CategoryRefactorDialog extends AppCompatDialogFragment implements View.OnClickListener {
+public class CategoryRefactorDialog extends AppCompatDialogFragment {
     private static final String TAG = "CategoryRefactorDialog";
-    private TextView mTextViewPreview;
-    private EditText mEditTextName;
-    private View mViewFillColor;
-    private View mViewTextColor;
+    protected @BindView(R.id.tView_add_category_preview_value) TextView mTextViewPreview;
+    protected @BindView(R.id.eText_add_category_name) EditText mEditTextName;
+    protected @BindView(R.id.view_add_category_fill_color) View mViewFillColor;
+    protected @BindView(R.id.view_add_category_text_color) View mViewTextColor;
     private CategoryRefactor mListener;
     private static final String ADD_TITLE = "New Category";
     private static final String EDIT_TITLE = "Edit Category";
@@ -61,65 +67,55 @@ public class CategoryRefactorDialog extends AppCompatDialogFragment implements V
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_category, null);
         Serializable obj = getArguments().getSerializable(KEY_CATEGORY);
-        initializeViews(view);
+        ButterKnife.bind(this, view);
         String title;
+        Category category = null;
         if (obj instanceof Category) {
-            Category category = (Category) obj;
-            setViews(category);
+            category = (Category) obj;
             title = EDIT_TITLE;
         } else {
             title = ADD_TITLE;
         }
+        setViews(category);
         final int i = getArguments().getInt(KEY_INDEX);
-        builder.setView(view)
+        return builder.setView(view)
                 .setTitle(title)
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Ok", onOkListener(i));
-
-        return builder.create();
+                .setPositiveButton("Ok", onOkListener(i))
+                .create();
     }
 
-    private void initializeViews(View view) {
-        mTextViewPreview = view.findViewById(R.id.tView_add_category_preview_value);
-        mViewFillColor = view.findViewById(R.id.view_add_category_fill_color);
-        mViewTextColor = view.findViewById(R.id.view_add_category_text_color);
-        mEditTextName = view.findViewById(R.id.eText_add_category_name);
+    private void setViews(@Nullable Category category) {
         mTextViewPreview.setText(R.string.category_preview_value);
-        mTextViewPreview.setBackgroundColor(((ColorDrawable) mViewFillColor.getBackground()).getColor());
-        mViewFillColor.setOnClickListener(this);
-        mViewTextColor.setOnClickListener(this);
-    }
-
-    private void setViews(Category category) {
-        mTextViewPreview.setTextColor(category.getTextColor());
-        mTextViewPreview.setBackgroundColor(category.getFillColor());
-        mEditTextName.setText(category.getName());
-        mEditTextName.setSelection(mEditTextName.getText().length());
-        mViewFillColor.setBackgroundColor(category.getFillColor());
-        mViewTextColor.setBackgroundColor(category.getTextColor());
+        if (category == null) {
+            mTextViewPreview.setBackgroundColor(((ColorDrawable) mViewFillColor.getBackground()).getColor());
+        } else {
+            mTextViewPreview.setTextColor(category.getTextColor());
+            mTextViewPreview.setBackgroundColor(category.getFillColor());
+            mEditTextName.setText(category.getName());
+            mEditTextName.setSelection(mEditTextName.getText().length());
+            mViewFillColor.setBackgroundColor(category.getFillColor());
+            mViewTextColor.setBackgroundColor(category.getTextColor());
+        }
     }
 
     private DialogInterface.OnClickListener onOkListener(final int i) {
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String name = mEditTextName.getText().toString();
-                if (!name.isEmpty()) {
-                    Category category = new Category(name,
-                            ((ColorDrawable) mViewFillColor.getBackground()).getColor(),
-                            ((ColorDrawable) mViewTextColor.getBackground()).getColor(),
-                            new HashSet<>());
-                    mListener.applyCategory(category, i);
-                } else {
-                    Toast.makeText(getActivity(), R.string.category_empty_name, Toast.LENGTH_SHORT).show();
-                }
+        return (dialog, which) -> {
+            String name = mEditTextName.getText().toString();
+            if (!name.isEmpty()) {
+                Category category = new Category(name,
+                        ((ColorDrawable) mViewFillColor.getBackground()).getColor(),
+                        ((ColorDrawable) mViewTextColor.getBackground()).getColor(),
+                        new HashSet<>());
+                mListener.applyCategory(category, i);
+            } else {
+                Toast.makeText(getActivity(), R.string.category_empty_name, Toast.LENGTH_SHORT).show();
             }
         };
-        return listener;
     }
 
-    @Override
-    public void onClick(View v) {
+    @OnClick({R.id.view_add_category_fill_color, R.id.view_add_category_text_color})
+    public void openColorPicker(View v) {
         switch (v.getId()) {
             case R.id.view_add_category_fill_color:
                 mListener.openColorPicker(this, R.id.view_add_category_fill_color, ((ColorDrawable) v.getBackground()).getColor());

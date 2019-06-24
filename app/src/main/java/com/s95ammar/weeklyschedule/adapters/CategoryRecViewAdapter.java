@@ -14,6 +14,10 @@ import com.s95ammar.weeklyschedule.models.Category;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class CategoryRecViewAdapter extends RecyclerView.Adapter<CategoryRecViewAdapter.CategoryViewHolder> {
     private static final String TAG = "ScheduleRecViewAdapter";
     private ArrayList<Category> mCategoryItems;
@@ -27,9 +31,8 @@ public class CategoryRecViewAdapter extends RecyclerView.Adapter<CategoryRecView
     @Override
     // Called when in need for CategoryViewHolder to represent an item
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_category, viewGroup, false);
-        CategoryViewHolder categoryViewHolder = new CategoryViewHolder(v, mListener);
-        return categoryViewHolder;
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_category, viewGroup, false);
+        return new CategoryViewHolder(view);
     }
 
 
@@ -48,40 +51,34 @@ public class CategoryRecViewAdapter extends RecyclerView.Adapter<CategoryRecView
         return mCategoryItems == null ? 0 : mCategoryItems.size();
     }
 
-    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvCategoryName;
-        private Button buttonMore;
-        private CardView cardView;
+    public class CategoryViewHolder extends RecyclerView.ViewHolder {
+        protected @BindView(R.id.textView_category_name) TextView tvCategoryName;
+        protected @BindView(R.id.categories_button_more) Button buttonMore;
+        protected @BindView(R.id.cardView_categories) CardView cardView;
 
-        public CategoryViewHolder(@NonNull final View itemView, final OnItemClickListener listener) {
+        public CategoryViewHolder(@NonNull final View itemView) {
             super(itemView);
-            tvCategoryName = itemView.findViewById(R.id.textView_category_name);
-            buttonMore = itemView.findViewById(R.id.categories_button_more);
-            cardView = itemView.findViewById(R.id.cardView_categories);
+            ButterKnife.bind(this, itemView);
+        }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            listener.onItemClicked(i);
-                        }
-                    }
+        @OnClick
+        protected void onItemClicked() {
+            if (mListener != null) {
+                int i = getAdapterPosition();
+                if (i != RecyclerView.NO_POSITION) {
+                    mListener.onItemClicked(i);
                 }
-            });
+            }
+        }
 
-            buttonMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            listener.onMoreClicked(i, buttonMore);
-                        }
-                    }
+        @OnClick(R.id.categories_button_more)
+        protected void onMoreClicked() {
+            if (mListener != null) {
+                int i = getAdapterPosition();
+                if (i != RecyclerView.NO_POSITION) {
+                    mListener.onMoreClicked(i, buttonMore);
                 }
-            });
+            }
         }
     }
 

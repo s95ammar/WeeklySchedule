@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.s95ammar.weeklyschedule.R;
@@ -33,12 +32,12 @@ import org.joda.time.format.DateTimeFormat;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 
 import static com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment.ScheduleEditor.KEY_EVENT;
 import static com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment.ScheduleEditor.KEY_SCHEDULE_INDEX;
@@ -50,35 +49,21 @@ public class EventRefactorActivity extends AppCompatActivity {
 	private @Mode int mode;
 	private Event editedEvent;
 	private Schedule schedule;
-//	protected @BindView(R.id.eText_event_name) AutoCompleteTextView mEditTextName;
-//	protected @BindView(R.id.eText_event_name) TextView mTextViewStart;
-//	protected @BindView(R.id.tView_event_end_value) TextView mTextViewEnd;
-//	protected @BindView(R.id.spinner_categories) Spinner mSpinnerCategory;
-//	protected @BindView(R.id.spinner_days) Spinner mSpinnerDay;
-	protected AutoCompleteTextView mEditTextName;
-	protected TextView mTextViewStart;
-	protected TextView mTextViewEnd;
-	protected Spinner mSpinnerCategory;
-	protected Spinner mSpinnerDay;
+	protected @BindView(R.id.eText_event_name) AutoCompleteTextView mEditTextName;
+	protected @BindView(R.id.tView_event_start_value) TextView mTextViewStart;
+	protected @BindView(R.id.tView_event_end_value) TextView mTextViewEnd;
+	protected @BindView(R.id.spinner_categories) Spinner mSpinnerCategory;
+	protected @BindView(R.id.spinner_days) Spinner mSpinnerDay;
 	private LocalTime startTime;
 	private LocalTime endTime;
-
-    private void initializeViews() {
-        mEditTextName = findViewById(R.id.eText_event_name);
-        mTextViewStart = findViewById(R.id.tView_event_start_value);
-        mTextViewEnd = findViewById(R.id.tView_event_end_value);
-        mSpinnerCategory = findViewById(R.id.spinner_categories);
-        mSpinnerDay = findViewById(R.id.spinner_days);
-    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_refactor);
-        ButterKnife.bind(this);
+		ButterKnife.bind(this);
 		setMode();
 		setSchedule();
-		initializeViews();
 		setUpCategorySpinner();
 		setUpDaySpinner();
 		setViews();
@@ -135,56 +120,46 @@ public class EventRefactorActivity extends AppCompatActivity {
 		}
 	}
 
-	public void openTimePicker(View view) {
-		final int viewId = view.getId();
-		String timeString = ((TextView) findViewById(viewId)).getText().toString();
+	@OnClick({R.id.tView_event_start_value, R.id.tView_event_end_value})
+	public void openTimePicker(View clickedView) {
+		final int clickedViewId = clickedView.getId();
+		String timeString = ((TextView) findViewById(clickedViewId)).getText().toString();
 		LocalTime time = LocalTime.parse(timeString, DateTimeFormat.forPattern(Schedule.timePattern));
 		int hour = time.getHourOfDay();
 		int minute = time.getMinuteOfHour();
-		TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-			@Override
-			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-				switch (viewId) {
-					case R.id.tView_event_start_value:
-						startTime = new LocalTime(hourOfDay, minute);
-						endTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
-						mTextViewStart.setText(startTime.toString(Schedule.timePattern));
-						if (startTime.isAfter(endTime)) {
-							mTextViewEnd.setText(startTime.toString(Schedule.timePattern));
-						}
-						break;
-					case R.id.tView_event_end_value:
-						endTime = new LocalTime(hourOfDay, minute);
-						mTextViewEnd.setText(endTime.toString(Schedule.timePattern));
-						break;
-				}
-			}
-		}, hour, minute, DateFormat.is24HourFormat(this));
+		TimePickerDialog timePickerDialog =new TimePickerDialog(this,
+				getOnTimeSetListener(clickedViewId), hour, minute, DateFormat.is24HourFormat(this));
 		timePickerDialog.show();
-
 	}
 
-	private void setUpNameAdapter(ArrayList<String> list) {
-		mEditTextName.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list));
+	private TimePickerDialog.OnTimeSetListener getOnTimeSetListener(int clickedViewId) {
+		return (view, hourOfDay, minute) -> {
+			switch (clickedViewId) {
+				case R.id.tView_event_start_value:
+					startTime = new LocalTime(hourOfDay, minute);
+					endTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
+					mTextViewStart.setText(startTime.toString(Schedule.timePattern));
+					if (startTime.isAfter(endTime)) {
+						mTextViewEnd.setText(startTime.toString(Schedule.timePattern));
+					}
+					break;
+				case R.id.tView_event_end_value:
+					endTime = new LocalTime(hourOfDay, minute);
+					mTextViewEnd.setText(endTime.toString(Schedule.timePattern));
+					break;
+			}
+		};
 	}
 
 	private void setUpCategorySpinner() {
 		CategorySpinnerAdapter mAdapter = new CategorySpinnerAdapter(this, CategoriesList.getInstance());
 		mSpinnerCategory.setAdapter(mAdapter);
+	}
 
-		mSpinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				Category clickedItem = (Category) parent.getItemAtPosition(position);
-				setUpNameAdapter(clickedItem.getCategoryEventsNames());
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-
-			}
-		});
-
+	@OnItemSelected(R.id.spinner_categories)
+	public void setUpNameAdapter(AdapterView<?> parent, int position) {
+		Category clickedItem = (Category) parent.getItemAtPosition(position);
+		mEditTextName.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, clickedItem.getCategoryEventsNames()));
 	}
 
 	private void setUpDaySpinner() {
@@ -193,7 +168,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 		mSpinnerDay.setAdapter(adapter);
 	}
 
-	public void submitEvent(View view) {
+	@OnClick(R.id.button_ok)
+	public void submitEvent() {
 		String eventName = mEditTextName.getText().toString();
 		Log.d(TAG, "submitEvent: " + eventName);
 		LocalTime eventStartTime = LocalTime.parse(mTextViewStart.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
@@ -236,12 +212,7 @@ public class EventRefactorActivity extends AppCompatActivity {
 					break;
 			}
 
-			Collections.sort(eventDay.getEvents(), new Comparator<Event>() {
-				@Override
-				public int compare(Event o1, Event o2) {
-					return o1.getStartTime().compareTo(o2.getStartTime());
-				}
-			});
+			Collections.sort(eventDay.getEvents(), (o1, o2) -> o1.getStartTime().compareTo(o2.getStartTime()));
 			eventCategory.getCategoryEvents().add(event);
 			Intent intent = new Intent();
 			intent.putExtra(KEY_SCHEDULE_INDEX, SchedulesList.getInstance().indexOf(schedule));
@@ -251,7 +222,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 
 	}
 
-	public void deleteEvent(View view) {
+	@OnClick(R.id.button_delete)
+	public void deleteEvent() {
 		int dayIndex = schedule.getDays().indexOf(editedEvent.getDay());
 		schedule.getDays().get(dayIndex).getEvents().remove(editedEvent);
         Intent intent = new Intent();
@@ -260,7 +232,8 @@ public class EventRefactorActivity extends AppCompatActivity {
         finish();
     }
 
-	public void cancelListener(View view) {
+	@OnClick(R.id.button_cancel)
+	public void closeActivity() {
 		finish();
 	}
 

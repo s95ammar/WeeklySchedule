@@ -40,8 +40,6 @@ public class MainActivity extends AbstractScheduleActivity implements
     private SchedulesListFragment schedulesListFragment;
     private CategoriesListFragment categoriesListFragment;
 
-
-
     private interface NavDrawerItems {
         int ACTIVE_SCHEDULE = 0;
         int SCHEDULES = 1;

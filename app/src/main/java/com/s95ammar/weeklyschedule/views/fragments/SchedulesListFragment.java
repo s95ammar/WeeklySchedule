@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
@@ -14,7 +13,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,6 +24,9 @@ import com.s95ammar.weeklyschedule.adapters.ScheduleRecViewAdapter;
 import com.s95ammar.weeklyschedule.models.Schedule;
 
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.s95ammar.weeklyschedule.models.Schedule.WEEK_DAYS;
 
@@ -49,7 +50,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpActionButtonListener();
+        ButterKnife.bind(this, view);
         buildRecyclerView();
         refreshLayout();
         getActivity().setTitle(R.string.title_schedules);
@@ -83,19 +84,16 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
     public void onMoreClicked(final int i, Button buttonMore) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), buttonMore);
         popupMenu.inflate(R.menu.schedules_more_menu);
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.schedules_more_rename:
-                        mListener.showScheduleRefactorDialog(SchedulesList.getInstance().get(i).getName(), i); // onOk -> editCategory(newName, i)
-                        break;
-                    case R.id.schedules_more_delete:
-                        deleteSchedule(i);
-                        break;
-                }
-                return true;
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.schedules_more_rename:
+                    mListener.showScheduleRefactorDialog(SchedulesList.getInstance().get(i).getName(), i); // onOk -> editCategory(newName, i)
+                    break;
+                case R.id.schedules_more_delete:
+                    deleteSchedule(i);
+                    break;
             }
+            return true;
         });
         MenuPopupHelper menuHelper = new MenuPopupHelper(getActivity(), (MenuBuilder) popupMenu.getMenu(), buttonMore);
         menuHelper.setForceShowIcon(true);
@@ -108,12 +106,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
         if (isChecked) {
             if (SchedulesList.getInstance().getActiveSchedule() != null) {
                 SchedulesList.getInstance().get(exActiveIndex).setActive(false);
-                mRecyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAdapter.notifyItemChanged(exActiveIndex);
-                    }
-                });
+                mRecyclerView.post(() -> mAdapter.notifyItemChanged(exActiveIndex));
             }
             SchedulesList.getInstance().get(i).setActive(true);
             SchedulesList.getInstance().setActiveSchedule(SchedulesList.getInstance().get(i));
@@ -154,17 +147,11 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
         refreshLayout();
     }
 
-
-    private void setUpActionButtonListener() {
-        FloatingActionButton fab = getView().findViewById(R.id.button_add_schedule);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.showScheduleRefactorDialog(null, ScheduleNamerDialog.Action.ADD);  // onOk -> addSchedule(name)
-            }
-        });
-
+    @OnClick(R.id.button_add_schedule)
+    protected void showScheduleRefactorDialog() {
+        mListener.showScheduleRefactorDialog(null, ScheduleNamerDialog.Action.ADD);  // onOk -> addSchedule(name)
     }
+
 
     @Override
     public void onAttach(Context context) {

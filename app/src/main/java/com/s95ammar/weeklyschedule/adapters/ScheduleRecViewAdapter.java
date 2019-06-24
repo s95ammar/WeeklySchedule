@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -15,6 +14,11 @@ import com.s95ammar.weeklyschedule.R;
 import com.s95ammar.weeklyschedule.models.Schedule;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecViewAdapter.ScheduleViewHolder> {
     private static final String TAG = "ScheduleRecViewAdapter";
@@ -30,7 +34,7 @@ public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecView
     // Called when in need for CategoryViewHolder to represent an item
     public ScheduleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_schedule, viewGroup, false);
-        ScheduleViewHolder scheduleViewHolder = new ScheduleViewHolder(v, mListener);
+        ScheduleViewHolder scheduleViewHolder = new ScheduleViewHolder(v);
         return scheduleViewHolder;
     }
 
@@ -48,60 +52,54 @@ public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecView
         return mSchedules == null ? 0 : mSchedules.size();
     }
 
-    public static class ScheduleViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvScheduleName;
-        private Switch switchIsActive;
-        private Button buttonMore;
-        private TextView tvIsActive;
+    public class ScheduleViewHolder extends RecyclerView.ViewHolder {
+        protected @BindView(R.id.textView_schedule_name) TextView tvScheduleName;
+        protected @BindView(R.id.switch_is_active) Switch switchIsActive;
+        protected @BindView(R.id.schedules_button_more) Button buttonMore;
+        protected @BindView(R.id.textView_is_active) TextView tvIsActive;
 
-        public ScheduleViewHolder(@NonNull final View itemView, final OnItemClickListener listener) {
+        public ScheduleViewHolder(@NonNull final View itemView) {
             super(itemView);
-            tvScheduleName = itemView.findViewById(R.id.textView_schedule_name);
-            switchIsActive = itemView.findViewById(R.id.switch_is_active);
-            tvIsActive = itemView.findViewById(R.id.textView_is_active);
-            buttonMore = itemView.findViewById(R.id.schedules_button_more);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            listener.onItemClicked(i);
-                        }
-                    }
+            ButterKnife.bind(this, itemView);
+        }
+
+        @OnClick
+        protected void onItemClicked() {
+            if (mListener != null) {
+                int i = getAdapterPosition();
+                if (i != RecyclerView.NO_POSITION) {
+                    mListener.onItemClicked(i);
                 }
-            });
-            buttonMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            listener.onMoreClicked(i, buttonMore);
-                        }
-                    }
+            }
+        }
+
+        @OnClick(R.id.schedules_button_more)
+        protected void onClick() {
+            if (mListener != null) {
+                int i = getAdapterPosition();
+                if (i != RecyclerView.NO_POSITION) {
+                    mListener.onMoreClicked(i, buttonMore);
                 }
-            });
-            switchIsActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (listener != null) {
-                        int i = getAdapterPosition();
-                        if (i != RecyclerView.NO_POSITION) {
-                            if (isChecked) {
-                                tvIsActive.setText(R.string.status_active);
-                                tvIsActive.setTextColor(itemView.getResources().getColor(R.color.colorPrimary));
-                                tvIsActive.setTypeface(null, Typeface.BOLD);
-                            } else {
-                                tvIsActive.setText(R.string.status_inactive);
-                                tvIsActive.setTextColor(itemView.getResources().getColor(R.color.colorDarkerGray));
-                                tvIsActive.setTypeface(null, Typeface.NORMAL);
-                            }
-                            listener.onSwitchChecked(i, isChecked);
-                        }
+            }
+        }
+
+        @OnCheckedChanged(R.id.switch_is_active)
+        protected void onCheckedChanged(boolean isChecked) {
+            if (mListener != null) {
+                int i = getAdapterPosition();
+                if (i != RecyclerView.NO_POSITION) {
+                    if (isChecked) {
+                        tvIsActive.setText(R.string.status_active);
+                        tvIsActive.setTextColor(itemView.getResources().getColor(R.color.colorPrimary));
+                        tvIsActive.setTypeface(null, Typeface.BOLD);
+                    } else {
+                        tvIsActive.setText(R.string.status_inactive);
+                        tvIsActive.setTextColor(itemView.getResources().getColor(R.color.colorDarkerGray));
+                        tvIsActive.setTypeface(null, Typeface.NORMAL);
                     }
+                    mListener.onSwitchChecked(i, isChecked);
                 }
-            });
+            }
         }
     }
 
