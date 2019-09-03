@@ -10,4 +10,5 @@ Android app for organizing weekly schedules by categories and displaying them in
 * Code:
   - [ ] Convert to `Kotlin`.
   - [ ] Rewrite with `MVVM Architecture` using `Room` for **SQLite** & `LiveData`.
+  - [ ] Apply **Dependency Injection** using `Dagger2`
   - [ ] Use **Data binding**
