@@ -50,8 +50,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 	private Event editedEvent;
 	private Schedule schedule;
 	protected @BindView(R.id.eText_event_name) AutoCompleteTextView mEditTextName;
-	protected @BindView(R.id.tView_event_start_value) TextView mTextViewStart;
-	protected @BindView(R.id.tView_event_end_value) TextView mTextViewEnd;
+	protected @BindView(R.id.text_event_start_value) TextView mTextViewStart;
+	protected @BindView(R.id.text_event_end_value) TextView mTextViewEnd;
 	protected @BindView(R.id.spinner_categories) Spinner mSpinnerCategory;
 	protected @BindView(R.id.spinner_days) Spinner mSpinnerDay;
 	private LocalTime startTime;
@@ -105,8 +105,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 	private void setViews() {
 		switch (mode) {
 			case ADD:
-				mTextViewStart.setText(Event.DEFAULT_TIME.toString(Schedule.timePattern));
-				mTextViewEnd.setText(Event.DEFAULT_TIME.toString(Schedule.timePattern));
+				mTextViewStart.setText(Event.DEFAULT_TIME.toString(Schedule.sTimePattern));
+				mTextViewEnd.setText(Event.DEFAULT_TIME.toString(Schedule.sTimePattern));
 				findViewById(R.id.button_delete).setVisibility(View.GONE);
 				break;
 			case EDIT:
@@ -114,17 +114,17 @@ public class EventRefactorActivity extends AppCompatActivity {
 				mEditTextName.setSelection(mEditTextName.getText().length());
 				mSpinnerCategory.setSelection(CategoriesList.getInstance().indexOf(editedEvent.getCategory()));
 				mSpinnerDay.setSelection(schedule.getIndexOfDay(editedEvent.getDay()));
-				mTextViewStart.setText(editedEvent.getStartTime().toString(Schedule.timePattern));
-				mTextViewEnd.setText(editedEvent.getEndTime().toString(Schedule.timePattern));
+				mTextViewStart.setText(editedEvent.getStartTime().toString(Schedule.sTimePattern));
+				mTextViewEnd.setText(editedEvent.getEndTime().toString(Schedule.sTimePattern));
 				break;
 		}
 	}
 
-	@OnClick({R.id.tView_event_start_value, R.id.tView_event_end_value})
+	@OnClick({R.id.text_event_start_value, R.id.text_event_end_value})
 	public void openTimePicker(View clickedView) {
 		final int clickedViewId = clickedView.getId();
 		String timeString = ((TextView) findViewById(clickedViewId)).getText().toString();
-		LocalTime time = LocalTime.parse(timeString, DateTimeFormat.forPattern(Schedule.timePattern));
+		LocalTime time = LocalTime.parse(timeString, DateTimeFormat.forPattern(Schedule.sTimePattern));
 		int hour = time.getHourOfDay();
 		int minute = time.getMinuteOfHour();
 		TimePickerDialog timePickerDialog =new TimePickerDialog(this,
@@ -135,17 +135,17 @@ public class EventRefactorActivity extends AppCompatActivity {
 	private TimePickerDialog.OnTimeSetListener getOnTimeSetListener(int clickedViewId) {
 		return (view, hourOfDay, minute) -> {
 			switch (clickedViewId) {
-				case R.id.tView_event_start_value:
+				case R.id.text_event_start_value:
 					startTime = new LocalTime(hourOfDay, minute);
-					endTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
-					mTextViewStart.setText(startTime.toString(Schedule.timePattern));
+					endTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.sTimePattern));
+					mTextViewStart.setText(startTime.toString(Schedule.sTimePattern));
 					if (startTime.isAfter(endTime)) {
-						mTextViewEnd.setText(startTime.toString(Schedule.timePattern));
+						mTextViewEnd.setText(startTime.toString(Schedule.sTimePattern));
 					}
 					break;
-				case R.id.tView_event_end_value:
+				case R.id.text_event_end_value:
 					endTime = new LocalTime(hourOfDay, minute);
-					mTextViewEnd.setText(endTime.toString(Schedule.timePattern));
+					mTextViewEnd.setText(endTime.toString(Schedule.sTimePattern));
 					break;
 			}
 		};
@@ -172,8 +172,8 @@ public class EventRefactorActivity extends AppCompatActivity {
 	public void submitEvent() {
 		String eventName = mEditTextName.getText().toString();
 		Log.d(TAG, "submitEvent: " + eventName);
-		LocalTime eventStartTime = LocalTime.parse(mTextViewStart.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
-		LocalTime eventEndTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.timePattern));
+		LocalTime eventStartTime = LocalTime.parse(mTextViewStart.getText().toString(), DateTimeFormat.forPattern(Schedule.sTimePattern));
+		LocalTime eventEndTime = LocalTime.parse(mTextViewEnd.getText().toString(), DateTimeFormat.forPattern(Schedule.sTimePattern));
 		Category eventCategory = (Category) mSpinnerCategory.getSelectedItem();
 		Day eventDay = (Day) mSpinnerDay.getSelectedItem();
 

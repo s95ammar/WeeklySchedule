@@ -59,7 +59,7 @@ public class SchedulesListFragment extends Fragment implements ScheduleRecViewAd
 
 
     private void refreshLayout() {
-        getView().findViewById(R.id.textView_no_schedules).setVisibility(SchedulesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.text_no_schedules).setVisibility(SchedulesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
         getView().findViewById(R.id.recyclerView_schedules).setBackgroundColor(SchedulesList.getInstance().isEmpty() ? Color.WHITE : getResources().getColor(R.color.colorLightGray));
     }
 

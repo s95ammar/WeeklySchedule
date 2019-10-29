@@ -14,7 +14,7 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/textView_category_name"
+            android:id="@+id/text_category_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Category name"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/categories_button_more"
+            android:id="@+id/button_more_categories"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@drawable/ic_more_vert"

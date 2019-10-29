@@ -53,10 +53,10 @@ public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecView
     }
 
     public class ScheduleViewHolder extends RecyclerView.ViewHolder {
-        protected @BindView(R.id.textView_schedule_name) TextView tvScheduleName;
+        protected @BindView(R.id.text_schedule_name) TextView tvScheduleName;
         protected @BindView(R.id.switch_is_active) Switch switchIsActive;
-        protected @BindView(R.id.schedules_button_more) Button buttonMore;
-        protected @BindView(R.id.textView_is_active) TextView tvIsActive;
+        protected @BindView(R.id.button_more_schedules) Button buttonMore;
+        protected @BindView(R.id.text_is_active) TextView tvIsActive;
 
         public ScheduleViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -73,7 +73,7 @@ public class ScheduleRecViewAdapter extends RecyclerView.Adapter<ScheduleRecView
             }
         }
 
-        @OnClick(R.id.schedules_button_more)
+        @OnClick(R.id.button_more_schedules)
         protected void onClick() {
             if (mListener != null) {
                 int i = getAdapterPosition();

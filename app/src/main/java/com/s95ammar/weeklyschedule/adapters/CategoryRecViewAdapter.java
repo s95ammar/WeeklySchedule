@@ -52,8 +52,8 @@ public class CategoryRecViewAdapter extends RecyclerView.Adapter<CategoryRecView
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
-        protected @BindView(R.id.textView_category_name) TextView tvCategoryName;
-        protected @BindView(R.id.categories_button_more) Button buttonMore;
+        protected @BindView(R.id.text_category_name) TextView tvCategoryName;
+        protected @BindView(R.id.button_more_categories) Button buttonMore;
         protected @BindView(R.id.cardView_categories) CardView cardView;
 
         public CategoryViewHolder(@NonNull final View itemView) {
@@ -71,7 +71,7 @@ public class CategoryRecViewAdapter extends RecyclerView.Adapter<CategoryRecView
             }
         }
 
-        @OnClick(R.id.categories_button_more)
+        @OnClick(R.id.button_more_categories)
         protected void onMoreClicked() {
             if (mListener != null) {
                 int i = getAdapterPosition();

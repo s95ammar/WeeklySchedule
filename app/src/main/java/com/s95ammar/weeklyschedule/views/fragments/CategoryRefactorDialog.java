@@ -30,7 +30,7 @@ import static com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment
 
 public class CategoryRefactorDialog extends AppCompatDialogFragment {
     private static final String TAG = "CategoryRefactorDialog";
-    protected @BindView(R.id.tView_add_category_preview_value) TextView mTextViewPreview;
+    protected @BindView(R.id.text_add_category_preview_value) TextView mTextViewPreview;
     protected @BindView(R.id.eText_add_category_name) EditText mEditTextName;
     protected @BindView(R.id.view_add_category_fill_color) View mViewFillColor;
     protected @BindView(R.id.view_add_category_text_color) View mViewTextColor;

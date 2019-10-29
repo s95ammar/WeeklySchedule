@@ -7,7 +7,7 @@
     tools:context=".views.activities.InfoActivity">
 
     <TextView
-        android:id="@+id/textView_info_developer"
+        android:id="@+id/text_info_developer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView_info_my_name"
+        android:id="@+id/text_info_my_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -27,21 +27,21 @@
         android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_info_developer" />
+        app:layout_constraintTop_toBottomOf="@+id/text_info_developer" />
 
     <TextView
-        android:id="@+id/textView_info_start"
+        android:id="@+id/text_info_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/development_start_date"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/textView_info_developer"
-        app:layout_constraintTop_toBottomOf="@+id/textView_info_my_name" />
+        app:layout_constraintStart_toStartOf="@+id/text_info_developer"
+        app:layout_constraintTop_toBottomOf="@+id/text_info_my_name" />
 
     <TextView
-        android:id="@+id/textView_info_start_value"
+        android:id="@+id/text_info_start_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -50,21 +50,21 @@
         android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_info_start" />
+        app:layout_constraintTop_toBottomOf="@+id/text_info_start" />
 
     <TextView
-        android:id="@+id/textView_info_hours"
+        android:id="@+id/text_info_hours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/hours_spent"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/textView_info_developer"
-        app:layout_constraintTop_toBottomOf="@+id/textView_info_start_value" />
+        app:layout_constraintStart_toStartOf="@+id/text_info_developer"
+        app:layout_constraintTop_toBottomOf="@+id/text_info_start_value" />
 
     <TextView
-        android:id="@+id/textView_info_hours_value"
+        android:id="@+id/text_info_hours_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -73,7 +73,7 @@
         android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_info_hours" />
+        app:layout_constraintTop_toBottomOf="@+id/text_info_hours" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

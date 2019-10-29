@@ -34,7 +34,6 @@ public class MainActivity extends AbstractScheduleActivity implements
         CategoriesListFragment.CategoriesListManager,
         CategoryRefactorDialog.CategoryRefactor {
 
-    private static final int REQUEST_BACK_TO_SCHEDULES = 1;
     private static final String TAG = "MainActivity";
     private DrawerLayout drawer;
     private SchedulesListFragment schedulesListFragment;
@@ -54,17 +53,11 @@ public class MainActivity extends AbstractScheduleActivity implements
         loadData();
         Toolbar toolbar = findViewById(R.id.toolbar_main_activity);
         setSupportActionBar(toolbar);
-        setTimePattern();
-    }
-
-    private void setTimePattern() {
-        Schedule.timePattern = DateFormat.is24HourFormat(this) ? "HH:mm" : "hh:mm aa";
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         super.menu = menu;
         Toolbar toolbar = findViewById(R.id.toolbar_main_activity);
         checkActiveSchedule();
@@ -86,12 +79,7 @@ public class MainActivity extends AbstractScheduleActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_BACK_TO_SCHEDULES) {
-            if(resultCode == RESULT_OK) {
-                switchToFragment(schedulesListFragment != null ? schedulesListFragment : (schedulesListFragment = new SchedulesListFragment()),
-                        R.id.fragment_container_main_activity, null);
-            }
-        } else if (requestCode == REQUEST_APPLY_CHANGES) {
+        if (requestCode == REQUEST_APPLY_CHANGES) {
             if (resultCode == RESULT_OK) {
                 applyEventChanges(data.getIntExtra(KEY_SCHEDULE_INDEX, -1), R.id.fragment_container_main_activity);
             }
@@ -151,7 +139,7 @@ public class MainActivity extends AbstractScheduleActivity implements
     public void showScheduleInActivity(int i) {
         Intent intent = new Intent(this, ScheduleViewerActivity.class);
         intent.putExtra(SchedulesListFragment.SchedulesListManager.KEY_INDEX, i);
-        startActivityForResult(intent, REQUEST_BACK_TO_SCHEDULES);
+        startActivity(intent);
     }
 
     @Override

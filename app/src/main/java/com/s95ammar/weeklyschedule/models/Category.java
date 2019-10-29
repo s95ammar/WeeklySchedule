@@ -8,12 +8,9 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public class Category implements Serializable {
-    @Expose
-    private String name;
-    @Expose
-    private int fillColor;
-    @Expose
-    private int textColor;
+    @Expose private String name;
+    @Expose private int fillColor;
+    @Expose private int textColor;
     private HashSet<Event> categoryEvents;
 
     public Category(String name, int fillColor, int textColor, HashSet<Event> categoryEvents) {

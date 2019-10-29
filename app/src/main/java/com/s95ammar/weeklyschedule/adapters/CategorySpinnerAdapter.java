@@ -38,7 +38,7 @@ public class CategorySpinnerAdapter extends ArrayAdapter<Category> {
                     R.layout.spinner_row_category, parent, false);
         }
 
-        TextView textViewName = convertView.findViewById(R.id.textView_category_spinner);
+        TextView textViewName = convertView.findViewById(R.id.text_category_spinner);
 
         Category currentItem = getItem(position);
 

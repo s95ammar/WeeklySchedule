@@ -27,7 +27,7 @@
             tools:layout_editor_absoluteX="46dp">
 
             <TextView
-                android:id="@+id/tView_event_category"
+                android:id="@+id/text_event_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -44,12 +44,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@+id/tView_event_category"
+                app:layout_constraintBottom_toBottomOf="@+id/text_event_category"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tView_event_category" />
+                app:layout_constraintTop_toTopOf="@+id/text_event_category" />
 
             <TextView
-                android:id="@+id/tView_event_name"
+                android:id="@+id/text_event_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -58,7 +58,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tView_event_category" />
+                app:layout_constraintTop_toBottomOf="@+id/text_event_category" />
 
             <AutoCompleteTextView
                 android:id="@+id/eText_event_name"
@@ -70,13 +70,13 @@
                 android:inputType="text"
                 android:maxLength="25"
                 android:maxLines="1"
-                app:layout_constraintBottom_toBottomOf="@+id/tView_event_name"
+                app:layout_constraintBottom_toBottomOf="@+id/text_event_name"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tView_event_name"
-                app:layout_constraintTop_toTopOf="@+id/tView_event_name" />
+                app:layout_constraintStart_toEndOf="@+id/text_event_name"
+                app:layout_constraintTop_toTopOf="@+id/text_event_name" />
 
             <TextView
-                android:id="@+id/tView_event_day"
+                android:id="@+id/text_event_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -85,7 +85,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tView_event_name" />
+                app:layout_constraintTop_toBottomOf="@+id/text_event_name" />
 
             <Spinner
                 android:id="@+id/spinner_days"
@@ -93,13 +93,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@+id/tView_event_day"
+                app:layout_constraintBottom_toBottomOf="@+id/text_event_day"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tView_event_day" />
+                app:layout_constraintTop_toTopOf="@+id/text_event_day" />
 
 
             <TextView
-                android:id="@+id/tView_event_start"
+                android:id="@+id/text_event_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -108,22 +108,22 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tView_event_day" />
+                app:layout_constraintTop_toBottomOf="@+id/text_event_day" />
 
             <TextView
-                android:id="@+id/tView_event_start_value"
+                android:id="@+id/text_event_start_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="@string/default_time"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tView_event_start"
+                app:layout_constraintBottom_toBottomOf="@+id/text_event_start"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tView_event_start" />
+                app:layout_constraintTop_toTopOf="@+id/text_event_start" />
 
             <TextView
-                android:id="@+id/tView_event_end"
+                android:id="@+id/text_event_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -132,18 +132,18 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tView_event_start" />
+                app:layout_constraintTop_toBottomOf="@+id/text_event_start" />
 
             <TextView
-                android:id="@+id/tView_event_end_value"
+                android:id="@+id/text_event_end_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/default_time"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tView_event_end"
-                app:layout_constraintStart_toStartOf="@+id/tView_event_start_value"
-                app:layout_constraintTop_toTopOf="@+id/tView_event_end" />
+                app:layout_constraintBottom_toBottomOf="@+id/text_event_end"
+                app:layout_constraintStart_toStartOf="@+id/text_event_start_value"
+                app:layout_constraintTop_toTopOf="@+id/text_event_end" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

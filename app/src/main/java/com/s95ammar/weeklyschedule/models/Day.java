@@ -8,12 +8,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Day implements Serializable {
-    public static final int TOTAL_HOURS = 24;
+    public static final int HOURS_IN_DAY = 24;
     public static final int MINUTES_IN_HOUR = 60;
-    @Expose
-    private String dayOfWeek;
-    @Expose
-    private ArrayList<Event> events;
+    @Expose private String dayOfWeek;
+    @Expose private ArrayList<Event> events;
 
     public Day(String dayOfWeek, ArrayList<Event> events) {
         this.dayOfWeek = dayOfWeek;
@@ -37,9 +35,9 @@ public class Day implements Serializable {
     }
 
     public static String[] getHoursStringArray() {
-        String[] hours = new String[TOTAL_HOURS];
+        String[] hours = new String[HOURS_IN_DAY];
         for (int i = 0; i < hours.length; i++) {
-            hours[i] = LocalTime.MIDNIGHT.plusHours(i).toString(Schedule.timePattern);
+            hours[i] = LocalTime.MIDNIGHT.plusHours(i).toString(Schedule.sTimePattern);
         }
         return hours;
     }

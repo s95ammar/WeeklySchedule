@@ -6,15 +6,11 @@ import org.joda.time.LocalTime;
 import java.io.Serializable;
 
 public class Event implements Serializable/*, Comparable<Event>*/ {
-    @Expose
-    private String name;
-    @Expose
-    private Category category;
+    @Expose private String name;
+    @Expose private Category category;
     private Day day;
-    @Expose
-    private LocalTime startTime;
-    @Expose
-    private LocalTime endTime;
+    @Expose private LocalTime startTime;
+    @Expose private LocalTime endTime;
     public static final LocalTime DEFAULT_TIME = new LocalTime(12, 00);
 
     public Event(String name, Category category, Day day, LocalTime startTime, LocalTime endTime) {
@@ -106,6 +102,7 @@ public class Event implements Serializable/*, Comparable<Event>*/ {
 }
 /*
 TODO: implement comparators
+
     public static class EventNameComparator implements Comparator<Event>, Serializable {
         @Override
         public int compare(Event o1, Event o2) {

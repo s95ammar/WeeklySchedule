@@ -12,18 +12,17 @@ import java.util.ArrayList;
 
 public class SchedulesList extends ArrayList<Schedule> {
     private static final String TAG = "SchedulesList";
-    private static SchedulesList instance;
-    @Expose
-    private Schedule activeSchedule;
+    private static SchedulesList sInstance;
+    @Expose private Schedule activeSchedule;
 
     private SchedulesList() {
     }
 
     public static synchronized SchedulesList getInstance() {
-        if (instance == null) {
-            instance = new SchedulesList();
+        if (sInstance == null) {
+            sInstance = new SchedulesList();
         }
-        return instance;
+        return sInstance;
     }
 
     public Schedule getActiveSchedule() {
@@ -36,17 +35,17 @@ public class SchedulesList extends ArrayList<Schedule> {
 
     public static void createFromJson(String json) {
         Log.d(TAG, "createFromJson: " + json);
-        if (instance == null) {
+        if (sInstance == null) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalTime.class, new LocalTimeSerializer())
                     .create();
-            instance = gson.fromJson(json, SchedulesList.class);
+            sInstance = gson.fromJson(json, SchedulesList.class);
         }
     }
 
     public void loadActiveSchedule(int activeScheduleIndex) {
         if (activeScheduleIndex != -1) {
-            activeSchedule = instance.get(activeScheduleIndex);
+            activeSchedule = sInstance.get(activeScheduleIndex);
         }
     }
 

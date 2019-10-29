@@ -49,7 +49,7 @@ public class CategoriesListFragment extends Fragment implements CategoryRecViewA
     }
 
     private void refreshLayout() {
-        getView().findViewById(R.id.textView_no_categories).setVisibility(CategoriesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.text_no_categories).setVisibility(CategoriesList.getInstance().isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void buildRecyclerView() {

@@ -75,7 +75,7 @@ public class ScheduleViewerFragment extends Fragment {
 
     private void setUpLayout() {
         getActivity().setTitle(schedule != null ? schedule.getName() : getString(R.string.title_active_schedule));
-        getView().findViewById(R.id.textView_no_active_schedule).setVisibility(schedule != null ? View.GONE : View.VISIBLE);
+        getView().findViewById(R.id.text_no_active_schedule).setVisibility(schedule != null ? View.GONE : View.VISIBLE);
         if (schedule != null) {
             showSchedule();
             setMode(getArguments().getInt(ScheduleEditor.KEY_MODE, VIEW));
@@ -91,7 +91,7 @@ public class ScheduleViewerFragment extends Fragment {
 
     public void showSchedule() {
         layoutScheduleViewer = getView().findViewById(R.id.layout_schedule_viewer);
-        prepareHeaderTextViews(textViewsHours = new ArrayList<>(), Day.TOTAL_HOURS, Day.getHoursStringArray());
+        prepareHeaderTextViews(textViewsHours = new ArrayList<>(), Day.HOURS_IN_DAY, Day.getHoursStringArray());
         prepareHeaderTextViews(textViewsDays = new ArrayList<>(), Schedule.WEEK_DAYS.length, Schedule.WEEK_DAYS);
         prepareEventTextViews();
         connectTextViews();

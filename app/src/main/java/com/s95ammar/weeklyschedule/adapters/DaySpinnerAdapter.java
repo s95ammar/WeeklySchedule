@@ -37,7 +37,7 @@ public class DaySpinnerAdapter extends ArrayAdapter<Day> {
                     R.layout.spinner_row_day, parent, false);
         }
 
-        TextView textViewName = convertView.findViewById(R.id.textView_day_spinner);
+        TextView textViewName = convertView.findViewById(R.id.text_day_spinner);
 
         Day currentItem = getItem(position);
 
