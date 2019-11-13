@@ -1,11 +1,10 @@
 package com.s95ammar.weeklyschedule.models
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
-@Entity
+@Entity(indices = [Index("id")])
 data class Category(
 	var name: String,
 	var fillColor: Int,

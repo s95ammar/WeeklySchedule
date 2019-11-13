@@ -2,10 +2,26 @@ package com.s95ammar.weeklyschedule.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import org.joda.time.LocalTime
 
-@Entity
+@Entity(
+		foreignKeys = [
+			ForeignKey(
+					entity = Category::class,
+					parentColumns = ["id"],
+					childColumns = ["category_id"],
+					onDelete = ForeignKey.CASCADE
+			),
+			ForeignKey(
+					entity = Day::class,
+					parentColumns = ["id"],
+					childColumns = ["day_id"],
+					onDelete = ForeignKey.CASCADE
+			)
+		]
+)
 data class Event(
 		var name: String,
 		var startTime: LocalTime,
@@ -15,9 +31,9 @@ data class Event(
 ) {
 
 	@PrimaryKey(autoGenerate = true)
-	var id: Int =0
+	var id: Int = 0
 
-	companion object {
+	object Validator {
 		fun isTimeValid(startTime: LocalTime, endTime: LocalTime) = endTime.isAfter(startTime)
 	}
 

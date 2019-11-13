@@ -14,15 +14,21 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppModule::class, AndroidInjectionModule::class])
+@Component(
+		modules = [
+			AppModule::class,
+			AndroidInjectionModule::class,
+			RoomModule::class
+		]
+)
 interface AppComponent : AndroidInjector<App> {
-    fun getMainActivityComponentFactory(): MainActivitySubcomponent.Factory
+	fun getMainActivityComponentFactory(): MainActivitySubcomponent.Factory
 
-    @Component.Factory
-    interface Factory {
-        fun create(
-            @BindsInstance application: Application,
-            @BindsInstance @TimePattern timePattern: String
-        ): AppComponent
-    }
+	@Component.Factory
+	interface Factory {
+		fun create(
+				@BindsInstance application: Application,
+				@BindsInstance @TimePattern timePattern: String
+		): AppComponent
+	}
 }

@@ -1,18 +1,24 @@
 package com.s95ammar.weeklyschedule.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity
-data class Day (
-        var name: String,
-        @ColumnInfo(name = "schedule_id") var scheduleId: Int
+@Entity(
+		foreignKeys = [
+			ForeignKey(
+					entity = Schedule::class,
+					parentColumns = ["id"],
+					childColumns = ["schedule_id"],
+					onDelete = ForeignKey.CASCADE
+			)
+		],
+		indices = [Index("id")]
+)
+data class Day(
+		var name: String,
+		@ColumnInfo(name = "schedule_id") var scheduleId: Int
 ) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int =0
-
-
+	@PrimaryKey(autoGenerate = true)
+	var id: Int = 0
 
 
 }
