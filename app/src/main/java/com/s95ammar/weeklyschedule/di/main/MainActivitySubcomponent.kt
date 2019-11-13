@@ -1,8 +1,5 @@
 package com.s95ammar.weeklyschedule.di.main
 
-import androidx.appcompat.widget.Toolbar
-import androidx.annotation.StringRes
-import androidx.drawerlayout.widget.DrawerLayout
 import com.s95ammar.weeklyschedule.views.activities.MainActivity
 import com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment

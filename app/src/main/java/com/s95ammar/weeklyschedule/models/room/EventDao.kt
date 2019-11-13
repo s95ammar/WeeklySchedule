@@ -1,12 +1,10 @@
 package com.s95ammar.weeklyschedule.models.room
 
 import androidx.lifecycle.LiveData
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import com.s95ammar.weeklyschedule.models.Event
+import androidx.room.*
+import com.s95ammar.weeklyschedule.models.data.Event
 
+@Dao
 interface EventDao {
 	@Insert
 	suspend fun insert(event: Event)

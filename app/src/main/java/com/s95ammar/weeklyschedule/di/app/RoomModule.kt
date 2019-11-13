@@ -13,8 +13,8 @@ object RoomModule {
 	@JvmStatic
 	@Provides
 	@Singleton
-	fun provideDatabaseInstance(applictaion: Application): WeeklyScheduleDatabase {
-		return Room.databaseBuilder(applictaion.applicationContext, WeeklyScheduleDatabase::class.java, DATABASE_NAME)
+	fun provideDatabaseInstance(application: Application): WeeklyScheduleDatabase {
+		return Room.databaseBuilder(application.applicationContext, WeeklyScheduleDatabase::class.java, DATABASE_NAME)
 				.fallbackToDestructiveMigration()
 				.build()
 	}

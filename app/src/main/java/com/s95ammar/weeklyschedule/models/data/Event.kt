@@ -1,4 +1,4 @@
-package com.s95ammar.weeklyschedule.models
+package com.s95ammar.weeklyschedule.models.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
