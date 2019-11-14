@@ -6,7 +6,7 @@ import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import com.s95ammar.weeklyschedule.App
 import com.s95ammar.weeklyschedule.R
-import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
+//import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,12 +16,13 @@ import androidx.navigation.ui.*
 import com.s95ammar.weeklyschedule.util.close
 import com.s95ammar.weeklyschedule.util.isOpen
 import com.s95ammar.weeklyschedule.viewModels.MainViewModel
+import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 	private val t = "log_${javaClass.simpleName}"
-	private lateinit var component: MainActivitySubcomponent
+//	private lateinit var component: MainActivitySubcomponent
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: MainViewModel
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-		initComponent()
+//		initComponent()
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
@@ -78,12 +79,5 @@ class MainActivity : AppCompatActivity() {
 	private fun startObservers() {
 
 	}
-
-	private fun initComponent() {
-		component =
-				(application as App).component.getMainActivityComponentFactory().create(this)
-						.apply { inject(this@MainActivity) }
-	}
-
 
 }

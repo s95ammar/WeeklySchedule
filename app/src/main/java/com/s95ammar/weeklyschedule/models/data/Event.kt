@@ -26,8 +26,8 @@ data class Event(
 		var name: String,
 		var startTime: LocalTime,
 		var endTime: LocalTime,
-		@ColumnInfo(name = "category_id") var categoryId: Int,
-		@ColumnInfo(name = "day_id") var dayId: Int
+		@ColumnInfo(name = "category_id", index = true) var categoryId: Int,
+		@ColumnInfo(name = "day_id", index = true) var dayId: Int
 ) {
 
 	@PrimaryKey(autoGenerate = true)

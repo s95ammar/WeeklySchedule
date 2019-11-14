@@ -3,7 +3,8 @@ package com.s95ammar.weeklyschedule.di.app
 import android.app.Application
 import com.s95ammar.weeklyschedule.App
 import com.s95ammar.weeklyschedule.di.TimePattern
-import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
+import com.s95ammar.weeklyschedule.di.main.MainActivityFragmentsModule
+//import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -15,11 +16,12 @@ import javax.inject.Singleton
 		modules = [
 			AppModule::class,
 			AndroidInjectionModule::class,
-			RoomModule::class
+			RoomModule::class,
+			ActivitiesModule::class
 		]
 )
 interface AppComponent : AndroidInjector<App> {
-	fun getMainActivityComponentFactory(): MainActivitySubcomponent.Factory
+//	fun getMainActivityComponentFactory(): MainActivitySubcomponent.Factory
 
 	@Component.Factory
 	interface Factory {

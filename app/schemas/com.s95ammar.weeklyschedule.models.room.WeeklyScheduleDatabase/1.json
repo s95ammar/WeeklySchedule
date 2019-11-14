@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4022a66ad758ad2ae74ef9794ebc97a1",
+    "identityHash": "37242affb5e8f788064a2190906a9e02",
     "entities": [
       {
         "tableName": "Schedule",
@@ -82,6 +82,14 @@
               "id"
             ],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Day_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_Day_schedule_id",
+            "unique": false,
+            "columnNames": [
+              "schedule_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Day_schedule_id` ON `${TABLE_NAME}` (`schedule_id`)"
           }
         ],
         "foreignKeys": [
@@ -192,7 +200,24 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_Event_category_id",
+            "unique": false,
+            "columnNames": [
+              "category_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Event_category_id` ON `${TABLE_NAME}` (`category_id`)"
+          },
+          {
+            "name": "index_Event_day_id",
+            "unique": false,
+            "columnNames": [
+              "day_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Event_day_id` ON `${TABLE_NAME}` (`day_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "Category",
@@ -222,7 +247,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4022a66ad758ad2ae74ef9794ebc97a1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37242affb5e8f788064a2190906a9e02')"
     ]
   }
 }

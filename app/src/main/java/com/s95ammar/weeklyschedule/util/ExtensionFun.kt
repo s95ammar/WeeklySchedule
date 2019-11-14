@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 val Application.SYSTEM_TIME_PATTERN
 	get() = if (DateFormat.is24HourFormat(this)) TIME_PATTERN_24H else TIME_PATTERN_12H
@@ -36,3 +39,9 @@ fun AppCompatActivity.replaceFragment(fragment: Fragment, container: ViewGroup) 
 fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
 
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, onChanged: () -> Unit) {
+	observe(lifecycleOwner, Observer {
+		removeObservers(lifecycleOwner)
+		onChanged()
+	})
+}

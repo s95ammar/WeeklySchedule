@@ -15,7 +15,7 @@ import androidx.room.*
 )
 data class Day(
 		var name: String,
-		@ColumnInfo(name = "schedule_id") var scheduleId: Int
+		@ColumnInfo(name = "schedule_id", index = true) var scheduleId: Int
 ) {
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = 0
