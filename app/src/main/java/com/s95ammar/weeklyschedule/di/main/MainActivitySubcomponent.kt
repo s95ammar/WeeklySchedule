@@ -11,13 +11,9 @@ import dagger.android.AndroidInjector
 @MainActivityScope
 @Subcomponent(modules = [MainActivityModule::class])
 interface MainActivitySubcomponent : AndroidInjector<MainActivity> {
-    fun getSchedulesFragment(): SchedulesListFragment
-    fun getCategoriesFragment(): CategoriesListFragment
-    fun getScheduleViewerFragment(): ScheduleViewerFragment
 
     @Subcomponent.Factory
     interface Factory: AndroidInjector.Factory<MainActivity> {
         override fun create(@BindsInstance mainActivity: MainActivity): MainActivitySubcomponent
-//        fun create(): MainActivitySubcomponent
     }
 }

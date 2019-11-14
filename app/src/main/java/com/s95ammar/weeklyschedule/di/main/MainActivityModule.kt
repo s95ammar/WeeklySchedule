@@ -16,31 +16,6 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class MainActivityModule {
 
-	@Module
-	// for static @Provides methods (which can't exist in an abstract class)
-	companion object {
-		@Provides
-		@MainActivityScope
-		@JvmStatic
-		fun provideSchedulesFragment(): SchedulesListFragment {
-			return SchedulesListFragment()
-		}
-
-		@Provides
-		@MainActivityScope
-		@JvmStatic
-		fun provideCategoriesFragment(): CategoriesListFragment {
-			return CategoriesListFragment()
-		}
-
-		@Provides
-		@MainActivityScope
-		@JvmStatic
-		fun provideScheduleViewerFragment(): ScheduleViewerFragment {
-			return ScheduleViewerFragment()
-		}
-	}
-
 	@Binds
 	@IntoMap
 	@ViewModelKey(MainViewModel::class)

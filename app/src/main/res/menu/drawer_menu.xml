@@ -19,7 +19,6 @@
             android:icon="@drawable/ic_category"
             android:title="@string/categories" />
 
-
         <item
             android:id="@+id/nav_info"
             android:icon="@drawable/ic_info"

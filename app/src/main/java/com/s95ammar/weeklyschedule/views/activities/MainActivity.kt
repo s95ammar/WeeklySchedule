@@ -2,130 +2,88 @@ package com.s95ammar.weeklyschedule.views.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
-import androidx.annotation.NonNull
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import com.google.android.material.navigation.NavigationView
 import com.s95ammar.weeklyschedule.App
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
-import com.s95ammar.weeklyschedule.util.addFragment
-import com.s95ammar.weeklyschedule.util.replaceFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.*
+import com.s95ammar.weeklyschedule.util.close
+import com.s95ammar.weeklyschedule.util.isOpen
 import com.s95ammar.weeklyschedule.viewModels.MainViewModel
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private lateinit var component: MainActivitySubcomponent
-    private lateinit var viewModel: MainViewModel
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    private val t = "log_${javaClass.simpleName}"
+class MainActivity : AppCompatActivity() {
+	private val t = "log_${javaClass.simpleName}"
+	private lateinit var component: MainActivitySubcomponent
+	@Inject
+	lateinit var factory: ViewModelProvider.Factory
+	private lateinit var viewModel: MainViewModel
+	private lateinit var navController: NavController
+	private lateinit var appBarConfig: AppBarConfiguration
 
-    //    private enum class NavDrawerItems(var itemNum: Int) { ACTIVE_SCHEDULE(0), SCHEDULES(1) }
-    private companion object NavDrawerItems {
-        const val ACTIVE_SCHEDULE = 0
-        const val SCHEDULES = 1
-        //        const val SETTINGS = 2 // TODO: implement
-        const val INFO = 3
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        initComponent()
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
-        startObservers()
-        setSupportActionBar(toolbar_main_activity as Toolbar)
-    }
-
-    private fun startObservers() {
-
-    }
-
-    private fun initComponent() {
-        component =
-            (application as App).component.getMainActivityComponentFactory().create(this).apply {
-                inject(this@MainActivity)
-            }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.toolbar_menu, menu)
-        setUpNavDrawer(toolbar_main_activity as Toolbar)
-        return true
-    }
+	//    private enum class NavDrawerItems(var itemNum: Int) { ACTIVE_SCHEDULE(0), SCHEDULES(1) }
+	private companion object NavDrawerItems {
+		const val ACTIVE_SCHEDULE = 0
+		const val SCHEDULES = 1
+		//        const val SETTINGS = 2 // TODO: implement
+		const val INFO = 3
+	}
 
 
-    override fun onNavigationItemSelected(@NonNull menuItem: MenuItem): Boolean {
-        when (menuItem.itemId) {
-            R.id.nav_active_schedule -> {
-                replaceFragment(component.getScheduleViewerFragment(), view_fragment_container_main_activity)
-            }
-            R.id.nav_schedules -> {
-                replaceFragment(component.getSchedulesFragment(), view_fragment_container_main_activity)
-            }
-            R.id.nav_categories -> {
-                replaceFragment(component.getCategoriesFragment(), view_fragment_container_main_activity)
-            }
-            R.id.nav_info -> {
-                addFragment(component.getScheduleViewerFragment(), view_fragment_container_main_activity, true)
-            }
-        }
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-    }
+	override fun onCreate(savedInstanceState: Bundle?) {
+		initComponent()
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
+		viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
+		startObservers()
+		initNavController()
+	}
+
+	private fun initNavController() {
+		val topLevelDestinations = setOf(R.id.nav_active_schedule, R.id.nav_schedules, R.id.nav_categories)
+		appBarConfig = AppBarConfiguration(topLevelDestinations, drawer_layout)
+		navController = findNavController(R.id.nav_host_fragment)
+		setupActionBarWithNavController(navController, appBarConfig)
+		nav_view.setupWithNavController(navController)
+	}
+
+	// adds functionality to burger icon (only for opening the drawer) and back arrow
+	override fun onSupportNavigateUp(): Boolean {
+		return navController.navigateUp(appBarConfig) /*|| super.onSupportNavigateUp()*/
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		when (item.itemId) {
+			android.R.id.home ->
+				if (drawer_layout.isOpen()) { drawer_layout.close(); return true }
+		}
+		return false
+	}
+
+	override fun onBackPressed() {
+		if (drawer_layout.isOpen())
+			drawer_layout.close()
+		else
+			super.onBackPressed()
+	}
 
 
-    private fun setUpNavDrawer(toolbar: Toolbar) {
-        nav_view.setNavigationItemSelectedListener(this)
-        val toggle = ActionBarDrawerToggle(
-            this,
-            drawer_layout,
-            toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
+	private fun startObservers() {
 
+	}
 
-        supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount == 0) {
-                supportActionBar?.setHomeButtonEnabled(false)
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
-                toggle.isDrawerIndicatorEnabled = true
-                drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                toolbar.setNavigationOnClickListener { drawer_layout.openDrawer(GravityCompat.START) }
-
-            } else {
-                drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                toggle.isDrawerIndicatorEnabled = false
-                supportActionBar?.setHomeButtonEnabled(true)
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//                supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_cancel)
-                toolbar.setNavigationOnClickListener { onBackPressed() }
-
-            }
-        }
-
-/*
-        if (scheduleViewerFragment.isVisible) {
-            nav_view.menu.getItem(ACTIVE_SCHEDULE).isChecked = true
-        } else if (schedulesListFragment.isVisible) { //TODO: make sure this works
-            nav_view.menu.getItem(SCHEDULES).isChecked = true
-        }
-*/
-    }
+	private fun initComponent() {
+		component =
+				(application as App).component.getMainActivityComponentFactory().create(this)
+						.apply { inject(this@MainActivity) }
+	}
 
 
 }
