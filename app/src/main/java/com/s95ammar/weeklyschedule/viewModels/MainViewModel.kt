@@ -1,16 +1,25 @@
 package com.s95ammar.weeklyschedule.viewModels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.models.data.Day
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 	private val t = "log_${javaClass.simpleName}"
+
+	private val _onAddCategoryActionButtonClick = SingleLiveEvent<Unit>()
+	private val _onsetCategoryColorButtonClick = SingleLiveEvent<Int>()
+
+
+	val onAddCategoryActionButtonClick: LiveData<Unit> = _onAddCategoryActionButtonClick
+	val onSetCategoryColorButtonClick: LiveData<Int> = _onsetCategoryColorButtonClick
 
 	init {
 		Log.d(t, "init: ")
@@ -43,5 +52,11 @@ class MainViewModel @Inject constructor(private var repo: Repository) : ViewMode
 	fun deleteAllEvents() = repo.deleteAllEvents()
 	fun getEventById(id: Int) = repo.getEventById(id)
 	fun getAllEvents() = repo.getAllEvents()
+
+	fun showCategoryRefactorDialog() = _onAddCategoryActionButtonClick.call()
+
+	fun showColorPickerDialog(viewId: Int) {
+		_onsetCategoryColorButtonClick.value = viewId
+	}
 
 }

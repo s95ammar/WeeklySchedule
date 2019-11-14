@@ -22,7 +22,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
-	lateinit var viewModel: MainViewModel
+	private lateinit var viewModel: MainViewModel
 
 	init {
 		Log.d(t, "init: $this")

@@ -22,13 +22,23 @@
         android:id="@id/nav_categories"
         android:name="com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment"
         android:label="@string/categories"
-        tools:layout="@layout/fragment_categories_list" />
+        tools:layout="@layout/fragment_categories_list" >
+        <action
+            android:id="@+id/action_nav_categories_to_categoryRefactorDialog"
+            app:destination="@id/categoryRefactorDialog" />
+    </fragment>
 
     <fragment
         android:id="@id/nav_info"
         android:name="com.s95ammar.weeklyschedule.views.fragments.InfoFragment"
         android:label="@string/info"
         tools:layout="@layout/fragment_info" />
+
+    <dialog
+        android:id="@+id/categoryRefactorDialog"
+        android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryRefactorDialog"
+        tools:layout="@layout/dialog_add_category"
+        android:label="CategoryRefactorDialog" />
 
 
 </navigation>

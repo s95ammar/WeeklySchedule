@@ -61,7 +61,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_event_category" />
 
             <AutoCompleteTextView
-                android:id="@+id/eText_event_name"
+                android:id="@+id/editText_event_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"

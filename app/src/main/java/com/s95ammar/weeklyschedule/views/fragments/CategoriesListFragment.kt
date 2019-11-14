@@ -14,6 +14,7 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.viewModels.MainViewModel
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_categories_list.*
 import javax.inject.Inject
 
 class CategoriesListFragment : DaggerFragment() {
@@ -36,6 +37,7 @@ class CategoriesListFragment : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(MainViewModel::class.java) }
 		startObservers()
+		button_add_category.setOnClickListener { viewModel.showCategoryRefactorDialog() }
 	}
 
 	private fun startObservers() {
@@ -47,5 +49,6 @@ class CategoriesListFragment : DaggerFragment() {
 	fun insert(category: Category) = viewModel.insert(category)
 	fun update(category: Category) = viewModel.update(category)
 	fun delete(category: Category) = viewModel.delete(category)
+
 
 }

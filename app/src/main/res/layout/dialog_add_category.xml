@@ -36,12 +36,12 @@
         android:layout_marginStart="8dp"
         android:text="@string/name"
         android:textColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/eText_add_category_name"
+        app:layout_constraintBottom_toBottomOf="@+id/editText_add_category_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/eText_add_category_name" />
+        app:layout_constraintTop_toTopOf="@+id/editText_add_category_name" />
 
     <EditText
-        android:id="@+id/eText_add_category_name"
+        android:id="@+id/editText_add_category_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -62,7 +62,7 @@
         android:text="@string/fill_color"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@+id/text_add_category_name"
-        app:layout_constraintTop_toBottomOf="@+id/eText_add_category_name" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_add_category_name" />
 
     <View
         android:id="@+id/view_add_category_fill_color"
@@ -91,7 +91,7 @@
         android:layout_marginEnd="8dp"
         android:background="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@+id/text_add_category_text_color"
-        app:layout_constraintEnd_toEndOf="@+id/eText_add_category_name"
+        app:layout_constraintEnd_toEndOf="@+id/editText_add_category_name"
         app:layout_constraintTop_toTopOf="@+id/text_add_category_text_color" />
 
 

@@ -1,10 +1,10 @@
 package com.s95ammar.weeklyschedule.views.activities
 
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color.*
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
-import androidx.core.view.GravityCompat
-import com.s95ammar.weeklyschedule.App
+import androidx.lifecycle.Observer
 import com.s95ammar.weeklyschedule.R
 //import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,24 +18,18 @@ import com.s95ammar.weeklyschedule.util.isOpen
 import com.s95ammar.weeklyschedule.viewModels.MainViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.color.colorChooser
 
 
 class MainActivity : DaggerAppCompatActivity() {
 	private val t = "log_${javaClass.simpleName}"
-//	private lateinit var component: MainActivitySubcomponent
+
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: MainViewModel
 	private lateinit var navController: NavController
 	private lateinit var appBarConfig: AppBarConfiguration
-
-	//    private enum class NavDrawerItems(var itemNum: Int) { ACTIVE_SCHEDULE(0), SCHEDULES(1) }
-	private companion object NavDrawerItems {
-		const val ACTIVE_SCHEDULE = 0
-		const val SCHEDULES = 1
-		//        const val SETTINGS = 2 // TODO: implement
-		const val INFO = 3
-	}
 
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +69,19 @@ class MainActivity : DaggerAppCompatActivity() {
 			super.onBackPressed()
 	}
 
-
 	private fun startObservers() {
-
+		viewModel.onAddCategoryActionButtonClick.observe(this, Observer {
+			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog)
+		})
+		viewModel.onSetCategoryColorButtonClick.observe(this, Observer {
+			Log.d(t, "startObservers: onSetCategoryColorButtonClick")
+			MaterialDialog(this).show {
+				title(R.string.fill_color)
+				colorChooser(intArrayOf(RED, GREEN, BLUE))
+				positiveButton(R.string.ok)
+			}
+		})
 	}
+
 
 }
