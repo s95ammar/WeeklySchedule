@@ -34,7 +34,7 @@
     <string name="new_event">New Event</string>
     <string name="day">Day:</string>
     <string name="categories">Categories</string>
-    <string name="category_preview_value">Event</string>
+    <string name="event">Event</string>
     <string name="category_list_is_empty">Category list is empty</string>
     <string name="text_color">Text color:</string>
     <string name="fill_color">Fill color:</string>
@@ -49,9 +49,7 @@
     <string name="development_start_date_value">30.04.2019</string>
     <string name="hours_spent">Total hours spent on coding:</string>
     <string name="hours_spent_value">63 hours</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-	<string name="hello_blank_fragment">Hello blank fragment</string>
+	<string name="select">select</string>
 
 
 </resources>

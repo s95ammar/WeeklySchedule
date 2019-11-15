@@ -2,11 +2,9 @@ package com.s95ammar.weeklyschedule.views.activities
 
 import android.graphics.Color.*
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import com.s95ammar.weeklyschedule.R
-//import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,11 +13,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import com.s95ammar.weeklyschedule.util.close
 import com.s95ammar.weeklyschedule.util.isOpen
-import com.s95ammar.weeklyschedule.viewModels.MainViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
+import com.s95ammar.weeklyschedule.util.ColorType
+import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
+import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
+import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 
 
 class MainActivity : DaggerAppCompatActivity() {
@@ -27,16 +28,19 @@ class MainActivity : DaggerAppCompatActivity() {
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
-	private lateinit var viewModel: MainViewModel
+	private lateinit var scheduleViewerViewModel: ScheduleViewerViewModel
+	private lateinit var schedulesListViewModel: SchedulesListViewModel
+	private lateinit var categoriesListViewModel: CategoriesListViewModel
 	private lateinit var navController: NavController
 	private lateinit var appBarConfig: AppBarConfiguration
 
 
 	override fun onCreate(savedInstanceState: Bundle?) {
-//		initComponent()
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
-		viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
+		scheduleViewerViewModel = ViewModelProviders.of(this, factory).get(ScheduleViewerViewModel::class.java)
+		schedulesListViewModel = ViewModelProviders.of(this, factory).get(SchedulesListViewModel::class.java)
+		categoriesListViewModel = ViewModelProviders.of(this, factory).get(CategoriesListViewModel::class.java)
 		startObservers()
 		initNavController()
 	}
@@ -70,15 +74,21 @@ class MainActivity : DaggerAppCompatActivity() {
 	}
 
 	private fun startObservers() {
-		viewModel.onAddCategoryActionButtonClick.observe(this, Observer {
+		categoriesListViewModel.onAddCategoryActionButtonClick.observe(this, Observer {
 			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog)
 		})
-		viewModel.onSetCategoryColorButtonClick.observe(this, Observer {
-			Log.d(t, "startObservers: onSetCategoryColorButtonClick")
+		categoriesListViewModel.onCategoryColorButtonClick.observe(this, Observer { colorType ->
 			MaterialDialog(this).show {
-				title(R.string.fill_color)
-				colorChooser(intArrayOf(RED, GREEN, BLUE))
-				positiveButton(R.string.ok)
+				title(when (colorType) {
+					ColorType.TEXT -> R.string.text_color
+					ColorType.FILL -> R.string.fill_color
+				})
+				colorChooser(intArrayOf(RED, GREEN, BLUE), allowCustomArgb = true) { dialog, color ->
+					categoriesListViewModel.receiveColor(colorType, color)
+				}
+				positiveButton(R.string.select)
+				negativeButton(R.string.cancel)
+
 			}
 		})
 	}
