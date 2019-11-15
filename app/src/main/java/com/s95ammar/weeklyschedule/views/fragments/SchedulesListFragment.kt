@@ -37,7 +37,7 @@ class SchedulesListFragment : DaggerFragment() {
 
 	private fun startObservers() {
 		viewModel.getAllSchedules().observe(viewLifecycleOwner, Observer {
-			Log.d(t, "startObservers: allSchedules onChanged $it") // TODO: remove
+			Log.d(t, "startObservers: allSchedules onChanged $it")
 		})
 	}
 

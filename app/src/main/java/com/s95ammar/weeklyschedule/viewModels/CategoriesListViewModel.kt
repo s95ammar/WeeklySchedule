@@ -2,7 +2,6 @@ package com.s95ammar.weeklyschedule.viewModels
 
 import android.util.Log
 import androidx.annotation.ColorInt
-import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
@@ -14,12 +13,14 @@ import javax.inject.Inject
 class CategoriesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 	private val t = "log_${javaClass.simpleName}"
 
-	private val _onAddCategoryActionButtonClick = SingleLiveEvent<Unit>()
-	private val _onCategoryColorButtonClick = SingleLiveEvent<ColorType>()
+//	private val _onActionButtonClicked = SingleLiveEvent<Unit>()
+	private val _onCategoryColorButtonClick = SingleLiveEvent<Pair<ColorType, Int>>()
+	private val _onCategoryRefactorDialogRequest = SingleLiveEvent<Category>()
 	private val _onColorReceived = SingleLiveEvent<Pair<ColorType, Int>>()
 
-	val onAddCategoryActionButtonClick: LiveData<Unit> = _onAddCategoryActionButtonClick
-	val onCategoryColorButtonClick: LiveData<ColorType> = _onCategoryColorButtonClick
+//	val onActionButtonClicked: LiveData<Unit> = _onActionButtonClicked
+	val onCategoryColorButtonClick: LiveData<Pair<ColorType, Int>> = _onCategoryColorButtonClick
+	val onCategoryRefactorDialogRequest: LiveData<Category> = _onCategoryRefactorDialogRequest
 	val onColorReceived: LiveData<Pair<ColorType, Int>> = _onColorReceived
 
 	init {
@@ -33,14 +34,18 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	fun getCategoryById(id: Int) = repo.getCategoryById(id)
 	fun getAllCategories() = repo.getAllCategories()
 
-	fun showCategoryRefactorDialog() = _onAddCategoryActionButtonClick.call()
+//	fun callOnActionButtonClicked() = _onActionButtonClicked.call()
 
-	fun showColorPickerDialog(colorType: ColorType) {
-		_onCategoryColorButtonClick.value = colorType
+	fun showColorPickerDialog(colorType: ColorType, initialSelection: Int) {
+		_onCategoryColorButtonClick.value = Pair(colorType, initialSelection)
 	}
 
 	fun receiveColor(colorType: ColorType, @ColorInt color: Int) {
 		_onColorReceived.value = Pair(colorType, color)
+	}
+
+	fun onCategoryRefactorDialogRequest(category: Category? = null) {
+		_onCategoryRefactorDialogRequest.value = category
 	}
 
 }

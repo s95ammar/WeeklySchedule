@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="85dp"
+        tools:listitem="@layout/item_category"
         android:clipToPadding="false"
         android:scrollbars="vertical"/>
 
@@ -29,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/category_list_is_empty"
+        tools:visibility="gone"
         android:textSize="16sp"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/nav_active_schedule">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/nav_graph"
+	app:startDestination="@id/nav_active_schedule">
 
-    <fragment
-        android:id="@id/nav_active_schedule"
-        android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
-        android:label="@string/active_schedule"
-        tools:layout="@layout/fragment_schedule_viewer" >
-    </fragment>
+	<fragment
+		android:id="@id/nav_active_schedule"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
+		android:label="@string/active_schedule"
+		tools:layout="@layout/fragment_schedule_viewer" />
 
-    <fragment
-        android:id="@id/nav_schedules"
-        android:name="com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment"
-        android:label="@string/schedules"
-        tools:layout="@layout/fragment_schedules_list" />
+	<fragment
+		android:id="@id/nav_schedules"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment"
+		android:label="@string/schedules"
+		tools:layout="@layout/fragment_schedules_list" />
 
-    <fragment
-        android:id="@id/nav_categories"
-        android:name="com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment"
-        android:label="@string/categories"
-        tools:layout="@layout/fragment_categories_list" >
-        <action
-            android:id="@+id/action_nav_categories_to_categoryRefactorDialog"
-            app:destination="@id/categoryRefactorDialog" />
-    </fragment>
+	<fragment
+		android:id="@id/nav_categories"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment"
+		android:label="@string/categories"
+		tools:layout="@layout/fragment_categories_list">
+		<action
+			android:id="@+id/action_nav_categories_to_categoryRefactorDialog"
+			app:destination="@id/categoryRefactorDialog" />
+	</fragment>
 
-    <fragment
-        android:id="@id/nav_info"
-        android:name="com.s95ammar.weeklyschedule.views.fragments.InfoFragment"
-        android:label="@string/info"
-        tools:layout="@layout/fragment_info" />
+	<fragment
+		android:id="@id/nav_info"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.InfoFragment"
+		android:label="@string/info"
+		tools:layout="@layout/fragment_info" />
 
-    <dialog
-        android:id="@+id/categoryRefactorDialog"
-        android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryRefactorDialog"
-        tools:layout="@layout/dialog_add_category"
-        android:label="CategoryRefactorDialog" />
+	<dialog
+		android:id="@+id/categoryRefactorDialog"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryRefactorDialog"
+		android:label="CategoryRefactorDialog"
+		tools:layout="@layout/dialog_add_category">
 
+	</dialog>
 
 </navigation>

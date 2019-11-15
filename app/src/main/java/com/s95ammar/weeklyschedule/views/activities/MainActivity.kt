@@ -1,8 +1,8 @@
 package com.s95ammar.weeklyschedule.views.activities
 
-import android.graphics.Color.*
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.s95ammar.weeklyschedule.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -11,13 +11,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
-import com.s95ammar.weeklyschedule.util.close
-import com.s95ammar.weeklyschedule.util.isOpen
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
-import com.s95ammar.weeklyschedule.util.ColorType
+import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
@@ -74,24 +72,34 @@ class MainActivity : DaggerAppCompatActivity() {
 	}
 
 	private fun startObservers() {
-		categoriesListViewModel.onAddCategoryActionButtonClick.observe(this, Observer {
-			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog)
+		categoriesListViewModel.onCategoryRefactorDialogRequest.observe(this, Observer {
+			val args = bundleOf(KEY_CATEGORY to it)
+			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog, args)
 		})
-		categoriesListViewModel.onCategoryColorButtonClick.observe(this, Observer { colorType ->
-			MaterialDialog(this).show {
+		categoriesListViewModel.onCategoryColorButtonClick.observe(this, Observer {
+			openColorPicker(it.first, it.second)
+		})
+	}
+
+	private fun openColorPicker(colorType: ColorType, initialSelection: Int) {
+		MaterialDialog(this).show {
 				title(when (colorType) {
 					ColorType.TEXT -> R.string.text_color
 					ColorType.FILL -> R.string.fill_color
 				})
-				colorChooser(intArrayOf(RED, GREEN, BLUE), allowCustomArgb = true) { dialog, color ->
-					categoriesListViewModel.receiveColor(colorType, color)
-				}
-				positiveButton(R.string.select)
-				negativeButton(R.string.cancel)
-
+			colorChooser(
+					MAIN_COLORS_ARRAY,
+					subColors = SHADES_OF_MAIN_COLORS,
+					allowCustomArgb = true,
+					showAlphaSelector = true,
+					initialSelection = initialSelection
+			) { _, color ->
+				categoriesListViewModel.receiveColor(colorType, color)
 			}
-		})
+			positiveButton(R.string.select)
+			negativeButton(R.string.cancel)
+
+		}
+
 	}
-
-
 }
