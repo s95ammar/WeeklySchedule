@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,13 +24,14 @@ import javax.inject.Inject
 
 class CategoryRefactorDialog : DaggerDialogFragment() {
 	private lateinit var mode: Mode
-	private lateinit var title: String
+	@StringRes private var title: Int = R.string.category_add_title
 	private var editedCategory: Category? = null
 	private lateinit var categoryName: String
-	@ColorInt
-	var categoryFillColor = COLOR_GREEN
-	@ColorInt
-	var categoryTextColor = COLOR_BLACK
+	private val fillColor: Int
+		get() = viewModel.fillColor.value ?: COLOR_GREEN
+	private val textColor: Int
+		get() = viewModel.textColor.value ?: COLOR_BLACK
+
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
@@ -53,11 +55,11 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 			is Category -> {
 				mode = Mode.EDIT
 				editedCategory = obj
-				title = EDIT_TITLE
+				title = R.string.category_edit_title
 			}
 			else -> {
 				mode = Mode.ADD
-				title = ADD_TITLE
+				title = R.string.category_add_title
 			}
 		}
 	}
@@ -72,35 +74,42 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
+		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(CategoriesListViewModel::class.java) }
+		initObservers()
 		setValues()
 		setViews()
-		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(CategoriesListViewModel::class.java) }
-		viewModel.onColorSelected.observe(viewLifecycleOwner, Observer { receiveColor(it.first, it.second) })
+	}
+
+	private fun initObservers() {
+		viewModel.fillColor.observe(viewLifecycleOwner, Observer { assignFillColor(it) })
+		viewModel.textColor.observe(viewLifecycleOwner, Observer { assignTextColor(it) })
 	}
 
 	private fun setValues() {
 		when (mode) {
-			Mode.ADD -> categoryName = ""
+			Mode.ADD -> {
+				categoryName = ""
+				viewModel.setFillColor(COLOR_GREEN)
+				viewModel.setTextColor(COLOR_BLACK)
+			}
 			Mode.EDIT -> editedCategory?.let {
 				categoryName = it.name
-				categoryFillColor = it.fillColor
-				categoryTextColor = it.textColor
+				viewModel.setFillColor(it.fillColor)
+				viewModel.setTextColor(it.textColor)
 			}
 		}
 	}
 
 	private fun setViews() {
 		editText_add_category_name.setText(categoryName)
-		assignFillColor()
-		assignTextColor()
-		view_add_category_fill_color.setOnClickListener { viewModel.showColorPickerDialog(ColorType.FILL, categoryFillColor) }
-		view_add_category_text_color.setOnClickListener { viewModel.showColorPickerDialog(ColorType.TEXT, categoryTextColor) }
+		view_category_fill_color.setOnClickListener { viewModel.showColorPickerDialog(ColorType.FILL, fillColor) }
+		view_category_text_color.setOnClickListener { viewModel.showColorPickerDialog(ColorType.TEXT, textColor) }
 	}
 
 	private fun onOkListener(): DialogInterface.OnClickListener {
 		return DialogInterface.OnClickListener { _, _ ->
 			dialogView?.let { view ->
-				val category = Category(view.rootView.editText_add_category_name.input, categoryFillColor, categoryTextColor)
+				val category = Category(view.rootView.editText_add_category_name.input, fillColor, textColor)
 				when (mode) {
 					Mode.ADD -> viewModel.insert(category)
 					Mode.EDIT -> {
@@ -112,32 +121,14 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 		}
 	}
 
-	private fun assignFillColor() {
-		view_add_category_fill_color.setBackgroundColor(categoryFillColor)
-		text_add_category_preview_value.setBackgroundColor(categoryFillColor)
+	private fun assignFillColor(@ColorInt color: Int) {
+		view_category_fill_color.setBackgroundColor(color)
+		text_add_category_preview_value.setBackgroundColor(color)
 	}
 
-	private fun assignTextColor() {
-		view_add_category_text_color.setBackgroundColor(categoryTextColor)
-		text_add_category_preview_value.setTextColor(categoryTextColor)
+	private fun assignTextColor(@ColorInt color: Int) {
+		view_category_text_color.setBackgroundColor(color)
+		text_add_category_preview_value.setTextColor(color)
 	}
 
-
-	private fun receiveColor(colorType: ColorType, @ColorInt color: Int) {
-		when (colorType) {
-			ColorType.FILL -> {
-				categoryFillColor = color
-				assignFillColor()
-			}
-			ColorType.TEXT -> {
-				categoryTextColor = color
-				assignTextColor()
-			}
-		}
-	}
-
-	companion object {
-		private val ADD_TITLE = "New Category"
-		private val EDIT_TITLE = "Edit Category"
-	}
 }

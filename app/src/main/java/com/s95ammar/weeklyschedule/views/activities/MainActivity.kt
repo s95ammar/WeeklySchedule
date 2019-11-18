@@ -84,8 +84,8 @@ class MainActivity : DaggerAppCompatActivity() {
 	private fun openColorPicker(colorType: ColorType, initialSelection: Int) {
 		MaterialDialog(this).show {
 				title(when (colorType) {
-					ColorType.TEXT -> R.string.text_color
 					ColorType.FILL -> R.string.fill_color
+					ColorType.TEXT -> R.string.text_color
 				})
 			colorChooser(
 					MAIN_COLORS_ARRAY,
@@ -94,7 +94,10 @@ class MainActivity : DaggerAppCompatActivity() {
 					showAlphaSelector = true,
 					initialSelection = initialSelection
 			) { _, color ->
-				categoriesListViewModel.setOnColorSelected(colorType, color)
+				when (colorType) {
+					ColorType.FILL -> categoriesListViewModel.setFillColor(color)
+					ColorType.TEXT -> categoriesListViewModel.setTextColor(color)
+				}
 			}
 			positiveButton(R.string.select)
 			negativeButton(R.string.cancel)

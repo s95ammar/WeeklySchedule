@@ -38,6 +38,8 @@
     <string name="category_list_is_empty">Category list is empty</string>
     <string name="text_color">Text color:</string>
     <string name="fill_color">Fill color:</string>
+    <string name="category_add_title">New Category</string>
+    <string name="category_edit_title">Edit Category</string>
     <string name="category_preview">Preview:</string>
     <string name="category">Category</string>
     <string name="category_empty_name">Category was not created because name was empty</string>
