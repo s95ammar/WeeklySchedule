@@ -40,7 +40,7 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(CategoriesListViewModel::class.java) }
 		buildRecyclerView()
 		startObservers()
-		button_add_category.setOnClickListener { viewModel.onCategoryRefactorDialogRequest() }
+		button_add_category.setOnClickListener { viewModel.showCategoryRefactorDialog() }
 	}
 
 	private fun startObservers() {
@@ -69,7 +69,7 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 	}
 
 	override fun onItemClicked(i: Int) {
-		listAdapter.getCategoryAt(i).let { viewModel.onCategoryRefactorDialogRequest(it) }
+		listAdapter.getCategoryAt(i).let { viewModel.showCategoryRefactorDialog(it) }
 	}
 /*
 	override fun onMoreClicked(i: Int, buttonMore: Button) {

@@ -72,11 +72,11 @@ class MainActivity : DaggerAppCompatActivity() {
 	}
 
 	private fun startObservers() {
-		categoriesListViewModel.onCategoryRefactorDialogRequest.observe(this, Observer {
+		categoriesListViewModel.showCategoryRefactorDialog.observe(this, Observer {
 			val args = bundleOf(KEY_CATEGORY to it)
 			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog, args)
 		})
-		categoriesListViewModel.onCategoryColorButtonClick.observe(this, Observer {
+		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer {
 			openColorPicker(it.first, it.second)
 		})
 	}
@@ -94,7 +94,7 @@ class MainActivity : DaggerAppCompatActivity() {
 					showAlphaSelector = true,
 					initialSelection = initialSelection
 			) { _, color ->
-				categoriesListViewModel.receiveColor(colorType, color)
+				categoriesListViewModel.setOnColorSelected(colorType, color)
 			}
 			positiveButton(R.string.select)
 			negativeButton(R.string.cancel)

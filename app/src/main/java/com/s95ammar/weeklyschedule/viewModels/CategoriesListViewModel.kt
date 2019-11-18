@@ -14,14 +14,14 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	private val t = "log_${javaClass.simpleName}"
 
 //	private val _onActionButtonClicked = SingleLiveEvent<Unit>()
-	private val _onCategoryColorButtonClick = SingleLiveEvent<Pair<ColorType, Int>>()
-	private val _onCategoryRefactorDialogRequest = SingleLiveEvent<Category>()
-	private val _onColorReceived = SingleLiveEvent<Pair<ColorType, Int>>()
+	private val _showCategoryColorPicker = SingleLiveEvent<Pair<ColorType, Int>>()
+	private val _showCategoryRefactorDialog = SingleLiveEvent<Category>()
+	private val _onColorSelected = SingleLiveEvent<Pair<ColorType, Int>>()
 
 //	val onActionButtonClicked: LiveData<Unit> = _onActionButtonClicked
-	val onCategoryColorButtonClick: LiveData<Pair<ColorType, Int>> = _onCategoryColorButtonClick
-	val onCategoryRefactorDialogRequest: LiveData<Category> = _onCategoryRefactorDialogRequest
-	val onColorReceived: LiveData<Pair<ColorType, Int>> = _onColorReceived
+	val showCategoryColorPicker: LiveData<Pair<ColorType, Int>> = _showCategoryColorPicker
+	val showCategoryRefactorDialog: LiveData<Category> = _showCategoryRefactorDialog
+	val onColorSelected: LiveData<Pair<ColorType, Int>> = _onColorSelected
 
 	init {
 		Log.d(t, "init: ")
@@ -37,15 +37,15 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 //	fun callOnActionButtonClicked() = _onActionButtonClicked.call()
 
 	fun showColorPickerDialog(colorType: ColorType, initialSelection: Int) {
-		_onCategoryColorButtonClick.value = Pair(colorType, initialSelection)
+		_showCategoryColorPicker.value = Pair(colorType, initialSelection)
 	}
 
-	fun receiveColor(colorType: ColorType, @ColorInt color: Int) {
-		_onColorReceived.value = Pair(colorType, color)
+	fun setOnColorSelected(colorType: ColorType, @ColorInt color: Int) {
+		_onColorSelected.value = Pair(colorType, color)
 	}
 
-	fun onCategoryRefactorDialogRequest(category: Category? = null) {
-		_onCategoryRefactorDialogRequest.value = category
+	fun showCategoryRefactorDialog(category: Category? = null) {
+		_showCategoryRefactorDialog.value = category
 	}
 
 }

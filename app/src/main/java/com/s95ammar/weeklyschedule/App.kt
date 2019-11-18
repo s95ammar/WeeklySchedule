@@ -7,11 +7,6 @@ import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 
 class App : DaggerApplication() {
-	lateinit var component: AppComponent
 
-	override fun applicationInjector(): AndroidInjector<out DaggerApplication>? {
-		return DaggerAppComponent.factory().create(this, SYSTEM_TIME_PATTERN).also { component = it }
-	}
-
-
+	override fun applicationInjector() = DaggerAppComponent.factory().create(this, SYSTEM_TIME_PATTERN)
 }

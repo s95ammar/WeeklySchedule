@@ -3,7 +3,6 @@ package com.s95ammar.weeklyschedule.views.fragments.dialogs
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,9 +75,7 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 		setValues()
 		setViews()
 		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(CategoriesListViewModel::class.java) }
-		viewModel.onColorReceived.observe(viewLifecycleOwner, Observer {
-			receiveColor(it.first, it.second)
-		})
+		viewModel.onColorSelected.observe(viewLifecycleOwner, Observer { receiveColor(it.first, it.second) })
 	}
 
 	private fun setValues() {
@@ -94,8 +91,8 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 
 	private fun setViews() {
 		editText_add_category_name.setText(categoryName)
-		assignFillColor(categoryFillColor)
-		assignTextColor(categoryTextColor)
+		assignFillColor()
+		assignTextColor()
 		view_add_category_fill_color.setOnClickListener { viewModel.showColorPickerDialog(ColorType.FILL, categoryFillColor) }
 		view_add_category_text_color.setOnClickListener { viewModel.showColorPickerDialog(ColorType.TEXT, categoryTextColor) }
 	}
@@ -115,23 +112,27 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 		}
 	}
 
-	private fun assignFillColor(@ColorInt color: Int) {
-		categoryFillColor = color
-		view_add_category_fill_color.setBackgroundColor(color)
-		text_add_category_preview_value.setBackgroundColor(color)
+	private fun assignFillColor() {
+		view_add_category_fill_color.setBackgroundColor(categoryFillColor)
+		text_add_category_preview_value.setBackgroundColor(categoryFillColor)
 	}
 
-	private fun assignTextColor(@ColorInt color: Int) {
-		categoryTextColor = color
-		view_add_category_text_color.setBackgroundColor(color)
-		text_add_category_preview_value.setTextColor(color)
+	private fun assignTextColor() {
+		view_add_category_text_color.setBackgroundColor(categoryTextColor)
+		text_add_category_preview_value.setTextColor(categoryTextColor)
 	}
 
 
 	private fun receiveColor(colorType: ColorType, @ColorInt color: Int) {
 		when (colorType) {
-			ColorType.FILL -> assignFillColor(color)
-			ColorType.TEXT -> assignTextColor(color)
+			ColorType.FILL -> {
+				categoryFillColor = color
+				assignFillColor()
+			}
+			ColorType.TEXT -> {
+				categoryTextColor = color
+				assignTextColor()
+			}
 		}
 	}
 
