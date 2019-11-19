@@ -1,14 +1,13 @@
 package com.s95ammar.weeklyschedule.util
 
 import android.app.Application
+import android.content.Context
 import android.text.format.DateFormat
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -21,7 +20,7 @@ val Application.SYSTEM_TIME_PATTERN
 fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
 
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, onChanged: (T?) -> Unit) {
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, onChanged: (T) -> Unit) {
 	observe(lifecycleOwner, Observer {
 		removeObservers(lifecycleOwner)
 		onChanged(it)
@@ -30,3 +29,7 @@ fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, onChanged: (T?) 
 
 val EditText.input
 	get() = text.toString()
+
+fun toast(context: Context?, @StringRes stringRes: Int) {
+	Toast.makeText(context, stringRes, Toast.LENGTH_SHORT).show()
+}

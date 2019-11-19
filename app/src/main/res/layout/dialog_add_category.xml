@@ -7,7 +7,7 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/text_add_category_preview"
+        android:id="@+id/text_category_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/text_add_category_preview_value"
+        android:id="@+id/text_category_preview_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -26,9 +26,9 @@
         android:text="@string/event"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/text_add_category_preview"
-        app:layout_constraintStart_toEndOf="@+id/text_add_category_preview"
-        app:layout_constraintTop_toTopOf="@+id/text_add_category_preview" />
+        app:layout_constraintBottom_toBottomOf="@+id/text_category_preview"
+        app:layout_constraintStart_toEndOf="@+id/text_category_preview"
+        app:layout_constraintTop_toTopOf="@+id/text_category_preview" />
 
     <TextView
         android:id="@+id/text_add_category_name"
@@ -53,7 +53,7 @@
         android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_add_category_name"
-        app:layout_constraintTop_toBottomOf="@+id/text_add_category_preview_value" />
+        app:layout_constraintTop_toBottomOf="@+id/text_category_preview_value" />
 
     <TextView
         android:id="@+id/text_category_fill_color"

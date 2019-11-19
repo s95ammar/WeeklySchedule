@@ -2,6 +2,7 @@ package com.s95ammar.weeklyschedule.views.activities
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.annotation.ColorInt
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.s95ammar.weeklyschedule.R
@@ -73,15 +74,14 @@ class MainActivity : DaggerAppCompatActivity() {
 
 	private fun startObservers() {
 		categoriesListViewModel.showCategoryRefactorDialog.observe(this, Observer {
-			val args = bundleOf(KEY_CATEGORY to it)
-			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog, args)
+			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog)
 		})
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer {
 			openColorPicker(it.first, it.second)
 		})
 	}
 
-	private fun openColorPicker(colorType: ColorType, initialSelection: Int) {
+	private fun openColorPicker(colorType: ColorType, @ColorInt initialSelection: Int) {
 		MaterialDialog(this).show {
 				title(when (colorType) {
 					ColorType.FILL -> R.string.fill_color
@@ -94,10 +94,7 @@ class MainActivity : DaggerAppCompatActivity() {
 					showAlphaSelector = true,
 					initialSelection = initialSelection
 			) { _, color ->
-				when (colorType) {
-					ColorType.FILL -> categoriesListViewModel.setFillColor(color)
-					ColorType.TEXT -> categoriesListViewModel.setTextColor(color)
-				}
+				categoriesListViewModel.setCategoryColor(colorType, color)
 			}
 			positiveButton(R.string.select)
 			negativeButton(R.string.cancel)

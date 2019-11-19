@@ -42,7 +42,7 @@
     <string name="category_edit_title">Edit Category</string>
     <string name="category_preview">Preview:</string>
     <string name="category">Category</string>
-    <string name="category_empty_name">Category was not created because name was empty</string>
+    <string name="category_empty_name">Category name cannot be empty</string>
     <string name="category_list_empty_error">At least 1 category needed to create an event</string>
     <string name="event_overlap_error">An event already exists within this period</string>
     <string name="developer">Developer:</string>

@@ -28,6 +28,7 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 
 	init {
 		Log.d(t, "init: $this")
+
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +70,10 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 	}
 
 	override fun onItemClicked(i: Int) {
-		listAdapter.getCategoryAt(i).let { viewModel.showCategoryRefactorDialog(it) }
+		listAdapter.getCategoryAt(i).let {
+			viewModel.setEditedCategory(it)
+			viewModel.showCategoryRefactorDialog(it)
+		}
 	}
 /*
 	override fun onMoreClicked(i: Int, buttonMore: Button) {

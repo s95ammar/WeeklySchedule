@@ -4,7 +4,6 @@ import android.graphics.Color
 
 enum class ColorType { FILL, TEXT }
 
-val COLOR_PRIMARY = Color.parseColor("#459B48")
 val COLOR_RED = Color.parseColor("#ff0000")
 val COLOR_ORANGE = Color.parseColor("#ff8000")
 val COLOR_YELLOW = Color.parseColor("#ffff00")

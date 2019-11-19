@@ -12,7 +12,7 @@ import com.google.gson.GsonBuilder
 class LocalTimeTypeConverter {
 
 	private val gson = GsonBuilder()
-			.registerTypeAdapter(LocalTime::class.java, LocalTimeSerializer)
+			.registerTypeAdapter(LocalTime::class.java, LocalTimeSerializer())
 			.create()
 
 	@TypeConverter
@@ -21,8 +21,7 @@ class LocalTimeTypeConverter {
 	@TypeConverter
 	fun localTimeToString(localTime: LocalTime): String = gson.toJson(localTime)
 
-	private object LocalTimeSerializer : JsonDeserializer<LocalTime>, JsonSerializer<LocalTime> {
-		private val TIME_FORMAT = ISODateTimeFormat.timeNoMillis()
+	private class LocalTimeSerializer : JsonDeserializer<LocalTime>, JsonSerializer<LocalTime> {
 		private val FORMATTER = DateTimeFormatterBuilder()
 				.append(ISODateTimeFormat.time().printer, ISODateTimeFormat.localTimeParser().parser)
 				.toFormatter()

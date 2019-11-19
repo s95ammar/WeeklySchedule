@@ -7,8 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Category
-import com.s95ammar.weeklyschedule.util.COLOR_BLACK
-import com.s95ammar.weeklyschedule.util.COLOR_GREEN
 import com.s95ammar.weeklyschedule.util.ColorType
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
@@ -17,14 +15,14 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	private val t = "log_${javaClass.simpleName}"
 
 	private val _showCategoryColorPicker = SingleLiveEvent<Pair<ColorType, Int>>()
-	private val _showCategoryRefactorDialog = SingleLiveEvent<Category>()
-	private val _fillColor = MutableLiveData<Int>()
-	private val _textColor = MutableLiveData<Int>()
+	private val _showCategoryRefactorDialog = SingleLiveEvent<Category?>()
+	private val _editedCategory = MutableLiveData<Category>()
+	private val _onCategoryColorSelected = MutableLiveData<Pair<ColorType,Int>>()
 
 	val showCategoryColorPicker: LiveData<Pair<ColorType, Int>> = _showCategoryColorPicker
-	val showCategoryRefactorDialog: LiveData<Category> = _showCategoryRefactorDialog
-	val fillColor: LiveData<Int> = _fillColor
-	val textColor: LiveData<Int> = _textColor
+	val showCategoryRefactorDialog: LiveData<Category?> = _showCategoryRefactorDialog
+	val editedCategory: LiveData<Category> = _editedCategory
+	val onCategoryColorSelected: LiveData<Pair<ColorType,Int>> = _onCategoryColorSelected
 
 	init {
 		Log.d(t, "init: ")
@@ -44,15 +42,23 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	}
 
 	fun showCategoryRefactorDialog(category: Category? = null) {
+//		_editedCategory.value = category
 		_showCategoryRefactorDialog.value = category
 	}
 
-	fun setFillColor(@ColorInt color: Int) {
-		_fillColor.value = color
+	fun setEditedCategory(category: Category) {
+		_editedCategory.value = category
 	}
 
-	fun setTextColor(@ColorInt color: Int) {
-		_textColor.value = color
+	fun setCategoryColor(colorType: ColorType, @ColorInt color: Int) {
+		_onCategoryColorSelected.value = Pair(colorType, color)
 	}
+
+	fun clearRefactorDialogValues() {
+		_onCategoryColorSelected.value = null
+		_editedCategory.value = null
+		Log.d(t, "clearRefactorDialogValues: ${editedCategory.value}")
+	}
+
 
 }
