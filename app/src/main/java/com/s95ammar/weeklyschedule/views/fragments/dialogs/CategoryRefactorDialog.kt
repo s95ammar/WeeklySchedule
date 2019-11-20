@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -19,7 +18,6 @@ import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
 import dagger.android.support.DaggerDialogFragment
 import kotlinx.android.synthetic.main.dialog_add_category.*
-import kotlinx.android.synthetic.main.dialog_add_category.view.*
 import javax.inject.Inject
 
 
@@ -110,9 +108,7 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 
 	private fun observeColorSelection() {
 		viewModel.onCategoryColorSelected.observe(viewLifecycleOwner, Observer { pair ->
-			pair?.let {
-			val type = pair.first
-			val color = pair.second
+			pair?.let { (type, color) ->
 				when (type) {
 					ColorType.FILL -> fillColor = color
 					ColorType.TEXT -> textColor = color

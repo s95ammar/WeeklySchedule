@@ -35,14 +35,11 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	fun getCategoryById(id: Int) = repo.getCategoryById(id)
 	fun getAllCategories() = repo.getAllCategories()
 
-//	fun callOnActionButtonClicked() = _onActionButtonClicked.call()
-
 	fun showColorPickerDialog(colorType: ColorType, initialSelection: Int) {
-		_showCategoryColorPicker.value = Pair(colorType, initialSelection)
+		_showCategoryColorPicker.value = (colorType to initialSelection)
 	}
 
 	fun showCategoryRefactorDialog(category: Category? = null) {
-//		_editedCategory.value = category
 		_showCategoryRefactorDialog.value = category
 	}
 
@@ -51,13 +48,12 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	}
 
 	fun setCategoryColor(colorType: ColorType, @ColorInt color: Int) {
-		_onCategoryColorSelected.value = Pair(colorType, color)
+		_onCategoryColorSelected.value = (colorType to color)
 	}
 
 	fun clearRefactorDialogValues() {
 		_onCategoryColorSelected.value = null
 		_editedCategory.value = null
-		Log.d(t, "clearRefactorDialogValues: ${editedCategory.value}")
 	}
 
 
