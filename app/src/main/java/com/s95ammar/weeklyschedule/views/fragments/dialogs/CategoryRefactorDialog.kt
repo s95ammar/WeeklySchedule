@@ -2,6 +2,7 @@ package com.s95ammar.weeklyschedule.views.fragments.dialogs
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -28,7 +30,7 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	private var categoryName = ""
 		set(value) {
 			field = value
-			editText_add_category_name.setText(categoryName)
+			editText_refactor_category_name.setText(categoryName)
 		}
 	@ColorInt private var selectedFillColor = COLOR_GREEN
 		set(value) {
@@ -91,14 +93,21 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	}
 
 	private fun setViews() {
-		editText_add_category_name.setText(categoryName)
+		editText_refactor_category_name.setText(categoryName)
 		assignFillColor()
 		assignTextColor()
 	}
 
 	private fun setListeners() {
-		view_category_fill_color.setOnClickListener { onColorClicked(ColorDetails(selectedFillColor, ColorTarget.FILL)) }
-		view_category_text_color.setOnClickListener { onColorClicked(ColorDetails(selectedTextColor, ColorTarget.TEXT)) }
+		button_refactor_category_reverse_colors.setOnClickListener { reverseColors() }
+		view_refactor_category_fill_color.setOnClickListener { onColorClicked(ColorDetails(selectedFillColor, ColorTarget.FILL)) }
+		view_refactor_category_text_color.setOnClickListener { onColorClicked(ColorDetails(selectedTextColor, ColorTarget.TEXT)) }
+	}
+
+	private fun reverseColors() {
+		val fillColor = selectedFillColor
+		selectedFillColor = selectedTextColor
+		selectedTextColor = fillColor
 	}
 
 	private fun onColorClicked(colorDetails: ColorDetails) {
@@ -118,8 +127,8 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	}
 
 	private fun onOkListener() = DialogInterface.OnClickListener { _,_ ->
-		if (editText_add_category_name.input.isNotBlank()) {
-			val category = Category(editText_add_category_name.input, selectedFillColor, selectedTextColor)
+		if (editText_refactor_category_name.input.isNotBlank()) {
+			val category = Category(editText_refactor_category_name.input, selectedFillColor, selectedTextColor)
 			when (mode) {
 				Mode.ADD -> viewModel.insert(category)
 				Mode.EDIT -> viewModel.update(category.apply { id = editedCategory.id })
@@ -130,13 +139,13 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	}
 
 	private fun assignFillColor() {
-		view_category_fill_color.setBackgroundColor(selectedFillColor)
-		text_category_preview_value.setBackgroundColor(selectedFillColor)
+		view_refactor_category_fill_color.background.setColorFilter(selectedFillColor, PorterDuff.Mode.SRC) // changes color but not shape
+		text_refactor_category_preview_value.setBackgroundColor(selectedFillColor)
 	}
 
 	private fun assignTextColor() {
-		view_category_text_color.setBackgroundColor(selectedTextColor)
-		text_category_preview_value.setTextColor(selectedTextColor)
+		view_refactor_category_text_color.background.setColorFilter(selectedTextColor, PorterDuff.Mode.SRC)
+		text_refactor_category_preview_value.setTextColor(selectedTextColor)
 	}
 
 	override fun onDetach() {
