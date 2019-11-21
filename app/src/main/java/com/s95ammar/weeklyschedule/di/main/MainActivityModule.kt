@@ -37,11 +37,4 @@ abstract class MainActivityModule {
 	@Binds
 	abstract fun bindMainActivity(mainActivity: MainActivity): Activity
 
-	@Module
-	companion object {
-		@JvmStatic
-		@Provides
-		fun provideCategoriesListAdapter() = CategoriesListAdapter()
-	}
-
 }

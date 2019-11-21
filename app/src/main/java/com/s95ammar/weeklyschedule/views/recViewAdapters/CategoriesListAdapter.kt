@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.ListAdapter
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import kotlinx.android.synthetic.main.item_category.view.*
+import javax.inject.Inject
 
-class CategoriesListAdapter : ListAdapter<Category, CategoriesListAdapter.CategoryViewHolder>(DIFF_CALLBACK) {
-	private var mListener: OnItemClickListener? = null
+class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, CategoriesListAdapter.CategoryViewHolder>(DIFF_CALLBACK) {
+	var onItemClickListener: OnItemClickListener? = null
 
 	companion object {
 		val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Category>() {
@@ -53,19 +54,15 @@ class CategoriesListAdapter : ListAdapter<Category, CategoriesListAdapter.Catego
 			buttonMore.setOnClickListener { onMoreClicked() }
 		}
 
-		private fun onItemClicked() = mListener?.let {
+		private fun onItemClicked() = onItemClickListener?.let {
 			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(adapterPosition)
 		}
 
 
-		private fun onMoreClicked() = mListener?.let {
+		private fun onMoreClicked() = onItemClickListener?.let {
 			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(adapterPosition, buttonMore)
 		}
 
-	}
-
-	fun setOnItemClickedListener(listener: OnItemClickListener) {
-		mListener = listener
 	}
 
 	interface OnItemClickListener {

@@ -2,22 +2,23 @@ package com.s95ammar.weeklyschedule.viewModels
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.models.data.Day
+import com.s95ammar.weeklyschedule.util.ColorDetails
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
 class SchedulesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 	private val t = "log_${javaClass.simpleName}"
 
-	private val _onAddScheduleActionButtonClick = SingleLiveEvent<Unit>()
-	private val _onsetScheduleColorButtonClick = SingleLiveEvent<Int>()
+	private val _showScheduleRefactorDialog = SingleLiveEvent<Schedule?>()
+	private val _editedSchedule = MutableLiveData<Schedule>()
 
-
-	val onAddScheduleActionButtonClick: LiveData<Unit> = _onAddScheduleActionButtonClick
-	val onSetScheduleColorButtonClick: LiveData<Int> = _onsetScheduleColorButtonClick
+	val showScheduleRefactorDialog: LiveData<Schedule?> = _showScheduleRefactorDialog
+	val editedSchedule: LiveData<Schedule> = _editedSchedule
 
 	init {
 		Log.d(t, "init: ")
@@ -38,6 +39,14 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	fun getAllDays() = repo.getAllDays()
 
 
-	fun showScheduleRefactorDialog() = _onAddScheduleActionButtonClick.call()
+	fun showScheduleRefactorDialog(schedule: Schedule? = null) {
+		_showScheduleRefactorDialog.value = schedule
+	}
+
+	fun setEditedSchedule(schedule: Schedule) {
+		_editedSchedule.value = schedule
+	}
+
+	
 
 }

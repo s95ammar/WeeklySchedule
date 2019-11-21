@@ -33,7 +33,6 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 
 	init {
 		Log.d(t, "init: $this")
-
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -56,15 +55,11 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 		})
 	}
 
-	fun insert(category: Category) = viewModel.insert(category)
-	fun update(category: Category) = viewModel.update(category)
-	fun delete(category: Category) = viewModel.delete(category)
-
 	private fun buildRecyclerView() {
 		recyclerView_categories.setHasFixedSize(true)
 		recyclerView_categories.layoutManager = LinearLayoutManager(activity)
 		recyclerView_categories.adapter = listAdapter
-		listAdapter.setOnItemClickedListener(this)
+		listAdapter.onItemClickListener = this
 	}
 
 	private fun onCategoriesChanged(list: List<Category>) {

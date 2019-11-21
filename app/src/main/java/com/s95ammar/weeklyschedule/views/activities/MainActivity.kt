@@ -75,6 +75,9 @@ class MainActivity : DaggerAppCompatActivity() {
 			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog)
 		})
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
+		schedulesListViewModel.showScheduleRefactorDialog.observe(this, Observer {
+			// TODO: open ScheduleRefactorDialog
+		})
 	}
 
 	private fun openColorPicker(colorDetails: ColorDetails) {
