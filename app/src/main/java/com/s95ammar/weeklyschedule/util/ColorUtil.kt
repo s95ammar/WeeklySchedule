@@ -1,8 +1,10 @@
 package com.s95ammar.weeklyschedule.util
 
 import android.graphics.Color
+import androidx.annotation.ColorInt
 
-enum class ColorType { FILL, TEXT }
+enum class ColorTarget { FILL, TEXT }
+class ColorDetails(@ColorInt var color: Int, var target: ColorTarget)
 
 val COLOR_RED = Color.parseColor("#ff0000")
 val COLOR_ORANGE = Color.parseColor("#ff8000")

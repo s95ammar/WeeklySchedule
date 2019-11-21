@@ -30,12 +30,12 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 			field = value
 			editText_add_category_name.setText(categoryName)
 		}
-	@ColorInt private var fillColor = COLOR_GREEN
+	@ColorInt private var selectedFillColor = COLOR_GREEN
 		set(value) {
 			field = value
 			assignFillColor()
 		}
-	@ColorInt private var textColor = COLOR_BLACK
+	@ColorInt private var selectedTextColor = COLOR_BLACK
 		set(value) {
 			field = value
 			assignTextColor()
@@ -84,8 +84,8 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 
 	private fun setModeEdit() {
 		mode = Mode.EDIT
-		fillColor = editedCategory.fillColor
-		textColor = editedCategory.textColor
+		selectedFillColor = editedCategory.fillColor
+		selectedTextColor = editedCategory.textColor
 		categoryName = editedCategory.name
 		dialog?.setTitle(R.string.category_edit_title)
 	}
@@ -97,21 +97,21 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	}
 
 	private fun setListeners() {
-		view_category_fill_color.setOnClickListener { onColorClicked(ColorType.FILL, fillColor) }
-		view_category_text_color.setOnClickListener { onColorClicked(ColorType.TEXT, textColor) }
+		view_category_fill_color.setOnClickListener { onColorClicked(ColorDetails(selectedFillColor, ColorTarget.FILL)) }
+		view_category_text_color.setOnClickListener { onColorClicked(ColorDetails(selectedTextColor, ColorTarget.TEXT)) }
 	}
 
-	private fun onColorClicked(colorType: ColorType, @ColorInt color: Int) {
-		viewModel.showColorPickerDialog(colorType, color)
+	private fun onColorClicked(colorDetails: ColorDetails) {
+		viewModel.showColorPickerDialog(colorDetails)
 		observeColorSelection()
 	}
 
 	private fun observeColorSelection() {
-		viewModel.onCategoryColorSelected.observe(viewLifecycleOwner, Observer { pair ->
-			pair?.let { (type, color) ->
-				when (type) {
-					ColorType.FILL -> fillColor = color
-					ColorType.TEXT -> textColor = color
+		viewModel.onCategoryColorSelected.observe(viewLifecycleOwner, Observer { colorDetails ->
+			colorDetails?.let {
+				when (it.target) {
+					ColorTarget.FILL -> selectedFillColor = it.color
+					ColorTarget.TEXT -> selectedTextColor = it.color
 				}
 			}
 		})
@@ -119,7 +119,7 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 
 	private fun onOkListener() = DialogInterface.OnClickListener { _,_ ->
 		if (editText_add_category_name.input.isNotBlank()) {
-			val category = Category(editText_add_category_name.input, fillColor, textColor)
+			val category = Category(editText_add_category_name.input, selectedFillColor, selectedTextColor)
 			when (mode) {
 				Mode.ADD -> viewModel.insert(category)
 				Mode.EDIT -> viewModel.update(category.apply { id = editedCategory.id })
@@ -130,13 +130,13 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	}
 
 	private fun assignFillColor() {
-		view_category_fill_color.setBackgroundColor(fillColor)
-		text_category_preview_value.setBackgroundColor(fillColor)
+		view_category_fill_color.setBackgroundColor(selectedFillColor)
+		text_category_preview_value.setBackgroundColor(selectedFillColor)
 	}
 
 	private fun assignTextColor() {
-		view_category_text_color.setBackgroundColor(textColor)
-		text_category_preview_value.setTextColor(textColor)
+		view_category_text_color.setBackgroundColor(selectedTextColor)
+		text_category_preview_value.setTextColor(selectedTextColor)
 	}
 
 	override fun onDetach() {

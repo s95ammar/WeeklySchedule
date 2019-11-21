@@ -2,8 +2,6 @@ package com.s95ammar.weeklyschedule.views.activities
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.annotation.ColorInt
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.s95ammar.weeklyschedule.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -76,25 +74,23 @@ class MainActivity : DaggerAppCompatActivity() {
 		categoriesListViewModel.showCategoryRefactorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog)
 		})
-		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { (colorType, color) ->
-			openColorPicker(colorType, color)
-		})
+		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
 	}
 
-	private fun openColorPicker(colorType: ColorType, @ColorInt initialSelection: Int) {
+	private fun openColorPicker(colorDetails: ColorDetails) {
 		MaterialDialog(this).show {
-				title(when (colorType) {
-					ColorType.FILL -> R.string.fill_color
-					ColorType.TEXT -> R.string.text_color
+				title(when (colorDetails.target) {
+					ColorTarget.FILL -> R.string.fill_color
+					ColorTarget.TEXT -> R.string.text_color
 				})
 			colorChooser(
 					MAIN_COLORS_ARRAY,
 					subColors = SHADES_OF_MAIN_COLORS,
 					allowCustomArgb = true,
 					showAlphaSelector = true,
-					initialSelection = initialSelection
+					initialSelection = colorDetails.color
 			) { _, selectedColor ->
-				categoriesListViewModel.setCategoryColor(colorType, selectedColor)
+				categoriesListViewModel.setCategoryColor(ColorDetails(selectedColor, colorDetails.target))
 			}
 			positiveButton(R.string.select)
 			negativeButton(R.string.cancel)
