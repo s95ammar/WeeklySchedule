@@ -14,21 +14,20 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import kotlinx.android.synthetic.main.item_category.view.*
 
-class CategoriesListAdapter: ListAdapter<Category, CategoriesListAdapter.CategoryViewHolder>(DIFF_CALLBACK) {
+class CategoriesListAdapter : ListAdapter<Category, CategoriesListAdapter.CategoryViewHolder>(DIFF_CALLBACK) {
 	private var mListener: OnItemClickListener? = null
 
 	companion object {
-		val DIFF_CALLBACK = object: DiffUtil.ItemCallback<Category>() {
+		val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Category>() {
 			override fun areItemsTheSame(oldItem: Category, newItem: Category) = oldItem.id == newItem.id
 			override fun areContentsTheSame(oldItem: Category, newItem: Category) = oldItem == newItem
 		}
 	}
 
 	// Called when in need for CategoryViewHolder to represent an item
-	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): CategoryViewHolder {
-		val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_category, viewGroup, false)
-		return CategoryViewHolder(view)
-	}
+	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int) = CategoryViewHolder(
+			LayoutInflater.from(viewGroup.context).inflate(R.layout.item_category, viewGroup, false)
+	)
 
 
 	// Called by RecyclerView to display the data at the specified position
@@ -42,10 +41,7 @@ class CategoriesListAdapter: ListAdapter<Category, CategoriesListAdapter.Categor
 		}
 	}
 
-	fun getCategoryAt(position: Int): Category {
-
-		return getItem(position)
-	}
+	fun getCategoryAt(position: Int): Category = getItem(position)
 
 	inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		var tvCategoryName: TextView = itemView.text_category_name
@@ -54,29 +50,18 @@ class CategoriesListAdapter: ListAdapter<Category, CategoriesListAdapter.Categor
 
 		init {
 			itemView.setOnClickListener { onItemClicked() }
+			buttonMore.setOnClickListener { onMoreClicked() }
 		}
 
-		@OnClick
-		fun onItemClicked() {
-			if (mListener != null) {
-				val i = adapterPosition
-				if (i != RecyclerView.NO_POSITION) {
-					mListener?.onItemClicked(i)
-				}
-			}
+		private fun onItemClicked() = mListener?.let {
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(adapterPosition)
 		}
 
-/*
-		@OnClick(R.id.button_more_categories)
-		fun onMoreClicked() {
-			if (mListener != null) {
-				val i = adapterPosition
-				if (i != RecyclerView.NO_POSITION) {
-					mListener?.onMoreClicked(i, buttonMore)
-				}
-			}
+
+		private fun onMoreClicked() = mListener?.let {
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(adapterPosition, buttonMore)
 		}
-*/
+
 	}
 
 	fun setOnItemClickedListener(listener: OnItemClickListener) {
@@ -85,7 +70,7 @@ class CategoriesListAdapter: ListAdapter<Category, CategoriesListAdapter.Categor
 
 	interface OnItemClickListener {
 		fun onItemClicked(i: Int)
-//		fun onMoreClicked(i: Int, buttonMore: Button)
+		fun onMoreClicked(i: Int, buttonMore: Button)
 	}
 
 }

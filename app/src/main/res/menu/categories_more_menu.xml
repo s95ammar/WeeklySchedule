@@ -2,10 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<item
+		android:icon="@drawable/ic_edit_gray"
 		android:id="@+id/categories_more_edit"
 		android:title="@string/edit" />
 
 	<item
+		android:icon="@drawable/ic_delete_gray"
 		android:id="@+id/categories_more_delete"
 		android:title="@string/popup_delete" />
 

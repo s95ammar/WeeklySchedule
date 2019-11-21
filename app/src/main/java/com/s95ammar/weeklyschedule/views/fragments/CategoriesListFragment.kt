@@ -6,6 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -24,7 +28,8 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: CategoriesListViewModel
-	private lateinit var listAdapter: CategoriesListAdapter
+	@Inject
+	lateinit var listAdapter: CategoriesListAdapter
 
 	init {
 		Log.d(t, "init: $this")
@@ -57,7 +62,6 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 
 	private fun buildRecyclerView() {
 		recyclerView_categories.setHasFixedSize(true)
-		listAdapter = CategoriesListAdapter()
 		recyclerView_categories.layoutManager = LinearLayoutManager(activity)
 		recyclerView_categories.adapter = listAdapter
 		listAdapter.setOnItemClickedListener(this)
@@ -66,7 +70,6 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 	private fun onCategoriesChanged(list: List<Category>) {
 		listAdapter.submitList(list)
 		text_no_categories.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
-
 	}
 
 	override fun onItemClicked(i: Int) {
@@ -75,23 +78,24 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 			viewModel.showCategoryRefactorDialog(it)
 		}
 	}
-/*
-	override fun onMoreClicked(i: Int, buttonMore: Button) {
-		val popupMenu = PopupMenu(activity!!, buttonMore)
-		popupMenu.inflate(R.menu.categories_more_menu)
-		popupMenu.setOnMenuItemClickListener { menuItem ->
-			when (menuItem.itemId) {
-				R.id.categories_more_edit -> mListener.showCategoryRefactorDialog(CategoriesList.getInstance().get(i), i) // onOk -> applyCategory(Category category)
-				R.id.categories_more_delete -> deleteCategory(i)
-			}
-			true
-		}
-		val menuHelper = MenuPopupHelper(activity!!, popupMenu.menu as MenuBuilder, buttonMore)
-		menuHelper.setForceShowIcon(true)
-		menuHelper.show()
 
+	override fun onMoreClicked(i: Int, buttonMore: Button) {
+		activity?.let { activity ->
+			val popupMenu = PopupMenu(activity, buttonMore).apply {
+				inflate(R.menu.categories_more_menu)
+				setOnMenuItemClickListener { menuItem ->
+					when (menuItem.itemId) {
+						R.id.categories_more_edit -> onItemClicked(i)
+						R.id.categories_more_delete -> listAdapter.getCategoryAt(i).also { viewModel.delete(it) }
+					}
+					true
+				}
+			}
+			MenuPopupHelper(activity, popupMenu.menu as MenuBuilder, buttonMore).apply {
+				setForceShowIcon(true)
+			}.show()
+		}
 	}
-*/
 
 
 }
