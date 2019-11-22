@@ -20,16 +20,27 @@ val Application.SYSTEM_TIME_PATTERN
 fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
 
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, onChanged: (T) -> Unit) {
-	observe(lifecycleOwner, Observer {
-		removeObservers(lifecycleOwner)
-		onChanged(it)
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+	observe(lifecycleOwner, object : Observer<T> {
+		override fun onChanged(t: T?) {
+			removeObserver(this)
+			observer.onChanged(t)
+		}
+	})
+}
+
+fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
+	observeForever(object : Observer<T> {
+		override fun onChanged(t: T?) {
+			removeObserver(this)
+			observer.onChanged(t)
+		}
 	})
 }
 
 val EditText.input
 	get() = text.toString()
 
-fun toast(context: Context?, @StringRes stringRes: Int) {
-	Toast.makeText(context, stringRes, Toast.LENGTH_SHORT).show()
+fun toast(context: Context?, @StringRes stringRes: Int, length: Int = Toast.LENGTH_SHORT) {
+	Toast.makeText(context, stringRes, length).show()
 }

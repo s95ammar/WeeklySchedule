@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.toast
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 import com.s95ammar.weeklyschedule.views.recViewAdapters.SchedulesListAdapter
 import dagger.android.support.DaggerFragment
@@ -50,7 +52,7 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 
 	private fun startObservers() {
 		viewModel.getAllSchedules().observe(viewLifecycleOwner, Observer {
-			Log.d(t, "startObservers: allCategories onChanged $it")
+			Log.d(t, "startObservers: allSchedules onChanged $it")
 			onSchedulesChanged(it)
 		})
 	}
@@ -73,6 +75,7 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 		}
 	}
 
+	// TODO: break down
 	override fun onMoreClicked(i: Int, buttonMore: Button) {
 		activity?.let { activity ->
 			val popupMenu = PopupMenu(activity, buttonMore).apply {
@@ -83,7 +86,9 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 							viewModel.setEditedSchedule(it)
 							viewModel.showScheduleRefactorDialog(it)
 						}
-						R.id.schedules_more_delete -> listAdapter.getScheduleAt(i).also { viewModel.delete(it) }
+						R.id.schedules_more_delete -> listAdapter.getScheduleAt(i).also {
+							if (!it.isActive) viewModel.delete(it) else toast(activity, R.string.active_schedule_delete_error, Toast.LENGTH_LONG)
+						}
 					}
 					true
 				}
@@ -95,8 +100,15 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 	}
 
 	override fun onSwitchChecked(i: Int, isChecked: Boolean) {
-		listAdapter.getScheduleAt(i).apply { isActive = isChecked }.also { viewModel.update(it) }
-		// TODO
+		val modifiedSchedule = listAdapter.getScheduleAt(i)
+
+		when {
+			!isChecked -> viewModel.deactivateSchedule(modifiedSchedule)
+			isChecked -> when {
+				Schedule.activeExists() -> viewModel.replaceActiveSchedule(modifiedSchedule)
+				Schedule.activeDoesntExist() -> viewModel.activateSchedule(modifiedSchedule)
+			}
+		}
 	}
 
 

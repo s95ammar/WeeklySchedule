@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.COLOR_GRAY
 import com.s95ammar.weeklyschedule.util.COLOR_GREEN
 import com.s95ammar.weeklyschedule.util.SHADES_BLACK
+import com.s95ammar.weeklyschedule.util.SHADES_WHITE
 import kotlinx.android.synthetic.main.item_schedule.view.*
 import javax.inject.Inject
 
@@ -74,7 +76,7 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 				tvIsActive.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 			} else {
 				tvIsActive.setText(R.string.status_inactive)
-				tvIsActive.setTextColor(SHADES_BLACK[5])
+				tvIsActive.setTextColor(COLOR_GRAY)
 				tvIsActive.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
 			}
 

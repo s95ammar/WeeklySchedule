@@ -3,11 +3,13 @@ package com.s95ammar.weeklyschedule.viewModels
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.models.data.Day
 import com.s95ammar.weeklyschedule.util.ColorDetails
+import com.s95ammar.weeklyschedule.util.observeOnce
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
@@ -25,10 +27,11 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	}
 
 	fun insert(schedule: Schedule) = repo.insert(schedule)
-	fun update(schedule: Schedule) = repo.update(schedule)
+	fun update(vararg schedule: Schedule) = repo.update(*schedule)
 	fun delete(schedule: Schedule) = repo.delete(schedule)
 	fun deleteAllSchedules() = repo.deleteAllSchedules()
 	fun getScheduleById(id: Int) = repo.getScheduleById(id)
+	fun getActiveSchedule() = repo.getScheduleById(Schedule.activeScheduleId)
 	fun getAllSchedules() = repo.getAllSchedules()
 
 	fun insert(day: Day) = repo.insert(day)
@@ -38,6 +41,23 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	fun getDayById(id: Int) = repo.getDayById(id)
 	fun getAllDays() = repo.getAllDays()
 
+	fun deactivateSchedule(activeSchedule: Schedule) {
+		activeSchedule.deactivate()
+		update(activeSchedule)
+	}
+
+	fun activateSchedule(newActiveSchedule: Schedule) {
+		newActiveSchedule.selectAsTheActive()
+		update(newActiveSchedule)
+	}
+
+	fun replaceActiveSchedule(newActiveSchedule: Schedule) {
+		getActiveSchedule().observeOnce(Observer { activeSchedule ->
+			activeSchedule.deactivate()
+			newActiveSchedule.selectAsTheActive()
+			update(activeSchedule, newActiveSchedule)
+		})
+	}
 
 	fun showScheduleRefactorDialog(schedule: Schedule? = null) {
 		_showScheduleRefactorDialog.value = schedule

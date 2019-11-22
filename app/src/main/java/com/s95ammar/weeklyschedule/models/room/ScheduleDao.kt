@@ -10,7 +10,7 @@ interface ScheduleDao {
 	suspend fun insert(schedule: Schedule)
 
 	@Update
-	suspend fun update(schedule: Schedule)
+	suspend fun update(vararg schedule: Schedule)
 
 	@Delete
 	suspend fun delete(schedule: Schedule)

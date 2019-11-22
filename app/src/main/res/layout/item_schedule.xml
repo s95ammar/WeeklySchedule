@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/status_inactive"
-            android:textColor="@color/colorDarkerGray"
+            android:textColor="@color/colorGray"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_status"
             app:layout_constraintStart_toEndOf="@+id/textView_status"

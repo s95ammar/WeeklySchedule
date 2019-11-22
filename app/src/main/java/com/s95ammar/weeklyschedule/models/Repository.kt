@@ -24,7 +24,7 @@ class Repository @Inject constructor(
 
 	// Schedule CRUD
 	fun insert(schedule: Schedule) = CoroutineScope(Dispatchers.IO).launch { scheduleDao.insert(schedule) }
-	fun update(schedule: Schedule) = CoroutineScope(Dispatchers.IO).launch { scheduleDao.update(schedule) }
+	fun update(vararg schedule: Schedule) = CoroutineScope(Dispatchers.IO).launch { scheduleDao.update(*schedule) }
 	fun delete(schedule: Schedule) = CoroutineScope(Dispatchers.IO).launch { scheduleDao.delete(schedule) }
 	fun deleteAllSchedules() = CoroutineScope(Dispatchers.IO).launch { scheduleDao.deleteAllSchedules() }
 	fun getScheduleById(id: Int) = scheduleDao.getScheduleById(id)
