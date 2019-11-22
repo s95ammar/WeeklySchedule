@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +18,7 @@ import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
 import dagger.android.support.DaggerDialogFragment
-import kotlinx.android.synthetic.main.dialog_add_category.*
+import kotlinx.android.synthetic.main.dialog_refactor_category.*
 import javax.inject.Inject
 
 
@@ -50,7 +49,7 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	private var dialogView: View? = null
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		dialogView = activity!!.layoutInflater.inflate(R.layout.dialog_add_category, null)
+		dialogView = activity!!.layoutInflater.inflate(R.layout.dialog_refactor_category, null)
 		return AlertDialog.Builder(activity!!)
 				.setView(dialogView)
 				.setTitle(addTitle)

@@ -4,6 +4,7 @@ import com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment
 import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment
 import com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryRefactorDialog
+import com.s95ammar.weeklyschedule.views.fragments.dialogs.ScheduleNamerDialog
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -20,5 +21,8 @@ abstract class MainActivityFragmentsModule {
 
 	@ContributesAndroidInjector
 	abstract fun contributeCategoryRefactorDialog(): CategoryRefactorDialog
+
+	@ContributesAndroidInjector
+	abstract fun contributeScheduleNamerDialog(): ScheduleNamerDialog
 
 }

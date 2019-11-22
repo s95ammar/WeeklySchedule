@@ -79,7 +79,10 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 				inflate(R.menu.schedules_more_menu)
 				setOnMenuItemClickListener { menuItem ->
 					when (menuItem.itemId) {
-						R.id.button_more_schedules -> onItemClicked(i)
+						R.id.schedules_more_rename -> listAdapter.getScheduleAt(i).also {
+							viewModel.setEditedSchedule(it)
+							viewModel.showScheduleRefactorDialog(it)
+						}
 						R.id.schedules_more_delete -> listAdapter.getScheduleAt(i).also { viewModel.delete(it) }
 					}
 					true
@@ -89,6 +92,11 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 				setForceShowIcon(true)
 			}.show()
 		}
+	}
+
+	override fun onSwitchChecked(i: Int, isChecked: Boolean) {
+		listAdapter.getScheduleAt(i).apply { isActive = isChecked }.also { viewModel.update(it) }
+		// TODO
 	}
 
 

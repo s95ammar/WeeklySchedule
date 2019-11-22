@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(indices = [Index("id")])
 data class Schedule(
 		var name: String,
-		var isActive: Boolean
+		var isActive: Boolean = false
 ) {
 	@PrimaryKey(autoGenerate = true)
 	var id: Int =0

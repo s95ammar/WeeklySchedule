@@ -47,6 +47,9 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 		_editedSchedule.value = schedule
 	}
 
-	
+	fun clearRefactorDialogValues() {
+		_editedSchedule.value = null
+	}
+
 
 }

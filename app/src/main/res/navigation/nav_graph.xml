@@ -15,7 +15,11 @@
 		android:id="@id/nav_schedules"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment"
 		android:label="@string/schedules"
-		tools:layout="@layout/fragment_schedules_list" />
+		tools:layout="@layout/fragment_schedules_list" >
+		<action
+			android:id="@+id/action_nav_schedules_to_scheduleNamerDialog"
+			app:destination="@id/scheduleNamerDialog" />
+	</fragment>
 
 	<fragment
 		android:id="@id/nav_categories"
@@ -37,8 +41,13 @@
 		android:id="@+id/categoryRefactorDialog"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryRefactorDialog"
 		android:label="CategoryRefactorDialog"
-		tools:layout="@layout/dialog_add_category">
+		tools:layout="@layout/dialog_refactor_category">
 
 	</dialog>
+	<dialog
+		android:id="@+id/scheduleNamerDialog"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.ScheduleNamerDialog"
+		android:label="ScheduleNamerDialog"
+		tools:layout="@layout/dialog_refactor_schedule"/>
 
 </navigation>

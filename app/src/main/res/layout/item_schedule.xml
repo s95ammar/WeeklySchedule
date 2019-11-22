@@ -14,7 +14,7 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/text_schedule_name"
+            android:id="@+id/textView_schedule_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Schedule name"
@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_status"
+            android:id="@+id/textView_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -34,20 +34,20 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_schedule_name"
-            app:layout_constraintTop_toBottomOf="@+id/text_schedule_name" />
+            app:layout_constraintStart_toStartOf="@+id/textView_schedule_name"
+            app:layout_constraintTop_toBottomOf="@+id/textView_schedule_name" />
 
         <TextView
-            android:id="@+id/text_is_active"
+            android:id="@+id/textView_is_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/status_inactive"
             android:textColor="@color/colorDarkerGray"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/text_status"
-            app:layout_constraintStart_toEndOf="@+id/text_status"
-            app:layout_constraintTop_toTopOf="@+id/text_status" />
+            app:layout_constraintBottom_toBottomOf="@+id/textView_status"
+            app:layout_constraintStart_toEndOf="@+id/textView_status"
+            app:layout_constraintTop_toTopOf="@+id/textView_status" />
 
 
         <Switch
@@ -57,9 +57,9 @@
             android:layout_marginEnd="16dp"
             android:switchPadding="20dp"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/text_status"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_status"
             app:layout_constraintEnd_toStartOf="@+id/button_more_schedules"
-            app:layout_constraintTop_toTopOf="@+id/text_status" />
+            app:layout_constraintTop_toTopOf="@+id/textView_status" />
 
 
 
