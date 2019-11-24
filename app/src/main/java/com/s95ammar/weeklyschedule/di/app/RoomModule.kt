@@ -22,28 +22,20 @@ object RoomModule {
 	@JvmStatic
 	@Provides
 	@Singleton
-	fun provideScheduleDao(db: WeeklyScheduleDatabase): ScheduleDao {
-		return db.getScheduleDao()
-	}
+	fun provideScheduleDao(db: WeeklyScheduleDatabase) = db.getScheduleDao()
 
 	@JvmStatic
 	@Provides
 	@Singleton
-	fun provideDayDao(db: WeeklyScheduleDatabase): DayDao {
-		return db.getDayDao()
-	}
+	fun provideDayDao(db: WeeklyScheduleDatabase) = db.getDayDao()
 
 	@JvmStatic
 	@Provides
 	@Singleton
-	fun provideCategoryDao(db: WeeklyScheduleDatabase): CategoryDao {
-		return db.getCategoryDao()
-	}
+	fun provideCategoryDao(db: WeeklyScheduleDatabase) = db.getCategoryDao()
 
 	@JvmStatic
 	@Provides
 	@Singleton
-	fun provideEventDao(db: WeeklyScheduleDatabase): EventDao {
-		return db.getEventDao()
-	}
+	fun provideEventDao(db: WeeklyScheduleDatabase) = db.getEventDao()
 }

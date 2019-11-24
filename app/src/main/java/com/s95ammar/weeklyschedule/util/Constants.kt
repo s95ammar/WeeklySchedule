@@ -11,5 +11,3 @@ val DEFAULT_TIME = LocalTime(12, 0)
 const val TIME_PATTERN_12H = "hh:mm aa"
 const val TIME_PATTERN_24H = "HH:mm"
 
-// keys
-const val KEY_CATEGORY = "category key"

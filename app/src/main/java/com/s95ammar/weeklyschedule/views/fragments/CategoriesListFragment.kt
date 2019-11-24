@@ -44,7 +44,7 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(CategoriesListViewModel::class.java) }
+		viewModel = ViewModelProviders.of(requireActivity(), factory).get(CategoriesListViewModel::class.java)
 		buildRecyclerView()
 		startObservers()
 		button_add_category.setOnClickListener { viewModel.showCategoryRefactorDialog() }
@@ -58,9 +58,11 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 	}
 
 	private fun buildRecyclerView() {
-		recyclerView_categories.setHasFixedSize(true)
-		recyclerView_categories.layoutManager = LinearLayoutManager(activity)
-		recyclerView_categories.adapter = listAdapter
+		recyclerView_categories.apply {
+			setHasFixedSize(true)
+			layoutManager = LinearLayoutManager(activity)
+			adapter = listAdapter
+		}
 		listAdapter.onItemClickListener = this
 	}
 
@@ -75,9 +77,9 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 			viewModel.showCategoryRefactorDialog(it)
 		}
 	}
-	
-	override fun onMoreClicked(i: Int, buttonMore: Button) = showPopupMenu(activity, R.menu.categories_more_menu, buttonMore,
-			PopupMenu.OnMenuItemClickListener { onMenuItemClick(i, it) })
+
+	override fun onMoreClicked(i: Int, buttonMore: Button) = showPopupMenu(R.menu.categories_more_menu, buttonMore,
+			PopupMenu.OnMenuItemClickListener { menuItem -> onMenuItemClick(i, menuItem) })
 
 	private fun onMenuItemClick(i: Int, menuItem: MenuItem): Boolean {
 		when (menuItem.itemId) {

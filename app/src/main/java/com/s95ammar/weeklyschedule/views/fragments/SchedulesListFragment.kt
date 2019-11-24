@@ -44,7 +44,7 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(SchedulesListViewModel::class.java) }
+		viewModel = ViewModelProviders.of(requireActivity(), factory).get(SchedulesListViewModel::class.java)
 		buildRecyclerView()
 		startObservers()
 		button_add_schedule.setOnClickListener { viewModel.showScheduleRefactorDialog() }
@@ -58,9 +58,11 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 	}
 
 	private fun buildRecyclerView() {
-		recyclerView_schedules.setHasFixedSize(true)
-		recyclerView_schedules.layoutManager = LinearLayoutManager(activity)
-		recyclerView_schedules.adapter = listAdapter
+		recyclerView_schedules.apply {
+			setHasFixedSize(true)
+			layoutManager = LinearLayoutManager(activity)
+			adapter = listAdapter
+		}
 		listAdapter.onItemClickListener = this
 	}
 
@@ -77,9 +79,8 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 
 	override fun onSwitchChecked(i: Int, isChecked: Boolean) = viewModel.handleSwitchChange(listAdapter.getScheduleAt(i), isChecked)
 
-	override fun onMoreClicked(i: Int, buttonMore: Button) = showPopupMenu(activity, R.menu.schedules_more_menu, buttonMore,
-			PopupMenu.OnMenuItemClickListener { onMenuItemClick(i, it) })
-
+	override fun onMoreClicked(i: Int, buttonMore: Button) = showPopupMenu(R.menu.schedules_more_menu, buttonMore,
+			PopupMenu.OnMenuItemClickListener { menuItem -> onMenuItemClick(i, menuItem) })
 
 	private fun onMenuItemClick(i: Int, menuItem: MenuItem): Boolean {
 		when (menuItem.itemId) {
@@ -88,7 +89,7 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 				viewModel.showScheduleRefactorDialog(it)
 			}
 			R.id.schedules_more_delete -> listAdapter.getScheduleAt(i).also {
-				if (!it.isActive) viewModel.delete(it) else toast(activity, R.string.active_schedule_delete_error, Toast.LENGTH_LONG)
+				if (!it.isActive) viewModel.delete(it) else toast(R.string.active_schedule_delete_error, Toast.LENGTH_LONG)
 			}
 		}
 		return true

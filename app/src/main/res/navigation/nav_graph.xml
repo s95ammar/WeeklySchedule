@@ -39,15 +39,15 @@
 
 	<dialog
 		android:id="@+id/categoryRefactorDialog"
-		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryRefactorDialog"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryEditorDialog"
 		android:label="CategoryRefactorDialog"
-		tools:layout="@layout/dialog_refactor_category">
+		tools:layout="@layout/dialog_edit_category">
 
 	</dialog>
 	<dialog
 		android:id="@+id/scheduleNamerDialog"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.ScheduleNamerDialog"
 		android:label="ScheduleNamerDialog"
-		tools:layout="@layout/dialog_refactor_schedule"/>
+		tools:layout="@layout/dialog_edit_schedule"/>
 
 </navigation>

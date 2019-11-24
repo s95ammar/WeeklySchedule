@@ -30,7 +30,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		activity?.let { viewModel = ViewModelProviders.of(it, factory).get(ScheduleViewerViewModel::class.java) }
+		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
 		startObservers()
 	}
 

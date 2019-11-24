@@ -21,7 +21,6 @@ import javax.inject.Singleton
 		]
 )
 interface AppComponent : AndroidInjector<App> {
-//	fun getMainActivityComponentFactory(): MainActivitySubcomponent.Factory
 
 	@Component.Factory
 	interface Factory {
