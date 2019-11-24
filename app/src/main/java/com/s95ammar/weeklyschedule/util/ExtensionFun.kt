@@ -1,13 +1,20 @@
 package com.s95ammar.weeklyschedule.util
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.text.format.DateFormat
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -41,6 +48,19 @@ fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
 val EditText.input
 	get() = text.toString()
 
-fun toast(context: Context?, @StringRes stringRes: Int, length: Int = Toast.LENGTH_SHORT) {
-	Toast.makeText(context, stringRes, length).show()
+fun Fragment.toast(@StringRes stringRes: Int, length: Int = Toast.LENGTH_SHORT) {
+	Toast.makeText(activity, stringRes, length).show()
+}
+
+fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
+	Toast.makeText(activity, msg, length).show()
+}
+
+fun Fragment.showPopupMenu(activity: Activity?, @MenuRes menuRes: Int, anchor: View, listener: PopupMenu.OnMenuItemClickListener?) {
+	activity?.let {
+		val popupMenu = PopupMenu(it, anchor).apply { inflate(menuRes) }
+		MenuPopupHelper(it, popupMenu.menu as MenuBuilder, anchor).apply {
+			setForceShowIcon(true)
+		}.show()
+	}
 }

@@ -4,6 +4,7 @@ package com.s95ammar.weeklyschedule.views.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -20,6 +21,7 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_categories_list.*
 import javax.inject.Inject
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.s95ammar.weeklyschedule.util.showPopupMenu
 import com.s95ammar.weeklyschedule.views.recViewAdapters.CategoriesListAdapter
 
 class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemClickListener {
@@ -73,24 +75,16 @@ class CategoriesListFragment : DaggerFragment(), CategoriesListAdapter.OnItemCli
 			viewModel.showCategoryRefactorDialog(it)
 		}
 	}
+	
+	override fun onMoreClicked(i: Int, buttonMore: Button) = showPopupMenu(activity, R.menu.categories_more_menu, buttonMore,
+			PopupMenu.OnMenuItemClickListener { onMenuItemClick(i, it) })
 
-	override fun onMoreClicked(i: Int, buttonMore: Button) {
-		activity?.let { activity ->
-			val popupMenu = PopupMenu(activity, buttonMore).apply {
-				inflate(R.menu.categories_more_menu)
-				setOnMenuItemClickListener { menuItem ->
-					when (menuItem.itemId) {
-						R.id.categories_more_edit -> onItemClicked(i)
-						R.id.categories_more_delete -> listAdapter.getCategoryAt(i).also { viewModel.delete(it) }
-					}
-					true
-				}
-			}
-			MenuPopupHelper(activity, popupMenu.menu as MenuBuilder, buttonMore).apply {
-				setForceShowIcon(true)
-			}.show()
+	private fun onMenuItemClick(i: Int, menuItem: MenuItem): Boolean {
+		when (menuItem.itemId) {
+			R.id.categories_more_edit -> onItemClicked(i)
+			R.id.categories_more_delete -> listAdapter.getCategoryAt(i).also { viewModel.delete(it) }
 		}
+		return true
 	}
-
 
 }

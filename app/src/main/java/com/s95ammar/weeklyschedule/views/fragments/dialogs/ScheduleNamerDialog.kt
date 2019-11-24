@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -16,6 +17,8 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
+import com.s95ammar.weeklyschedule.views.BlankFieldRequiredException
+import com.s95ammar.weeklyschedule.views.requireNonBlankFields
 import dagger.android.support.DaggerDialogFragment
 import kotlinx.android.synthetic.main.dialog_refactor_schedule.*
 import javax.inject.Inject
@@ -37,8 +40,8 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 	private var dialogView: View? = null
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		dialogView = activity!!.layoutInflater.inflate(R.layout.dialog_refactor_schedule, null)
-		return AlertDialog.Builder(activity!!)
+		dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_refactor_schedule, null)
+		return AlertDialog.Builder(requireActivity())
 				.setView(dialogView)
 				.setTitle(addTitle)
 				.setNegativeButton(R.string.cancel, null)
@@ -78,14 +81,15 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 
 
 	private fun onOkListener() = DialogInterface.OnClickListener { _,_ ->
-		if (editText_refactor_schedule_name.input.isNotBlank()) {
+		try {
+			requireNonBlankFields(editText_refactor_schedule_name to "schedule name")
 			val schedule = Schedule(editText_refactor_schedule_name.input)
 			when (mode) {
 				Mode.ADD -> viewModel.insert(schedule)
 				Mode.EDIT -> viewModel.update(schedule.apply { id = editedSchedule.id })
 			}
-		} else {
-			toast(activity, R.string.schedule_empty_name)
+		} catch (e: BlankFieldRequiredException) {
+			toast(e.message, Toast.LENGTH_LONG)
 		}
 	}
 

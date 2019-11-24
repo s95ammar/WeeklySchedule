@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -17,6 +19,8 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
+import com.s95ammar.weeklyschedule.views.BlankFieldRequiredException
+import com.s95ammar.weeklyschedule.views.requireNonBlankFields
 import dagger.android.support.DaggerDialogFragment
 import kotlinx.android.synthetic.main.dialog_refactor_category.*
 import javax.inject.Inject
@@ -49,8 +53,8 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	private var dialogView: View? = null
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		dialogView = activity!!.layoutInflater.inflate(R.layout.dialog_refactor_category, null)
-		return AlertDialog.Builder(activity!!)
+		dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_refactor_category, null)
+		return AlertDialog.Builder(requireActivity())
 				.setView(dialogView)
 				.setTitle(addTitle)
 				.setNegativeButton(R.string.cancel, null)
@@ -126,14 +130,15 @@ class CategoryRefactorDialog : DaggerDialogFragment() {
 	}
 
 	private fun onOkListener() = DialogInterface.OnClickListener { _,_ ->
-		if (editText_refactor_category_name.input.isNotBlank()) {
+		try {
+			requireNonBlankFields(editText_refactor_category_name to "category name")
 			val category = Category(editText_refactor_category_name.input, selectedFillColor, selectedTextColor)
 			when (mode) {
 				Mode.ADD -> viewModel.insert(category)
 				Mode.EDIT -> viewModel.update(category.apply { id = editedCategory.id })
 			}
-		} else {
-			toast(activity, R.string.category_empty_name)
+		} catch (e: BlankFieldRequiredException) {
+			toast(e.message, Toast.LENGTH_SHORT)
 		}
 	}
 

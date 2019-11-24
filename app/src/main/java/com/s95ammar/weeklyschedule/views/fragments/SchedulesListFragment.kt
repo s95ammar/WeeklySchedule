@@ -4,12 +4,11 @@ package com.s95ammar.weeklyschedule.views.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.showPopupMenu
 import com.s95ammar.weeklyschedule.util.toast
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 import com.s95ammar.weeklyschedule.views.recViewAdapters.SchedulesListAdapter
@@ -75,40 +75,23 @@ class SchedulesListFragment : DaggerFragment(), SchedulesListAdapter.OnItemClick
 		}
 	}
 
-	// TODO: break down
-	override fun onMoreClicked(i: Int, buttonMore: Button) {
-		activity?.let { activity ->
-			val popupMenu = PopupMenu(activity, buttonMore).apply {
-				inflate(R.menu.schedules_more_menu)
-				setOnMenuItemClickListener { menuItem ->
-					when (menuItem.itemId) {
-						R.id.schedules_more_rename -> listAdapter.getScheduleAt(i).also {
-							viewModel.setEditedSchedule(it)
-							viewModel.showScheduleRefactorDialog(it)
-						}
-						R.id.schedules_more_delete -> listAdapter.getScheduleAt(i).also {
-							if (!it.isActive) viewModel.delete(it) else toast(activity, R.string.active_schedule_delete_error, Toast.LENGTH_LONG)
-						}
-					}
-					true
-				}
+	override fun onSwitchChecked(i: Int, isChecked: Boolean) = viewModel.handleSwitchChange(listAdapter.getScheduleAt(i), isChecked)
+
+	override fun onMoreClicked(i: Int, buttonMore: Button) = showPopupMenu(activity, R.menu.schedules_more_menu, buttonMore,
+			PopupMenu.OnMenuItemClickListener { onMenuItemClick(i, it) })
+
+
+	private fun onMenuItemClick(i: Int, menuItem: MenuItem): Boolean {
+		when (menuItem.itemId) {
+			R.id.schedules_more_rename -> listAdapter.getScheduleAt(i).also {
+				viewModel.setEditedSchedule(it)
+				viewModel.showScheduleRefactorDialog(it)
 			}
-			MenuPopupHelper(activity, popupMenu.menu as MenuBuilder, buttonMore).apply {
-				setForceShowIcon(true)
-			}.show()
-		}
-	}
-
-	override fun onSwitchChecked(i: Int, isChecked: Boolean) {
-		val modifiedSchedule = listAdapter.getScheduleAt(i)
-
-		when {
-			!isChecked -> viewModel.deactivateSchedule(modifiedSchedule)
-			isChecked -> when {
-				Schedule.activeExists() -> viewModel.replaceActiveSchedule(modifiedSchedule)
-				Schedule.activeDoesntExist() -> viewModel.activateSchedule(modifiedSchedule)
+			R.id.schedules_more_delete -> listAdapter.getScheduleAt(i).also {
+				if (!it.isActive) viewModel.delete(it) else toast(activity, R.string.active_schedule_delete_error, Toast.LENGTH_LONG)
 			}
 		}
+		return true
 	}
 
 

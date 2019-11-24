@@ -41,24 +41,6 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	fun getDayById(id: Int) = repo.getDayById(id)
 	fun getAllDays() = repo.getAllDays()
 
-	fun deactivateSchedule(activeSchedule: Schedule) {
-		activeSchedule.deactivate()
-		update(activeSchedule)
-	}
-
-	fun activateSchedule(newActiveSchedule: Schedule) {
-		newActiveSchedule.selectAsTheActive()
-		update(newActiveSchedule)
-	}
-
-	fun replaceActiveSchedule(newActiveSchedule: Schedule) {
-		getActiveSchedule().observeOnce(Observer { activeSchedule ->
-			activeSchedule.deactivate()
-			newActiveSchedule.selectAsTheActive()
-			update(activeSchedule, newActiveSchedule)
-		})
-	}
-
 	fun showScheduleRefactorDialog(schedule: Schedule? = null) {
 		_showScheduleRefactorDialog.value = schedule
 	}
@@ -69,6 +51,35 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 
 	fun clearRefactorDialogValues() {
 		_editedSchedule.value = null
+	}
+
+	private fun deactivateSchedule(activeSchedule: Schedule) {
+		activeSchedule.deactivate()
+		update(activeSchedule)
+	}
+
+	private fun activateSchedule(newActiveSchedule: Schedule) {
+		newActiveSchedule.selectAsTheActive()
+		update(newActiveSchedule)
+	}
+
+	private fun replaceActiveSchedule(newActiveSchedule: Schedule) {
+		getActiveSchedule().observeOnce(Observer { activeSchedule ->
+			activeSchedule.deactivate()
+			newActiveSchedule.selectAsTheActive()
+			update(activeSchedule, newActiveSchedule)
+		})
+	}
+
+	fun handleSwitchChange(modifiedSchedule: Schedule, isChecked: Boolean) {
+		when {
+			!isChecked -> deactivateSchedule(modifiedSchedule)
+			isChecked -> when {
+				Schedule.activeExists() -> replaceActiveSchedule(modifiedSchedule)
+				Schedule.activeDoesntExist() -> activateSchedule(modifiedSchedule)
+			}
+		}
+
 	}
 
 
