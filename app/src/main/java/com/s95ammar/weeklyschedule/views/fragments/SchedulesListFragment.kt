@@ -38,7 +38,7 @@ class SchedulesListFragment : AbstractListFragment<Schedule, SchedulesListViewMo
 
 	override fun assignRecyclerView(): RecyclerView = recyclerView_schedules
 
-	override fun assignListAdapter() {
+	override fun initRecViewAdapter() {
 		recyclerView_schedules.adapter = listAdapter
 		listAdapter.onItemClickListener = this
 	}

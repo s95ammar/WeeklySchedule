@@ -14,9 +14,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.android.support.DaggerFragment
 
+/**
+* An abstraction layer for fragments, which are built by the MVVM architecture pattern
+* and display an observable list of items in a RecyclerView, where a popup menu can be
+* opened from any item.
+*
+* @param <T> Type of the List items
+* @param <VM> Type of the fragment's ViewModel
+*
+*/
+
 abstract class AbstractListFragment<T, VM : ViewModel> : DaggerFragment() {
 
-	lateinit var viewModel: VM
+	protected lateinit var viewModel: VM
 	private lateinit var itemsList: LiveData<List<T>>
 	private lateinit var recView: RecyclerView
 
@@ -50,10 +60,10 @@ abstract class AbstractListFragment<T, VM : ViewModel> : DaggerFragment() {
 			setHasFixedSize(true)
 			layoutManager = LinearLayoutManager(activity)
 		}
-		assignListAdapter()
+		initRecViewAdapter()
 	}
 
-	abstract fun assignListAdapter()
+	abstract fun initRecViewAdapter()
 
 	abstract fun onListChanged(itemsList: List<T>)
 

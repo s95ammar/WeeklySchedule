@@ -36,7 +36,7 @@ class CategoriesListFragment : AbstractListFragment<Category, CategoriesListView
 
 	override fun assignRecyclerView(): RecyclerView = recyclerView_categories
 
-	override fun assignListAdapter() {
+	override fun initRecViewAdapter() {
 		recyclerView_categories.adapter = listAdapter
 		listAdapter.onItemClickListener = this
 	}
