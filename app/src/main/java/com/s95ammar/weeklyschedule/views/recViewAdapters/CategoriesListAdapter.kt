@@ -42,7 +42,7 @@ class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, Catego
 		}
 	}
 
-	fun getCategoryAt(position: Int): Category = getItem(position)
+	private fun getCategoryAt(position: Int): Category = getItem(position)
 
 	inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		var tvCategoryName: TextView = itemView.text_category_name
@@ -55,19 +55,19 @@ class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, Catego
 		}
 
 		private fun onItemClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(adapterPosition)
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(getCategoryAt(adapterPosition))
 		}
 
 
 		private fun onMoreClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(adapterPosition, buttonMore)
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(getCategoryAt(adapterPosition), buttonMore)
 		}
 
 	}
 
 	interface OnItemClickListener {
-		fun onItemClicked(i: Int)
-		fun onMoreClicked(i: Int, buttonMore: Button)
+		fun onItemClicked(category: Category)
+		fun onMoreClicked(category: Category, buttonMore: Button)
 	}
 
 }

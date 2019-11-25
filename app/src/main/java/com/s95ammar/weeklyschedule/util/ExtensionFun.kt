@@ -55,13 +55,3 @@ fun Fragment.toast(@StringRes stringRes: Int, length: Int = Toast.LENGTH_SHORT) 
 fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
 	Toast.makeText(activity, msg, length).show()
 }
-
-fun Fragment.showPopupMenu(@MenuRes menuRes: Int, anchor: View, listener: PopupMenu.OnMenuItemClickListener?) {
-	val popupMenu = PopupMenu(requireActivity(), anchor).apply {
-		inflate(menuRes)
-		setOnMenuItemClickListener(listener)
-	}
-	MenuPopupHelper(requireActivity(), popupMenu.menu as MenuBuilder, anchor).apply {
-		setForceShowIcon(true)
-	}.show()
-}

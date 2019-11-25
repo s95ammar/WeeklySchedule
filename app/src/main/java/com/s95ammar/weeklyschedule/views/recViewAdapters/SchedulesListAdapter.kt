@@ -14,8 +14,6 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.COLOR_GRAY
 import com.s95ammar.weeklyschedule.util.COLOR_GREEN
-import com.s95ammar.weeklyschedule.util.SHADES_BLACK
-import com.s95ammar.weeklyschedule.util.SHADES_WHITE
 import kotlinx.android.synthetic.main.item_schedule.view.*
 import javax.inject.Inject
 
@@ -46,7 +44,7 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 		}
 	}
 
-	fun getScheduleAt(position: Int): Schedule = getItem(position)
+	private fun getScheduleAt(position: Int): Schedule = getItem(position)
 
 	inner class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		var tvScheduleName: TextView = itemView.textView_schedule_name
@@ -61,11 +59,11 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 		}
 
 		private fun onItemClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(adapterPosition)
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(getScheduleAt(adapterPosition))
 		}
 
 		private fun onMoreClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(adapterPosition, buttonMore)
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(getScheduleAt(adapterPosition), buttonMore)
 		}
 
 
@@ -80,15 +78,15 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 				tvIsActive.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
 			}
 
-			if (adapterPosition != RecyclerView.NO_POSITION) onItemClickListener?.onSwitchChecked(adapterPosition, isChecked)
+			if (adapterPosition != RecyclerView.NO_POSITION) onItemClickListener?.onSwitchChecked(getScheduleAt(adapterPosition), isChecked)
 
 		}
 	}
 
 	interface OnItemClickListener {
-		fun onItemClicked(i: Int)
-		fun onMoreClicked(i: Int, buttonMore: Button)
-		fun onSwitchChecked(i: Int, isChecked: Boolean)
+		fun onItemClicked(schedule: Schedule)
+		fun onMoreClicked(schedule: Schedule, buttonMore: Button)
+		fun onSwitchChecked(schedule: Schedule, isChecked: Boolean)
 
 	}
 

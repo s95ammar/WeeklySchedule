@@ -95,7 +95,7 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 	}
 
 	override fun onDetach() {
-		viewModel.clearRefactorDialogValues()
+		viewModel.clearNamerDialogValues()
 		super.onDetach()
 	}
 }

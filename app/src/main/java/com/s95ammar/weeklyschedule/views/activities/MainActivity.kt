@@ -1,7 +1,6 @@
 package com.s95ammar.weeklyschedule.views.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import com.s95ammar.weeklyschedule.R
@@ -72,11 +71,11 @@ class MainActivity : DaggerAppCompatActivity() {
 	}
 
 	private fun startObservers() {
-		categoriesListViewModel.showCategoryRefactorDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_categories_to_categoryRefactorDialog)
+		categoriesListViewModel.showCategoryEditorDialog.observe(this, Observer {
+			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog)
 		})
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
-		schedulesListViewModel.showScheduleRefactorDialog.observe(this, Observer {
+		schedulesListViewModel.showScheduleNamerDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_scheduleNamerDialog)
 		})
 	}

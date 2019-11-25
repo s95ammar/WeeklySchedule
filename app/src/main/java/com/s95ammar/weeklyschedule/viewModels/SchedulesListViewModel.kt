@@ -16,10 +16,10 @@ import javax.inject.Inject
 class SchedulesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 	private val t = "log_${javaClass.simpleName}"
 
-	private val _showScheduleRefactorDialog = SingleLiveEvent<Schedule?>()
+	private val _showScheduleNamerDialog = SingleLiveEvent<Schedule?>()
 	private val _editedSchedule = MutableLiveData<Schedule>()
 
-	val showScheduleRefactorDialog: LiveData<Schedule?> = _showScheduleRefactorDialog
+	val showScheduleNamerDialog: LiveData<Schedule?> = _showScheduleNamerDialog
 	val editedSchedule: LiveData<Schedule> = _editedSchedule
 
 	init {
@@ -41,15 +41,15 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	fun getDayById(id: Int) = repo.getDayById(id)
 	fun getAllDays() = repo.getAllDays()
 
-	fun showScheduleRefactorDialog(schedule: Schedule? = null) {
-		_showScheduleRefactorDialog.value = schedule
+	fun showScheduleNamerDialog(schedule: Schedule? = null) {
+		_showScheduleNamerDialog.value = schedule
 	}
 
 	fun setEditedSchedule(schedule: Schedule) {
 		_editedSchedule.value = schedule
 	}
 
-	fun clearRefactorDialogValues() {
+	fun clearNamerDialogValues() {
 		_editedSchedule.value = null
 	}
 

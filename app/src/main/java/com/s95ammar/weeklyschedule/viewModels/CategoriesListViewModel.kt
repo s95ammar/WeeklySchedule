@@ -14,12 +14,12 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	private val t = "log_${javaClass.simpleName}"
 
 	private val _showCategoryColorPicker = SingleLiveEvent<ColorDetails>()
-	private val _showCategoryRefactorDialog = SingleLiveEvent<Category?>()
+	private val _showCategoryEditorDialog = SingleLiveEvent<Category?>()
 	private val _editedCategory = MutableLiveData<Category>()
 	private val _onCategoryColorSelected = MutableLiveData<ColorDetails>()
 
 	val showCategoryColorPicker: LiveData<ColorDetails> = _showCategoryColorPicker
-	val showCategoryRefactorDialog: LiveData<Category?> = _showCategoryRefactorDialog
+	val showCategoryEditorDialog: LiveData<Category?> = _showCategoryEditorDialog
 	val editedCategory: LiveData<Category> = _editedCategory
 	val onCategoryColorSelected: LiveData<ColorDetails> = _onCategoryColorSelected
 
@@ -38,8 +38,8 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 		_showCategoryColorPicker.value = (colorDetails)
 	}
 
-	fun showCategoryRefactorDialog(category: Category? = null) {
-		_showCategoryRefactorDialog.value = category
+	fun showCategoryEditorDialog(category: Category? = null) {
+		_showCategoryEditorDialog.value = category
 	}
 
 	fun setEditedCategory(category: Category) {
@@ -50,7 +50,7 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 		_onCategoryColorSelected.value = colorDetails
 	}
 
-	fun clearRefactorDialogValues() {
+	fun clearEditorDialogValues() {
 		_onCategoryColorSelected.value = null
 		_editedCategory.value = null
 	}

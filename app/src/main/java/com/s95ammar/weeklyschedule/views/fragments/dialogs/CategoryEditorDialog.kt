@@ -1,18 +1,15 @@
 package com.s95ammar.weeklyschedule.views.fragments.dialogs
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -153,7 +150,7 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 	}
 
 	override fun onDetach() {
-		viewModel.clearRefactorDialogValues()
+		viewModel.clearEditorDialogValues()
 		super.onDetach()
 	}
 }

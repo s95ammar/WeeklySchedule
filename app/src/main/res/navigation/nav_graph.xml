@@ -27,8 +27,8 @@
 		android:label="@string/categories"
 		tools:layout="@layout/fragment_categories_list">
 		<action
-			android:id="@+id/action_nav_categories_to_categoryRefactorDialog"
-			app:destination="@id/categoryRefactorDialog" />
+			android:id="@+id/action_nav_categories_to_categoryEditorDialog"
+			app:destination="@id/categoryEditorDialog" />
 	</fragment>
 
 	<fragment
@@ -38,9 +38,9 @@
 		tools:layout="@layout/fragment_info" />
 
 	<dialog
-		android:id="@+id/categoryRefactorDialog"
+		android:id="@+id/categoryEditorDialog"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryEditorDialog"
-		android:label="CategoryRefactorDialog"
+		android:label="CategoryEditorDialog"
 		tools:layout="@layout/dialog_edit_category">
 
 	</dialog>
