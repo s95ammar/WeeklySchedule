@@ -18,7 +18,9 @@ import com.s95ammar.weeklyschedule.views.recViewAdapters.CategoriesListAdapter
 import kotlinx.android.synthetic.main.fragment_categories_list.*
 import javax.inject.Inject
 
-class CategoriesListFragment : AbstractListFragment<Category, CategoriesListViewModel>(), CategoriesListAdapter.OnItemClickListener {
+class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesListViewModel, CategoriesListAdapter>(),
+		CategoriesListAdapter.OnItemClickListener {
+
 	private val t = "log_${javaClass.simpleName}"
 
 	@Inject lateinit var factory: ViewModelProvider.Factory
@@ -36,10 +38,7 @@ class CategoriesListFragment : AbstractListFragment<Category, CategoriesListView
 
 	override fun assignRecyclerView(): RecyclerView = recyclerView_categories
 
-	override fun initRecViewAdapter() {
-		recyclerView_categories.adapter = listAdapter
-		listAdapter.onItemClickListener = this
-	}
+	override fun assignListAdapter() = listAdapter.apply { onItemClickListener = this@CategoriesListFragment }
 
 	override fun onListChanged(itemsList: List<Category>) {
 		listAdapter.submitList(itemsList)

@@ -13,14 +13,14 @@ import javax.inject.Inject
 class CategoriesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 	private val t = "log_${javaClass.simpleName}"
 
-	private val _showCategoryColorPicker = SingleLiveEvent<ColorDetails>()
-	private val _showCategoryEditorDialog = SingleLiveEvent<Category?>()
 	private val _editedCategory = MutableLiveData<Category>()
+	private val _showCategoryEditorDialog = SingleLiveEvent<Category?>()
+	private val _showCategoryColorPicker = SingleLiveEvent<ColorDetails>()
 	private val _onCategoryColorSelected = MutableLiveData<ColorDetails>()
 
-	val showCategoryColorPicker: LiveData<ColorDetails> = _showCategoryColorPicker
-	val showCategoryEditorDialog: LiveData<Category?> = _showCategoryEditorDialog
 	val editedCategory: LiveData<Category> = _editedCategory
+	val showCategoryEditorDialog: LiveData<Category?> = _showCategoryEditorDialog
+	val showCategoryColorPicker: LiveData<ColorDetails> = _showCategoryColorPicker
 	val onCategoryColorSelected: LiveData<ColorDetails> = _onCategoryColorSelected
 
 	init {
@@ -34,16 +34,16 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	fun getCategoryById(id: Int) = repo.getCategoryById(id)
 	fun getAllCategories() = repo.getAllCategories()
 
-	fun showColorPickerDialog(colorDetails: ColorDetails) {
-		_showCategoryColorPicker.value = (colorDetails)
+	fun setEditedCategory(category: Category) {
+		_editedCategory.value = category
 	}
 
 	fun showCategoryEditorDialog(category: Category? = null) {
 		_showCategoryEditorDialog.value = category
 	}
 
-	fun setEditedCategory(category: Category) {
-		_editedCategory.value = category
+	fun showColorPickerDialog(colorDetails: ColorDetails) {
+		_showCategoryColorPicker.value = (colorDetails)
 	}
 
 	fun setCategoryColor(colorDetails: ColorDetails) {

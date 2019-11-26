@@ -20,7 +20,9 @@ import com.s95ammar.weeklyschedule.views.recViewAdapters.SchedulesListAdapter
 import kotlinx.android.synthetic.main.fragment_schedules_list.*
 import javax.inject.Inject
 
-class SchedulesListFragment : AbstractListFragment<Schedule, SchedulesListViewModel>(), SchedulesListAdapter.OnItemClickListener {
+class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesListViewModel, SchedulesListAdapter>(),
+		SchedulesListAdapter.OnItemClickListener {
+
 	private val t = "log_${javaClass.simpleName}"
 
 	@Inject lateinit var factory: ViewModelProvider.Factory
@@ -38,10 +40,7 @@ class SchedulesListFragment : AbstractListFragment<Schedule, SchedulesListViewMo
 
 	override fun assignRecyclerView(): RecyclerView = recyclerView_schedules
 
-	override fun initRecViewAdapter() {
-		recyclerView_schedules.adapter = listAdapter
-		listAdapter.onItemClickListener = this
-	}
+	override fun assignListAdapter() = listAdapter.apply { onItemClickListener = this@SchedulesListFragment }
 
 	override fun onListChanged(itemsList: List<Schedule>) {
 		listAdapter.submitList(itemsList)

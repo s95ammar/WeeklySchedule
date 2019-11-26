@@ -11,24 +11,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dagger.android.support.DaggerFragment
 
 /**
-* An abstraction layer for fragments, which are built by the MVVM architecture pattern
-* and display an observable list of items in a RecyclerView, where a popup menu can be
-* opened from any item.
+* An abstraction layer for fragments, which are built by the MVVM architecture pattern,
+* Injected by Dagger and display an observable list of items in a RecyclerView
 *
 * @param <T> Type of the List items
 * @param <VM> Type of the fragment's ViewModel
+* @param <LA> Type of the ListAdapter, used in the RecyclerView
 *
 */
 
-abstract class AbstractListFragment<T, VM : ViewModel> : DaggerFragment() {
+abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T, out RecyclerView.ViewHolder>> : DaggerFragment() {
 
 	protected lateinit var viewModel: VM
 	private lateinit var itemsList: LiveData<List<T>>
-	private lateinit var recView: RecyclerView
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -41,10 +41,9 @@ abstract class AbstractListFragment<T, VM : ViewModel> : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = initViewModel()
 		itemsList = assignItemsList()
-		recView = assignRecyclerView()
 		buildRecyclerView()
 		itemsList.observe(viewLifecycleOwner, Observer {
-			Log.d("log_${javaClass.simpleName}", "onActivityCreated: $it");
+			Log.d("log_${javaClass.simpleName}", "onActivityCreated: $it")
 			onListChanged(it)
 		})
 	}
@@ -53,19 +52,23 @@ abstract class AbstractListFragment<T, VM : ViewModel> : DaggerFragment() {
 
 	abstract fun assignItemsList(): LiveData<List<T>>
 
+	abstract fun onListChanged(itemsList: List<T>)
+
 	abstract fun assignRecyclerView(): RecyclerView
 
+	abstract fun assignListAdapter(): LA
+
 	private fun buildRecyclerView() {
+		val recView = assignRecyclerView()
+		val listAdapter = assignListAdapter()
+
 		recView.apply {
 			setHasFixedSize(true)
 			layoutManager = LinearLayoutManager(activity)
+			adapter = listAdapter
 		}
-		initRecViewAdapter()
+
 	}
-
-	abstract fun initRecViewAdapter()
-
-	abstract fun onListChanged(itemsList: List<T>)
 
 	fun showPopupMenu(@MenuRes menuRes: Int, anchor: View, listener: PopupMenu.OnMenuItemClickListener?) {
 		val popupMenu = PopupMenu(requireActivity(), anchor).apply {
