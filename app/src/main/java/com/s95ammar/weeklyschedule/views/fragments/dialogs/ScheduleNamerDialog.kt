@@ -1,13 +1,11 @@
 package com.s95ammar.weeklyschedule.views.fragments.dialogs
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -15,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
-import com.s95ammar.weeklyschedule.util.Mode
+import com.s95ammar.weeklyschedule.util.ListMode
 import com.s95ammar.weeklyschedule.util.input
 import com.s95ammar.weeklyschedule.util.toast
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
@@ -27,7 +25,7 @@ import javax.inject.Inject
 
 
 class ScheduleNamerDialog : DaggerDialogFragment() {
-	private var mode = Mode.ADD
+	private var mode = ListMode.ADD
 	private lateinit var editedSchedule: Schedule
 	private var scheduleName = ""
 		set(value) {
@@ -35,8 +33,7 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 			editText_edit_schedule_name.setText(scheduleName)
 		}
 
-	@Inject
-	lateinit var factory: ViewModelProvider.Factory
+	@Inject lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: SchedulesListViewModel
 	private var dialogView: View? = null
 
@@ -75,24 +72,27 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 	}
 
 	private fun setModeEdit() {
-		mode = Mode.EDIT
+		mode = ListMode.EDIT
 		scheduleName = editedSchedule.name
 		dialog?.setTitle(R.string.schedule_rename_title)
 	}
 
-
-	private fun onOkListener() = DialogInterface.OnClickListener { _,_ ->
+	private fun onOkListener() = DialogInterface.OnClickListener { _, _ ->
 		try {
 			requireNonBlankFields(editText_edit_schedule_name to "schedule name")
-			val schedule = Schedule(editText_edit_schedule_name.input)
 			when (mode) {
-				Mode.ADD -> viewModel.insert(schedule)
-				Mode.EDIT -> viewModel.update(schedule.apply { id = editedSchedule.id })
+				ListMode.ADD -> viewModel.insert(Schedule(editText_edit_schedule_name.input))
+				ListMode.EDIT -> viewModel.update(getUpdatedSchedule())
 			}
 		} catch (e: BlankFieldRequiredException) {
 			toast(e.message, Toast.LENGTH_LONG)
 		}
 	}
+
+	private fun getUpdatedSchedule() = Schedule(
+			editText_edit_schedule_name.input,
+			editedSchedule.isActive
+	).apply { id = editedSchedule.id }
 
 	override fun onDetach() {
 		viewModel.clearNamerDialogValues()
