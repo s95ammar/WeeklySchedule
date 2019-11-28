@@ -29,6 +29,6 @@ data class Schedule(
 		var activeScheduleId: Int = 0
 
 		fun activeExists() = (activeScheduleId != 0)
-		fun activeDoesntExist() = (activeScheduleId == 0) // just for better readability purposes
+		fun activeDoesntExist() = !activeExists() // just for better readability purposes
 	}
 }

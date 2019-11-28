@@ -35,28 +35,16 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 		setListeners()
 	}
 
-	abstract fun setListeners()
-
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = initViewModel()
 		itemsList = assignItemsList()
 		buildRecyclerView()
 		itemsList.observe(viewLifecycleOwner, Observer {
-			Log.d("log_${javaClass.simpleName}", "onActivityCreated: $it")
+			Log.d("log_${javaClass.simpleName}", "onListChanged: $it")
 			onListChanged(it)
 		})
 	}
-
-	abstract fun initViewModel(): VM
-
-	abstract fun assignItemsList(): LiveData<List<T>>
-
-	abstract fun onListChanged(itemsList: List<T>)
-
-	abstract fun assignRecyclerView(): RecyclerView
-
-	abstract fun assignListAdapter(): LA
 
 	private fun buildRecyclerView() {
 		val recView = assignRecyclerView()
@@ -79,4 +67,16 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 				.apply { setForceShowIcon(true) }
 				.show()
 	}
+
+	abstract fun setListeners()
+
+	abstract fun initViewModel(): VM
+
+	abstract fun assignItemsList(): LiveData<List<T>>
+
+	abstract fun onListChanged(itemsList: List<T>)
+
+	abstract fun assignRecyclerView(): RecyclerView
+
+	abstract fun assignListAdapter(): LA
 }

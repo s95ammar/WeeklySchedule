@@ -21,8 +21,6 @@ import javax.inject.Inject
 class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesListViewModel, CategoriesListAdapter>(),
 		CategoriesListAdapter.OnItemClickListener {
 
-	private val t = "log_${javaClass.simpleName}"
-
 	@Inject lateinit var factory: ViewModelProvider.Factory
 	@Inject lateinit var listAdapter: CategoriesListAdapter
 

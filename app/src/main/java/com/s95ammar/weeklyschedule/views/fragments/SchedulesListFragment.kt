@@ -23,8 +23,6 @@ import javax.inject.Inject
 class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesListViewModel, SchedulesListAdapter>(),
 		SchedulesListAdapter.OnItemClickListener {
 
-	private val t = "log_${javaClass.simpleName}"
-
 	@Inject lateinit var factory: ViewModelProvider.Factory
 	@Inject lateinit var listAdapter: SchedulesListAdapter
 
@@ -64,7 +62,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 				viewModel.setEditedSchedule(it)
 				viewModel.showScheduleNamerDialog(it)
 			}
-			R.id.schedules_more_delete -> schedule.also {
+			R.id.schedules_more_delete -> schedule.let {
 				if (!it.isActive) viewModel.delete(it) else toast(R.string.active_schedule_delete_error, Toast.LENGTH_LONG)
 			}
 		}
