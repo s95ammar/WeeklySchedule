@@ -4,22 +4,25 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.lifecycle.Observer
-import com.s95ammar.weeklyschedule.R
-import kotlinx.android.synthetic.main.activity_main.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.*
-import dagger.android.support.DaggerAppCompatActivity
-import javax.inject.Inject
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
+import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
+import dagger.android.support.DaggerAppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 
 class MainActivity : DaggerAppCompatActivity() {
@@ -32,10 +35,8 @@ class MainActivity : DaggerAppCompatActivity() {
 	private lateinit var navController: NavController
 	private lateinit var appBarConfig: AppBarConfiguration
 
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		Schedule.activeScheduleId = loadActiveScheduleId().also { Log.d(t, "loadActiveScheduleId: $it") }
 		setContentView(R.layout.activity_main)
 		scheduleViewerViewModel = ViewModelProviders.of(this, factory).get(ScheduleViewerViewModel::class.java)
 		schedulesListViewModel = ViewModelProviders.of(this, factory).get(SchedulesListViewModel::class.java)
@@ -43,9 +44,6 @@ class MainActivity : DaggerAppCompatActivity() {
 		startObservers()
 		initNavController()
 	}
-
-	private fun loadActiveScheduleId() = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-			.getInt(ACTIVE_SCHEDULE_ID_KEY, 0)
 
 	private fun initNavController() {
 		val topLevelDestinations = setOf(R.id.nav_active_schedule, R.id.nav_schedules, R.id.nav_categories)
@@ -77,7 +75,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
 	private fun startObservers() {
 		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
-
+		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		categoriesListViewModel.showCategoryEditorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog)
 		})
@@ -114,11 +112,6 @@ class MainActivity : DaggerAppCompatActivity() {
 				.edit()
 				.putInt(ACTIVE_SCHEDULE_ID_KEY, activeScheduleId)
 				.apply()
-	}
-
-	override fun onDestroy() {
-		saveActiveScheduleId(Schedule.activeScheduleId)
-		super.onDestroy()
 	}
 
 }

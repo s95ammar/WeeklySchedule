@@ -1,6 +1,5 @@
 package com.s95ammar.weeklyschedule.models.data
 
-import android.util.Log
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -15,14 +14,10 @@ data class Schedule(
 
 	fun selectAsTheActive() {
 		isActive = true
-		activeScheduleId = id
 	}
 
 	fun deactivate() {
-		if (isActive) {
-			isActive = false
-			activeScheduleId = 0
-		}
+		isActive = false
 	}
 
 	companion object {

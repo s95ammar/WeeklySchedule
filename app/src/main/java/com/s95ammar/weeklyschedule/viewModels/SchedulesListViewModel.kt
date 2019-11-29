@@ -6,9 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
-import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.models.data.Day
-import com.s95ammar.weeklyschedule.util.ColorDetails
+import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.observeOnce
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
@@ -18,9 +17,11 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 
 	private val _editedSchedule = MutableLiveData<Schedule>()
 	private val _showScheduleNamerDialog = SingleLiveEvent<Schedule?>()
+	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
 
 	val editedSchedule: LiveData<Schedule> = _editedSchedule
 	val showScheduleNamerDialog: LiveData<Schedule?> = _showScheduleNamerDialog
+	val onActiveScheduleIdChanged: LiveData<Unit> = _onActiveScheduleChanged
 
 	init {
 		Log.d(t, "init: ")
@@ -53,30 +54,40 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 		_editedSchedule.value = null
 	}
 
-	private fun deactivateSchedule(activeSchedule: Schedule) {
-		activeSchedule.deactivate()
-		update(activeSchedule)
+	private fun manageScheduleDeactivation(schedule: Schedule) {
+		if (schedule.isActive) {
+			schedule.deactivate()
+			setActiveScheduleId(0)
+			update(schedule)
+		}
 	}
 
-	private fun activateSchedule(newActiveSchedule: Schedule) {
-		newActiveSchedule.selectAsTheActive()
-		update(newActiveSchedule)
+	private fun manageScheduleActivation(schedule: Schedule) {
+		schedule.selectAsTheActive()
+		setActiveScheduleId(schedule.id)
+		update(schedule)
 	}
 
-	private fun replaceActiveSchedule(newActiveSchedule: Schedule) {
+	private fun manageActiveScheduleReplacement(newActiveSchedule: Schedule) {
 		getActiveSchedule().observeOnce(Observer { activeSchedule ->
 			activeSchedule.deactivate()
 			newActiveSchedule.selectAsTheActive()
+			setActiveScheduleId(newActiveSchedule.id)
 			update(activeSchedule, newActiveSchedule)
 		})
 	}
 
+	private fun setActiveScheduleId(id: Int) {
+		Schedule.activeScheduleId = id
+		_onActiveScheduleChanged.call()
+	}
+
 	fun handleSwitchChange(modifiedSchedule: Schedule, isChecked: Boolean) {
 		when {
-			!isChecked -> deactivateSchedule(modifiedSchedule)
+			!isChecked -> manageScheduleDeactivation(modifiedSchedule)
 			isChecked -> when {
-				Schedule.activeExists() -> replaceActiveSchedule(modifiedSchedule)
-				Schedule.activeDoesntExist() -> activateSchedule(modifiedSchedule)
+				Schedule.activeExists() -> manageActiveScheduleReplacement(modifiedSchedule)
+				Schedule.activeDoesntExist() -> manageScheduleActivation(modifiedSchedule)
 			}
 		}
 
