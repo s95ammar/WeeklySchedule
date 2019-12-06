@@ -80,8 +80,8 @@ class MainActivity : DaggerAppCompatActivity() {
 			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog)
 		})
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
-		schedulesListViewModel.showScheduleNamerDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_schedules_to_scheduleNamerDialog)
+		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
+			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
 		})
 	}
 

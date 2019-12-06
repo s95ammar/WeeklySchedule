@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--TODO: android:onClick="editListener"-->
     <item
         android:visible="false"
         android:id="@+id/button_edit"
@@ -10,7 +9,6 @@
         app:showAsAction="ifRoom"
         android:title="@string/edit" />
 
-    <!--TODO: android:onClick="doneListener"-->
     <item
         android:visible="false"
         android:id="@+id/button_done"

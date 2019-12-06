@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Day
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.launchIO
 import com.s95ammar.weeklyschedule.util.observeOnce
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
@@ -16,41 +17,43 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	private val t = "log_${javaClass.simpleName}"
 
 	private val _editedSchedule = MutableLiveData<Schedule>()
-	private val _showScheduleNamerDialog = SingleLiveEvent<Schedule?>()
+	private val _showScheduleEditorDialog = SingleLiveEvent<Unit>()
 	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
 
 	val editedSchedule: LiveData<Schedule> = _editedSchedule
-	val showScheduleNamerDialog: LiveData<Schedule?> = _showScheduleNamerDialog
+	val showScheduleEditorDialog: LiveData<Unit> = _showScheduleEditorDialog
 	val onActiveScheduleIdChanged: LiveData<Unit> = _onActiveScheduleChanged
 
 	init {
 		Log.d(t, "init: ")
 	}
 
-	fun insert(schedule: Schedule) = repo.insert(schedule)
-	fun update(vararg schedule: Schedule) = repo.update(*schedule)
-	fun delete(schedule: Schedule) = repo.delete(schedule)
-	fun deleteAllSchedules() = repo.deleteAllSchedules()
-	fun getScheduleById(id: Int) = repo.getScheduleById(id)
+	fun insertScheduleWithDays(schedule: Schedule) {
+		launchIO {
+			val scheduleId = repo.insertAndReturnId(schedule).toInt()
+			for (dayNumInSchedule in 0 until schedule.daysAmount)
+				insert(Day(Day.getDayOfWeek(dayNumInSchedule), scheduleId))
+		}
+	}
+
+	fun update(vararg schedule: Schedule) = launchIO { repo.update(*schedule) }
+	fun delete(schedule: Schedule) = launchIO { repo.delete(schedule) }
 	fun getActiveSchedule() = repo.getScheduleById(Schedule.activeScheduleId)
 	fun getAllSchedules() = repo.getAllSchedules()
 
-	fun insert(day: Day) = repo.insert(day)
-	fun update(day: Day) = repo.update(day)
-	fun delete(day: Day) = repo.delete(day)
-	fun deleteAllDays() = repo.deleteAllDays()
+	fun insert(day: Day) = launchIO { repo.insert(day) }
+	fun update(day: Day) = launchIO { repo.update(day) }
 	fun getDayById(id: Int) = repo.getDayById(id)
+	fun getDaysByScheduleId(scheduleId: Int) = repo.getDaysByScheduleId(scheduleId)
 	fun getAllDays() = repo.getAllDays()
 
 	fun setEditedSchedule(schedule: Schedule) {
 		_editedSchedule.value = schedule
 	}
 
-	fun showScheduleNamerDialog(schedule: Schedule? = null) {
-		_showScheduleNamerDialog.value = schedule
-	}
+	fun showScheduleEditorDialog() = _showScheduleEditorDialog.call()
 
-	fun clearNamerDialogValues() {
+	fun clearEditorDialogValues() {
 		_editedSchedule.value = null
 	}
 
@@ -63,7 +66,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	}
 
 	private fun manageScheduleActivation(schedule: Schedule) {
-		schedule.selectAsTheActive()
+		schedule.activate()
 		setActiveScheduleId(schedule.id)
 		update(schedule)
 	}
@@ -71,7 +74,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	private fun manageActiveScheduleReplacement(newActiveSchedule: Schedule) {
 		getActiveSchedule().observeOnce(Observer { activeSchedule ->
 			activeSchedule.deactivate()
-			newActiveSchedule.selectAsTheActive()
+			newActiveSchedule.activate()
 			setActiveScheduleId(newActiveSchedule.id)
 			update(activeSchedule, newActiveSchedule)
 		})

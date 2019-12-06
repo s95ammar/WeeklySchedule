@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.util.ColorDetails
+import com.s95ammar.weeklyschedule.util.launchIO
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
@@ -27,10 +28,10 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 		Log.d(t, "init: ")
 	}
 
-	fun insert(category: Category) = repo.insert(category)
-	fun update(category: Category) = repo.update(category)
-	fun delete(category: Category) = repo.delete(category)
-	fun deleteAllCategories() = repo.deleteAllCategories()
+	fun insert(category: Category) = launchIO { repo.insert(category) }
+	fun update(category: Category) = launchIO { repo.update(category) }
+	fun delete(category: Category) = launchIO { repo.delete(category) }
+	fun deleteAllCategories() = launchIO { repo.deleteAllCategories() }
 	fun getCategoryById(id: Int) = repo.getCategoryById(id)
 	fun getAllCategories() = repo.getAllCategories()
 

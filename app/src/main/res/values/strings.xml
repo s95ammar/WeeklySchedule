@@ -56,6 +56,12 @@
     <string name="schedule_rename_title">Rename Schedule</string>
     <string name="schedule_empty_name">Schedule was not created because name was blank</string>
 	<string name="active_schedule_delete_error">Cannot delete active schedule. Please deactive it first, if you really want to delete it</string>
+    <string name="days">Days:</string>
 
+    <string-array
+        name="days_amount">
+        <item>7</item>
+        <item>14</item>
+    </string-array>
 
 </resources>

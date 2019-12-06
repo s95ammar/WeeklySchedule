@@ -7,7 +7,7 @@ import com.s95ammar.weeklyschedule.models.data.Schedule
 @Dao
 interface ScheduleDao {
 	@Insert
-	suspend fun insert(schedule: Schedule)
+	suspend fun insertAndReturnId(schedule: Schedule): Long
 
 	@Update
 	suspend fun update(vararg schedule: Schedule)

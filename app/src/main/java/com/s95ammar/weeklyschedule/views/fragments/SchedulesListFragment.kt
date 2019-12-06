@@ -30,7 +30,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 		return inflater.inflate(R.layout.fragment_schedules_list, container, false)
 	}
 
-	override fun setListeners() = button_add_schedule.setOnClickListener { viewModel.showScheduleNamerDialog() }
+	override fun setListeners() = button_add_schedule.setOnClickListener { viewModel.showScheduleEditorDialog() }
 
 	override fun initViewModel() = ViewModelProviders.of(requireActivity(), factory).get(SchedulesListViewModel::class.java)
 
@@ -60,7 +60,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 		when (menuItem.itemId) {
 			R.id.schedules_more_rename -> schedule.let {
 				viewModel.setEditedSchedule(it)
-				viewModel.showScheduleNamerDialog(it)
+				viewModel.showScheduleEditorDialog()
 			}
 			R.id.schedules_more_delete -> schedule.let {
 				if (!it.isActive) viewModel.delete(it) else toast(R.string.active_schedule_delete_error, Toast.LENGTH_LONG)

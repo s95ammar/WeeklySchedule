@@ -5,7 +5,9 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -21,10 +23,11 @@ import com.s95ammar.weeklyschedule.views.BlankFieldRequiredException
 import com.s95ammar.weeklyschedule.views.requireNonBlankFields
 import dagger.android.support.DaggerDialogFragment
 import kotlinx.android.synthetic.main.dialog_edit_schedule.*
+import kotlinx.android.synthetic.main.dialog_edit_schedule.view.*
 import javax.inject.Inject
 
 
-class ScheduleNamerDialog : DaggerDialogFragment() {
+class ScheduleEditorDialog : DaggerDialogFragment() {
 	private var mode = ListMode.ADD
 	private lateinit var editedSchedule: Schedule
 	private var scheduleName = ""
@@ -39,6 +42,7 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_edit_schedule, null)
+		setUpDaysSpinner()
 		return AlertDialog.Builder(requireActivity())
 				.setView(dialogView)
 				.setTitle(R.string.schedule_add_title)
@@ -73,15 +77,21 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 
 	private fun setModeEdit() {
 		mode = ListMode.EDIT
+		textView_edit_schedule_days.visibility = GONE
+		spinner_edit_schedule.visibility = GONE
 		scheduleName = editedSchedule.name
 		dialog?.setTitle(R.string.schedule_rename_title)
 	}
 
+	private val t = "log_${javaClass.simpleName}"
 	private fun onOkListener() = DialogInterface.OnClickListener { _, _ ->
 		try {
 			requireNonBlankFields(editText_edit_schedule_name to "schedule name")
 			when (mode) {
-				ListMode.ADD -> viewModel.insert(Schedule(editText_edit_schedule_name.input))
+				ListMode.ADD -> {
+					val newSchedule = Schedule(editText_edit_schedule_name.input, spinner_edit_schedule.selectedItem.toString().toInt())
+					viewModel.insertScheduleWithDays(newSchedule)
+				}
 				ListMode.EDIT -> viewModel.update(getUpdatedSchedule())
 			}
 		} catch (e: BlankFieldRequiredException) {
@@ -89,13 +99,31 @@ class ScheduleNamerDialog : DaggerDialogFragment() {
 		}
 	}
 
+	private fun setUpDaysSpinner() {
+		dialogView?.rootView?.spinner_edit_schedule?.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+			override fun onNothingSelected(parent: AdapterView<*>?) {
+
+			}
+
+			// TODO: implement
+			override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+				if (position != 0) {
+					parent.setSelection(0)
+					toast("Feature not yet implemented")
+				}
+			}
+		}
+	}
+
+
 	private fun getUpdatedSchedule() = Schedule(
 			editText_edit_schedule_name.input,
+			editedSchedule.daysAmount,
 			editedSchedule.isActive
 	).apply { id = editedSchedule.id }
 
 	override fun onDetach() {
-		viewModel.clearNamerDialogValues()
+		viewModel.clearEditorDialogValues()
 		super.onDetach()
 	}
 }

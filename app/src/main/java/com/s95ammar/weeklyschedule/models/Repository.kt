@@ -8,9 +8,8 @@ import com.s95ammar.weeklyschedule.models.room.CategoryDao
 import com.s95ammar.weeklyschedule.models.room.DayDao
 import com.s95ammar.weeklyschedule.models.room.EventDao
 import com.s95ammar.weeklyschedule.models.room.ScheduleDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.s95ammar.weeklyschedule.util.launchIO
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,34 +22,35 @@ class Repository @Inject constructor(
 ) {
 
 	// Schedule CRUD
-	fun insert(schedule: Schedule) = CoroutineScope(Dispatchers.IO).launch { scheduleDao.insert(schedule) }
-	fun update(vararg schedule: Schedule) = CoroutineScope(Dispatchers.IO).launch { scheduleDao.update(*schedule) }
-	fun delete(schedule: Schedule) = CoroutineScope(Dispatchers.IO).launch { scheduleDao.delete(schedule) }
-	fun deleteAllSchedules() = CoroutineScope(Dispatchers.IO).launch { scheduleDao.deleteAllSchedules() }
+	suspend fun insertAndReturnId(schedule: Schedule) = scheduleDao.insertAndReturnId(schedule)
+	suspend fun update(vararg schedule: Schedule) = scheduleDao.update(*schedule)
+	suspend fun delete(schedule: Schedule) = scheduleDao.delete(schedule)
+	suspend fun deleteAllSchedules() = scheduleDao.deleteAllSchedules()
 	fun getScheduleById(id: Int) = scheduleDao.getScheduleById(id)
 	fun getAllSchedules() = scheduleDao.getAllSchedules()
 
 	// Day CRUD
-	fun insert(day: Day) = CoroutineScope(Dispatchers.IO).launch { dayDao.insert(day) }
-	fun update(day: Day) = CoroutineScope(Dispatchers.IO).launch { dayDao.update(day) }
-	fun delete(day: Day) = CoroutineScope(Dispatchers.IO).launch { dayDao.delete(day) }
-	fun deleteAllDays() = CoroutineScope(Dispatchers.IO).launch { dayDao.deleteAllDays() }
+	suspend fun insert(day: Day) = dayDao.insert(day)
+	suspend fun update(day: Day) = dayDao.update(day)
+	suspend fun delete(day: Day) = dayDao.delete(day)
+	suspend fun deleteAllDays() = dayDao.deleteAllDays()
 	fun getDayById(id: Int) = dayDao.getDayById(id)
+	fun getDaysByScheduleId(scheduleId: Int) = dayDao.getDaysByScheduleId(scheduleId)
 	fun getAllDays() = dayDao.getAllDays()
 
 	// Category CRUD
-	fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch { categoryDao.insert(category) }
-	fun update(category: Category) = CoroutineScope(Dispatchers.IO).launch { categoryDao.update(category) }
-	fun delete(category: Category) = CoroutineScope(Dispatchers.IO).launch { categoryDao.delete(category) }
-	fun deleteAllCategories() = CoroutineScope(Dispatchers.IO).launch { categoryDao.deleteAllCategories() }
+	suspend fun insert(category: Category) = categoryDao.insert(category)
+	suspend fun update(category: Category) = categoryDao.update(category)
+	suspend fun delete(category: Category) = categoryDao.delete(category)
+	suspend fun deleteAllCategories() = categoryDao.deleteAllCategories()
 	fun getCategoryById(id: Int) = categoryDao.getCategoryById(id)
 	fun getAllCategories() = categoryDao.getAllCategories()
 
 	// Event CRUD
-	fun insert(event: Event) = CoroutineScope(Dispatchers.IO).launch { eventDao.insert(event) }
-	fun update(event: Event) = CoroutineScope(Dispatchers.IO).launch { eventDao.update(event) }
-	fun delete(event: Event) = CoroutineScope(Dispatchers.IO).launch { eventDao.delete(event) }
-	fun deleteAllEvents() = CoroutineScope(Dispatchers.IO).launch { eventDao.deleteAllEvents() }
+	suspend fun insert(event: Event) = eventDao.insert(event)
+	suspend fun update(event: Event) = eventDao.update(event)
+	suspend fun delete(event: Event) = eventDao.delete(event)
+	suspend fun deleteAllEvents() = eventDao.deleteAllEvents()
 	fun getEventById(id: Int) = eventDao.getEventById(id)
 	fun getAllEvents() = eventDao.getAllEvents()
 

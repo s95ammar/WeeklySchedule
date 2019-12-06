@@ -18,6 +18,9 @@ interface DayDao {
 	@Query("DELETE FROM day")
 	suspend fun deleteAllDays()
 
+	@Query("SELECT * FROM day WHERE schedule_id=:scheduleId")
+	fun getDaysByScheduleId(scheduleId: Int): LiveData<List<Day>>
+
 	@Query("SELECT * FROM day WHERE id=:id")
 	fun getDayById(id: Int): LiveData<Day>
 

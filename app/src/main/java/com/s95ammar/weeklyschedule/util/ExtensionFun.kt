@@ -1,27 +1,24 @@
 package com.s95ammar.weeklyschedule.util
 
-import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.text.format.DateFormat
-import android.view.View
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.view.menu.MenuPopupHelper
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 val Application.SYSTEM_TIME_PATTERN
 	get() = if (DateFormat.is24HourFormat(this)) TIME_PATTERN_24H else TIME_PATTERN_12H
-
 
 // Just to improve readability
 fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
@@ -55,3 +52,6 @@ fun Fragment.toast(@StringRes stringRes: Int, length: Int = Toast.LENGTH_SHORT) 
 fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
 	Toast.makeText(activity, msg, length).show()
 }
+
+fun launchIO(block: suspend () -> Unit): Job = CoroutineScope(IO).launch { block() }
+fun lunchMain(block: suspend () -> Unit): Job = CoroutineScope(Main).launch { block() }

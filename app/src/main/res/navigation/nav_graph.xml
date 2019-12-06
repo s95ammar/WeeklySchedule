@@ -17,8 +17,8 @@
 		android:label="@string/schedules"
 		tools:layout="@layout/fragment_schedules_list" >
 		<action
-			android:id="@+id/action_nav_schedules_to_scheduleNamerDialog"
-			app:destination="@id/scheduleNamerDialog" />
+			android:id="@+id/action_nav_schedules_to_scheduleEditorDialog"
+			app:destination="@id/scheduleEditorDialog" />
 	</fragment>
 
 	<fragment
@@ -45,9 +45,9 @@
 
 	</dialog>
 	<dialog
-		android:id="@+id/scheduleNamerDialog"
-		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.ScheduleNamerDialog"
-		android:label="ScheduleNamerDialog"
+		android:id="@+id/scheduleEditorDialog"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.ScheduleEditorDialog"
+		android:label="ScheduleEditorDialog"
 		tools:layout="@layout/dialog_edit_schedule"/>
 
 </navigation>

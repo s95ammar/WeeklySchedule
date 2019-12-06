@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.launchIO
 import javax.inject.Inject
 
 class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
@@ -20,10 +21,10 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 		Log.d(t, "init: ")
 	}
 
-	fun insert(event: Event) = repo.insert(event)
-	fun update(event: Event) = repo.update(event)
-	fun delete(event: Event) = repo.delete(event)
-	fun deleteAllEvents() = repo.deleteAllEvents()
+	fun insert(event: Event) = launchIO { repo.insert(event) }
+	fun update(event: Event) = launchIO { repo.update(event) }
+	fun delete(event: Event) = launchIO { repo.delete(event) }
+	fun deleteAllEvents() = launchIO { repo.deleteAllEvents() }
 	fun getEventById(id: Int) = repo.getEventById(id)
 	fun getAllEvents() = repo.getAllEvents()
 
