@@ -90,7 +90,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 			when (mode) {
 				ListMode.ADD -> {
 					val newSchedule = Schedule(editText_edit_schedule_name.input, spinner_edit_schedule.selectedItem.toString().toInt())
-					viewModel.insertScheduleWithDays(newSchedule)
+					viewModel.insertSchedule(newSchedule)
 				}
 				ListMode.EDIT -> viewModel.update(getUpdatedSchedule())
 			}

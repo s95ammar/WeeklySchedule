@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "67e2178528d65a68a145b4015920533d",
+    "identityHash": "f5cc286e0a0e7c7fce78edfafff5cec0",
     "entities": [
       {
         "tableName": "Schedule",
@@ -50,67 +50,6 @@
           }
         ],
         "foreignKeys": []
-      },
-      {
-        "tableName": "Day",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `schedule_id` INTEGER NOT NULL, FOREIGN KEY(`schedule_id`) REFERENCES `Schedule`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "scheduleId",
-            "columnName": "schedule_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [
-          {
-            "name": "index_Day_id",
-            "unique": false,
-            "columnNames": [
-              "id"
-            ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Day_id` ON `${TABLE_NAME}` (`id`)"
-          },
-          {
-            "name": "index_Day_schedule_id",
-            "unique": false,
-            "columnNames": [
-              "schedule_id"
-            ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Day_schedule_id` ON `${TABLE_NAME}` (`schedule_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "Schedule",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "schedule_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
       },
       {
         "tableName": "Category",
@@ -161,7 +100,7 @@
       },
       {
         "tableName": "Event",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `startTime` TEXT NOT NULL, `endTime` TEXT NOT NULL, `category_id` INTEGER NOT NULL, `day_id` INTEGER NOT NULL, FOREIGN KEY(`category_id`) REFERENCES `Category`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`day_id`) REFERENCES `Day`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `day` TEXT NOT NULL, `startTime` TEXT NOT NULL, `endTime` TEXT NOT NULL, `category_id` INTEGER NOT NULL, `schedule_id` INTEGER NOT NULL, FOREIGN KEY(`category_id`) REFERENCES `Category`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`schedule_id`) REFERENCES `Schedule`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -172,6 +111,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day",
+            "columnName": "day",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -194,8 +139,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "dayId",
-            "columnName": "day_id",
+            "fieldPath": "scheduleId",
+            "columnName": "schedule_id",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -216,12 +161,12 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Event_category_id` ON `${TABLE_NAME}` (`category_id`)"
           },
           {
-            "name": "index_Event_day_id",
+            "name": "index_Event_schedule_id",
             "unique": false,
             "columnNames": [
-              "day_id"
+              "schedule_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Event_day_id` ON `${TABLE_NAME}` (`day_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Event_schedule_id` ON `${TABLE_NAME}` (`schedule_id`)"
           }
         ],
         "foreignKeys": [
@@ -237,11 +182,11 @@
             ]
           },
           {
-            "table": "Day",
+            "table": "Schedule",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "day_id"
+              "schedule_id"
             ],
             "referencedColumns": [
               "id"
@@ -253,7 +198,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '67e2178528d65a68a145b4015920533d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f5cc286e0a0e7c7fce78edfafff5cec0')"
     ]
   }
 }

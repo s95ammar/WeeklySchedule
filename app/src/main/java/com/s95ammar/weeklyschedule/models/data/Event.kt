@@ -15,19 +15,20 @@ import org.joda.time.LocalTime
 					onDelete = ForeignKey.CASCADE
 			),
 			ForeignKey(
-					entity = Day::class,
+					entity = Schedule::class,
 					parentColumns = ["id"],
-					childColumns = ["day_id"],
+					childColumns = ["schedule_id"],
 					onDelete = ForeignKey.CASCADE
 			)
 		]
 )
 data class Event(
 		var name: String,
+		var day: String,
 		var startTime: LocalTime,
 		var endTime: LocalTime,
 		@ColumnInfo(name = "category_id", index = true) var categoryId: Int,
-		@ColumnInfo(name = "day_id", index = true) var dayId: Int
+		@ColumnInfo(name = "schedule_id", index = true) var scheduleId: Int
 ) {
 
 	@PrimaryKey(autoGenerate = true)

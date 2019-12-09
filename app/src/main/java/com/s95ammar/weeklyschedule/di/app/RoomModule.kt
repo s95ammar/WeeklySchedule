@@ -27,11 +27,6 @@ object RoomModule {
 	@JvmStatic
 	@Provides
 	@Singleton
-	fun provideDayDao(db: WeeklyScheduleDatabase) = db.getDayDao()
-
-	@JvmStatic
-	@Provides
-	@Singleton
 	fun provideCategoryDao(db: WeeklyScheduleDatabase) = db.getCategoryDao()
 
 	@JvmStatic
