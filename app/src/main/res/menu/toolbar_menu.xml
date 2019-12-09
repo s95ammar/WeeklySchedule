@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:visible="false"
-        android:id="@+id/button_edit"
-        android:icon="@drawable/ic_edit"
-        app:showAsAction="ifRoom"
-        android:title="@string/edit" />
+	<item
+		android:id="@+id/button_edit"
+		android:icon="@drawable/ic_edit"
+		android:onClick="scheduleMenuEditListener"
+		android:title="@string/edit"
+		android:visible="false"
+		app:showAsAction="ifRoom" />
 
-    <item
-        android:visible="false"
-        android:id="@+id/button_done"
-        android:icon="@drawable/ic_done"
-        app:showAsAction="ifRoom"
-        android:title="@string/done" />
+	<item
+		android:id="@+id/button_done"
+		android:icon="@drawable/ic_done"
+		android:onClick="scheduleMenuDoneListener"
+		android:title="@string/done"
+		android:visible="false"
+		app:showAsAction="ifRoom" />
 
 </menu>

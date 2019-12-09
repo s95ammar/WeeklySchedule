@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.ScheduleMode
 import com.s95ammar.weeklyschedule.util.launchIO
 import javax.inject.Inject
 
@@ -14,8 +15,10 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	private val t = "log_${javaClass.simpleName}"
 
 	private val _actionBarTitle = MutableLiveData<String>()
+	private val _mode = MutableLiveData<ScheduleMode>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
+	val mode: LiveData<ScheduleMode> = _mode
 
 	init {
 		Log.d(t, "init: ")
@@ -32,5 +35,9 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 
 	fun setActionBarTitle(title: String) {
 		_actionBarTitle.value = title
+	}
+
+	fun setMode(mode: ScheduleMode) {
+		_mode.value = mode
 	}
 }

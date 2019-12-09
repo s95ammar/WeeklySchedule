@@ -2,11 +2,9 @@ package com.s95ammar.weeklyschedule.views.fragments
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -39,6 +37,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
 		startObservers()
+		viewModel.setMode(ScheduleMode.VIEW)
 	}
 
 	private fun startObservers() {
