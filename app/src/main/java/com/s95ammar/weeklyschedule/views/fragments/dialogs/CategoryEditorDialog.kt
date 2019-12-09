@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -22,7 +21,6 @@ import com.s95ammar.weeklyschedule.views.requireNonBlankFields
 import dagger.android.support.DaggerDialogFragment
 import kotlinx.android.synthetic.main.dialog_edit_category.*
 import javax.inject.Inject
-
 
 class CategoryEditorDialog : DaggerDialogFragment() {
 	private var mode = ListMode.ADD
@@ -42,7 +40,6 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 			field = value
 			assignTextColor()
 		}
-
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
@@ -135,7 +132,7 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 				ListMode.EDIT -> viewModel.update(category.apply { id = editedCategory.id })
 			}
 		} catch (e: BlankFieldRequiredException) {
-			toast(e.message, Toast.LENGTH_SHORT)
+			toast(e.message)
 		}
 	}
 

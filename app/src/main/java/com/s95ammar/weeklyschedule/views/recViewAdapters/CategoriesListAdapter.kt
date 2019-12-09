@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_category.view.*
 import javax.inject.Inject
 
 class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, CategoriesListAdapter.CategoryViewHolder>(DIFF_CALLBACK) {
-	var onItemClickListener: OnItemClickListener? = null
+	var onItemClickListener: OnListItemClickListener<Category>? = null
 
 	companion object {
 		val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Category>() {
@@ -25,13 +25,10 @@ class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, Catego
 		}
 	}
 
-	// Called when in need for CategoryViewHolder to represent an item
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int) = CategoryViewHolder(
 			LayoutInflater.from(viewGroup.context).inflate(R.layout.item_category, viewGroup, false)
 	)
 
-
-	// Called by RecyclerView to display the data at the specified position
 	override fun onBindViewHolder(holder: CategoryViewHolder, i: Int) {
 		val currentItem = getItem(i)
 		holder.apply {
@@ -41,8 +38,6 @@ class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, Catego
 			buttonMore.background?.mutate()?.setTint(currentItem.textColor)
 		}
 	}
-
-	private fun getCategoryAt(position: Int): Category = getItem(position)
 
 	inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		var tvCategoryName: TextView = itemView.text_category_name
@@ -55,19 +50,14 @@ class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, Catego
 		}
 
 		private fun onItemClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(getCategoryAt(adapterPosition))
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(getItem(adapterPosition))
 		}
 
 
 		private fun onMoreClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(getCategoryAt(adapterPosition), buttonMore)
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(getItem(adapterPosition), buttonMore)
 		}
 
-	}
-
-	interface OnItemClickListener {
-		fun onItemClicked(category: Category)
-		fun onMoreClicked(category: Category, buttonMore: Button)
 	}
 
 }

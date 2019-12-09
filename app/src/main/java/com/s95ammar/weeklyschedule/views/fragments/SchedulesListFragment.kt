@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_schedules_list.*
 import javax.inject.Inject
 
 class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesListViewModel, SchedulesListAdapter>(),
-		SchedulesListAdapter.OnItemClickListener {
+		SchedulesListAdapter.OnScheduleClickListener {
 
 	@Inject lateinit var factory: ViewModelProvider.Factory
 	@Inject lateinit var listAdapter: SchedulesListAdapter
@@ -38,21 +38,21 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 
 	override fun assignRecyclerView(): RecyclerView = recyclerView_schedules
 
-	override fun assignListAdapter() = listAdapter.apply { onItemClickListener = this@SchedulesListFragment }
+	override fun assignListAdapter() = listAdapter.apply { onScheduleClickListener = this@SchedulesListFragment }
 
 	override fun onListChanged(itemsList: List<Schedule>) {
 		listAdapter.submitList(itemsList)
 		text_no_schedules.visibility = if (itemsList.isEmpty()) View.VISIBLE else View.GONE
 	}
 
-	override fun onItemClicked(schedule: Schedule) {
-		schedule.let {
+	override fun onItemClicked(item: Schedule) {
+		item.let {
 			// TODO: open schedule
 		}
 	}
 
-	override fun onMoreClicked(schedule: Schedule, buttonMore: Button) = showPopupMenu(R.menu.schedules_more_menu, buttonMore,
-			PopupMenu.OnMenuItemClickListener { menuItem -> onMenuItemClick(schedule, menuItem) })
+	override fun onMoreClicked(item: Schedule, buttonMore: Button) = showPopupMenu(R.menu.schedules_more_menu, buttonMore,
+			PopupMenu.OnMenuItemClickListener { menuItem -> onMenuItemClick(item, menuItem) })
 
 	override fun onSwitchChecked(schedule: Schedule, isChecked: Boolean) = viewModel.handleSwitchChange(schedule, isChecked)
 

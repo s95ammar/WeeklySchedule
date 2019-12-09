@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 
 class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, SchedulesListAdapter.ScheduleViewHolder>(DIFF_CALLBACK) {
-	var onItemClickListener: OnItemClickListener? = null
+	var onScheduleClickListener: OnScheduleClickListener? = null
 
 	companion object {
 		val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Schedule>() {
@@ -28,13 +28,10 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 		}
 	}
 
-	// Called when in need for ScheduleViewHolder to represent an item
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int) = ScheduleViewHolder(
 			LayoutInflater.from(viewGroup.context).inflate(R.layout.item_schedule, viewGroup, false)
 	)
 
-
-	// Called by RecyclerView to display the data at the specified position
 	override fun onBindViewHolder(holder: ScheduleViewHolder, i: Int) {
 		val currentItem = getItem(i)
 		holder.apply {
@@ -43,8 +40,6 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 
 		}
 	}
-
-	private fun getScheduleAt(position: Int): Schedule = getItem(position)
 
 	inner class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		var tvScheduleName: TextView = itemView.textView_schedule_name
@@ -58,12 +53,12 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 			switchIsActive.setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
 		}
 
-		private fun onItemClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(getScheduleAt(adapterPosition))
+		private fun onItemClicked() = onScheduleClickListener?.let {
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onItemClicked(getItem(adapterPosition))
 		}
 
-		private fun onMoreClicked() = onItemClickListener?.let {
-			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(getScheduleAt(adapterPosition), buttonMore)
+		private fun onMoreClicked() = onScheduleClickListener?.let {
+			if (adapterPosition != RecyclerView.NO_POSITION) it.onMoreClicked(getItem(adapterPosition), buttonMore)
 		}
 
 
@@ -78,16 +73,13 @@ class SchedulesListAdapter @Inject constructor() : ListAdapter<Schedule, Schedul
 				tvIsActive.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
 			}
 
-			if (adapterPosition != RecyclerView.NO_POSITION) onItemClickListener?.onSwitchChecked(getScheduleAt(adapterPosition), isChecked)
+			if (adapterPosition != RecyclerView.NO_POSITION) onScheduleClickListener?.onSwitchChecked(getItem(adapterPosition), isChecked)
 
 		}
 	}
 
-	interface OnItemClickListener {
-		fun onItemClicked(schedule: Schedule)
-		fun onMoreClicked(schedule: Schedule, buttonMore: Button)
+	interface OnScheduleClickListener: OnListItemClickListener<Schedule> {
 		fun onSwitchChecked(schedule: Schedule, isChecked: Boolean)
-
 	}
 
 }

@@ -15,11 +15,12 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
 import com.s95ammar.weeklyschedule.views.recViewAdapters.CategoriesListAdapter
+import com.s95ammar.weeklyschedule.views.recViewAdapters.OnListItemClickListener
 import kotlinx.android.synthetic.main.fragment_categories_list.*
 import javax.inject.Inject
 
 class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesListViewModel, CategoriesListAdapter>(),
-		CategoriesListAdapter.OnItemClickListener {
+		OnListItemClickListener<Category> {
 
 	@Inject lateinit var factory: ViewModelProvider.Factory
 	@Inject lateinit var listAdapter: CategoriesListAdapter
@@ -43,13 +44,13 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 		text_no_categories.visibility = if (itemsList.isEmpty()) View.VISIBLE else View.GONE
 	}
 
-	override fun onItemClicked(category: Category) {
-		viewModel.setEditedCategory(category)
-		viewModel.showCategoryEditorDialog(category)
+	override fun onItemClicked(item: Category) {
+		viewModel.setEditedCategory(item)
+		viewModel.showCategoryEditorDialog(item)
 	}
 
-	override fun onMoreClicked(category: Category, buttonMore: Button) = showPopupMenu(R.menu.categories_more_menu, buttonMore,
-			PopupMenu.OnMenuItemClickListener { menuItem -> onMenuItemClick(category, menuItem) })
+	override fun onMoreClicked(item: Category, buttonMore: Button) = showPopupMenu(R.menu.categories_more_menu, buttonMore,
+			PopupMenu.OnMenuItemClickListener { menuItem -> onMenuItemClick(item, menuItem) })
 
 	private fun onMenuItemClick(category: Category, menuItem: MenuItem): Boolean {
 		when (menuItem.itemId) {
