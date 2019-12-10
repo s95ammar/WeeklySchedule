@@ -43,7 +43,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_edit_schedule, null)
-		setUpDaysSpinner()
+//		setUpDaysSpinner()
 		return AlertDialog.Builder(requireActivity())
 				.setView(dialogView)
 				.setTitle(R.string.schedule_add_title)
@@ -100,22 +100,6 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 			}
 		} catch (e: BlankFieldRequiredException) {
 			toast(e.message, Toast.LENGTH_LONG)
-		}
-	}
-
-	private fun setUpDaysSpinner() {
-		dialogView?.rootView?.spinner_edit_schedule?.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-			override fun onNothingSelected(parent: AdapterView<*>?) {
-
-			}
-
-			// TODO: implement
-			override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-				if (position != 0) {
-					parent.setSelection(0)
-					toast("Feature not yet implemented")
-				}
-			}
 		}
 	}
 

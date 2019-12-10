@@ -30,7 +30,11 @@ enum class DaysAmount(val value: Int) {
 	}
 }
 
-val DAYS_OF_WEEK = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+val DAYS_OF_ONE_WEEK = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+val DAYS_OF_TWO_WEEKS = arrayOf(
+		"Sunday I", "Monday I", "Tuesday I", "Wednesday I", "Thursday I", "Friday I", "Saturday I",
+		"Sunday II", "Monday II", "Tuesday II", "Wednesday II", "Thursday II", "Friday II", "Saturday II"
+)
 
 const val HOURS_IN_DAY = 24
 const val MINUTES_IN_HOUR = 60

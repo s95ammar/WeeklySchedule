@@ -33,6 +33,8 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	fun getEventsOfSchedule(scheduleId: Int) = repo.getEventsOfSchedule(scheduleId)
 	fun getAllEvents() = repo.getAllEvents()
 
+	fun getCategoryById(id: Int) = repo.getCategoryById(id)
+
 	fun setSchedule(schedule: Schedule?) {
 		_schedule.value = schedule
 	}
