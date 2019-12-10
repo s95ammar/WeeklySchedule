@@ -16,9 +16,11 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 
 	private val _actionBarTitle = MutableLiveData<String>()
 	private val _mode = MutableLiveData<ScheduleMode>()
+	private val _schedule = MutableLiveData<Schedule?>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
 	val mode: LiveData<ScheduleMode> = _mode
+	val schedule: LiveData<Schedule?> = _schedule
 
 	init {
 		Log.d(t, "init: ")
@@ -28,10 +30,12 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	fun update(event: Event) = launchIO { repo.update(event) }
 	fun delete(event: Event) = launchIO { repo.delete(event) }
 	fun deleteAllEvents() = launchIO { repo.deleteAllEvents() }
-	fun getEventById(id: Int) = repo.getEventById(id)
+	fun getEventsOfSchedule(scheduleId: Int) = repo.getEventsOfSchedule(scheduleId)
 	fun getAllEvents() = repo.getAllEvents()
 
-	fun getActiveSchedule() = repo.getScheduleById(Schedule.activeScheduleId)
+	fun setSchedule(schedule: Schedule?) {
+		_schedule.value = schedule
+	}
 
 	fun setActionBarTitle(title: String) {
 		_actionBarTitle.value = title

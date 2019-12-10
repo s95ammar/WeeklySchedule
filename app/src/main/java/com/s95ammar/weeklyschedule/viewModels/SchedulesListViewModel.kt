@@ -48,24 +48,26 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 
 	private fun manageScheduleDeactivation(schedule: Schedule) {
 		if (schedule.isActive) {
-			schedule.deactivate()
+			schedule.isActive = false
 			setActiveScheduleId(0)
 			update(schedule)
 		}
 	}
 
 	private fun manageScheduleActivation(schedule: Schedule) {
-		schedule.activate()
+		schedule.isActive = true
 		setActiveScheduleId(schedule.id)
 		update(schedule)
 	}
 
 	private fun manageActiveScheduleReplacement(newActiveSchedule: Schedule) {
-		getActiveSchedule().observeOnce(Observer { activeSchedule ->
-			activeSchedule.deactivate()
-			newActiveSchedule.activate()
-			setActiveScheduleId(newActiveSchedule.id)
-			update(activeSchedule, newActiveSchedule)
+		getActiveSchedule().observeOnce(Observer {
+			it?.let { activeSchedule ->
+				activeSchedule.isActive = false
+				newActiveSchedule.isActive = true
+				setActiveScheduleId(newActiveSchedule.id)
+				update(activeSchedule, newActiveSchedule)
+			}
 		})
 	}
 

@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
+import com.s95ammar.weeklyschedule.util.DaysAmount
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.ListMode
 import com.s95ammar.weeklyschedule.util.input
@@ -89,7 +90,10 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 			requireNonBlankFields(editText_edit_schedule_name to "schedule name")
 			when (mode) {
 				ListMode.ADD -> {
-					val newSchedule = Schedule(editText_edit_schedule_name.input, spinner_edit_schedule.selectedItem.toString().toInt())
+					val newSchedule = Schedule(
+							editText_edit_schedule_name.input,
+							DaysAmount.fromInt(spinner_edit_schedule.selectedItem.toString().toInt())
+					)
 					viewModel.insertSchedule(newSchedule)
 				}
 				ListMode.EDIT -> viewModel.update(getUpdatedSchedule())

@@ -45,6 +45,7 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		scheduleViewerViewModel = ViewModelProviders.of(this, factory).get(ScheduleViewerViewModel::class.java)
 		schedulesListViewModel = ViewModelProviders.of(this, factory).get(SchedulesListViewModel::class.java)
 		categoriesListViewModel = ViewModelProviders.of(this, factory).get(CategoriesListViewModel::class.java)
+		startObservers()
 		initNavController()
 	}
 
@@ -60,14 +61,13 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		menuInflater.inflate(R.menu.toolbar_menu, menu)
 		menu?.let { scheduleModeMenu = it }
 		navController.addOnDestinationChangedListener(this)
-		startObservers()
+		scheduleViewerViewModel.mode.observe(this, Observer { setScheduleMenuMode(it) })
 		return true
 
 	}
 
 	private fun startObservers() {
 		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
-		scheduleViewerViewModel.mode.observe(this, Observer { setScheduleMenuMode(it) })
 		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
@@ -79,7 +79,15 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	}
 
 	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
-		if (destination.id != R.id.nav_active_schedule) hideScheduleMenu()
+		when (destination.id) {
+			R.id.nav_active_schedule -> {
+				schedulesListViewModel.getActiveSchedule().observeOnce(Observer {
+					scheduleViewerViewModel.setSchedule(it)
+					if (it == null) hideScheduleMenu()
+				})
+			}
+			else -> hideScheduleMenu()
+		}
 	}
 
 	private fun hideScheduleMenu() { if (scheduleModeMenu.hasVisibleItems()) scheduleModeMenu.iterator().forEach { it.isVisible = false } }
@@ -100,7 +108,7 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	fun scheduleMenuDoneListener(item: MenuItem) = scheduleViewerViewModel.setMode(ScheduleMode.VIEW)
 
 	// adds functionality to burger icon (only for opening the drawer) and back arrow
-	override fun onSupportNavigateUp() = navController.navigateUp(appBarConfig)
+	override fun onSupportNavigateUp() = navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {

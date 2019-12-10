@@ -18,8 +18,8 @@ interface EventDao {
 	@Query("DELETE FROM event")
 	suspend fun deleteAllEvents()
 
-	@Query("SELECT * FROM event WHERE id=:id")
-	fun getEventById(id: Int): LiveData<Event>
+	@Query("SELECT * FROM event WHERE schedule_id=:scheduleId")
+	fun getEventsOfSchedule(scheduleId: Int): LiveData<List<Event>>
 
 	@Query("SELECT * FROM event")
 	fun getAllEvents(): LiveData<List<Event>>

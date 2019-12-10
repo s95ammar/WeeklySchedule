@@ -24,15 +24,6 @@ val Application.SYSTEM_TIME_PATTERN
 fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
 
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-	observe(lifecycleOwner, object : Observer<T> {
-		override fun onChanged(t: T?) {
-			removeObserver(this)
-			observer.onChanged(t)
-		}
-	})
-}
-
 fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
 	observeForever(object : Observer<T> {
 		override fun onChanged(t: T?) {

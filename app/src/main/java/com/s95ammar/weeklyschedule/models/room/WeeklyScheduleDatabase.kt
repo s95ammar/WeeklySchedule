@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.s95ammar.weeklyschedule.models.data.Category
+import com.s95ammar.weeklyschedule.util.DaysAmount
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 
@@ -11,7 +12,7 @@ import com.s95ammar.weeklyschedule.models.data.Schedule
 		entities = [Schedule::class, Category::class, Event::class],
 		version = 1
 )
-@TypeConverters(LocalTimeTypeConverter::class)
+@TypeConverters(LocalTimeTypeConverter::class, DaysAmount.Converter::class)
 abstract class WeeklyScheduleDatabase : RoomDatabase() {
 	abstract fun getScheduleDao(): ScheduleDao
 	abstract fun getCategoryDao(): CategoryDao

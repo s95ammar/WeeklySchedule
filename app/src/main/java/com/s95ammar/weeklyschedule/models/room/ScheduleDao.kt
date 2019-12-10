@@ -19,7 +19,7 @@ interface ScheduleDao {
 	suspend fun deleteAllSchedules()
 
 	@Query("SELECT * FROM schedule WHERE id=:id")
-	fun getScheduleById(id: Int): LiveData<Schedule>
+	fun getScheduleById(id: Int): LiveData<Schedule?>
 
 	@Query("SELECT * FROM schedule")
 	fun getAllSchedules(): LiveData<List<Schedule>>
