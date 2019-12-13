@@ -32,9 +32,5 @@ data class Schedule(
 
 		fun activeExists() = (activeScheduleId != 0)
 		fun activeDoesntExist() = !activeExists() // just for better readability purposes
-
-		fun getHoursStringArray(timePattern: String) = Array<String>(HOURS_IN_DAY) { i ->
-			LocalTime.MIDNIGHT.plusHours(i).toString(timePattern)
-		}
 	}
 }

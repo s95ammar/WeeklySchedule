@@ -34,6 +34,15 @@ data class Event(
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = 0
 
+	val startHour: Int
+		get() = startTime.hourOfDay
+	val endHour: Int
+		get() = endTime.hourOfDay
+	val startMinute: Int
+		get() = startTime.minuteOfHour
+	val endMinute: Int
+		get() = endTime.minuteOfHour
+
 	object Validator {
 		fun isTimeValid(startTime: LocalTime, endTime: LocalTime) = endTime.isAfter(startTime)
 	}

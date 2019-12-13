@@ -36,6 +36,11 @@ val DAYS_OF_TWO_WEEKS = arrayOf(
 		"Sunday II", "Monday II", "Tuesday II", "Wednesday II", "Thursday II", "Friday II", "Saturday II"
 )
 
+fun getHoursStringArray(timePattern: String) = Array<String>(HOURS_IN_DAY) { i ->
+	LocalTime.MIDNIGHT.plusHours(i).toString(timePattern)
+}
+
+
 const val HOURS_IN_DAY = 24
 const val MINUTES_IN_HOUR = 60
 val DEFAULT_TIME = LocalTime(12, 0)
