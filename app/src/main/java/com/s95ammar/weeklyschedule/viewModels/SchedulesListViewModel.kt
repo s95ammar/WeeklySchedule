@@ -63,10 +63,12 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	private fun manageActiveScheduleReplacement(newActiveSchedule: Schedule) {
 		getActiveSchedule().observeOnce(Observer {
 			it?.let { activeSchedule ->
-				activeSchedule.isActive = false
-				newActiveSchedule.isActive = true
-				setActiveScheduleId(newActiveSchedule.id)
-				update(activeSchedule, newActiveSchedule)
+				if (activeSchedule != newActiveSchedule) { // true only when RecyclerView is being built
+					activeSchedule.isActive = false
+					newActiveSchedule.isActive = true
+					setActiveScheduleId(newActiveSchedule.id)
+					update(activeSchedule, newActiveSchedule)
+				}
 			}
 		})
 	}

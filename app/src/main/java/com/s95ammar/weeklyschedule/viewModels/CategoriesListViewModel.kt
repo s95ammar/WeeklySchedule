@@ -15,12 +15,12 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	private val t = "log_${javaClass.simpleName}"
 
 	private val _editedCategory = MutableLiveData<Category>()
-	private val _showCategoryEditorDialog = SingleLiveEvent<Category?>()
+	private val _showCategoryEditorDialog = SingleLiveEvent<Unit>()
 	private val _showCategoryColorPicker = SingleLiveEvent<ColorDetails>()
 	private val _onCategoryColorSelected = MutableLiveData<ColorDetails>()
 
 	val editedCategory: LiveData<Category> = _editedCategory
-	val showCategoryEditorDialog: LiveData<Category?> = _showCategoryEditorDialog
+	val showCategoryEditorDialog: LiveData<Unit> = _showCategoryEditorDialog
 	val showCategoryColorPicker: LiveData<ColorDetails> = _showCategoryColorPicker
 	val onCategoryColorSelected: LiveData<ColorDetails> = _onCategoryColorSelected
 
@@ -39,9 +39,7 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 		_editedCategory.value = category
 	}
 
-	fun showCategoryEditorDialog(category: Category? = null) {
-		_showCategoryEditorDialog.value = category
-	}
+	fun showCategoryEditorDialog() = _showCategoryEditorDialog.call()
 
 	fun showColorPickerDialog(colorDetails: ColorDetails) {
 		_showCategoryColorPicker.value = (colorDetails)

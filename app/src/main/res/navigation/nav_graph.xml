@@ -9,7 +9,11 @@
 		android:id="@id/nav_active_schedule"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
 		android:label="@string/active_schedule"
-		tools:layout="@layout/fragment_schedule_viewer" />
+		tools:layout="@layout/fragment_schedule_viewer" >
+		<action
+			android:id="@+id/action_nav_active_schedule_to_eventEditorFragment"
+			app:destination="@id/eventEditorFragment" />
+	</fragment>
 
 	<fragment
 		android:id="@id/nav_schedules"
@@ -49,5 +53,10 @@
 		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.ScheduleEditorDialog"
 		android:label="ScheduleEditorDialog"
 		tools:layout="@layout/dialog_edit_schedule"/>
+	<fragment
+		android:id="@+id/eventEditorFragment"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.EventEditorFragment"
+		android:label="fragment_event_editor"
+		tools:layout="@layout/fragment_event_editor" />
 
 </navigation>

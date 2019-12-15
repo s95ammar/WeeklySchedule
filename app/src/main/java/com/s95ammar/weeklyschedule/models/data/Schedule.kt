@@ -22,8 +22,8 @@ data class Schedule(
 	var id: Int = 0
 
 	fun getDayOfSchedule(dayNum: Int) = when {
-		daysAmount == OneWeek && (dayNum in 0 until OneWeek.value) -> DAYS_OF_ONE_WEEK[dayNum % OneWeek.value]
-		daysAmount == TwoWeeks && (dayNum in 0 until TwoWeeks.value) -> DAYS_OF_TWO_WEEKS[dayNum % TwoWeeks.value]
+		daysAmount == OneWeek && (dayNum in 0 until OneWeek.value) -> DAYS_OF_ONE_WEEK[dayNum]
+		daysAmount == TwoWeeks && (dayNum in 0 until TwoWeeks.value) -> DAYS_OF_TWO_WEEKS[dayNum]
 		else -> throw RuntimeException("dayNum must be in range of 0 until $daysAmount")
 	}
 

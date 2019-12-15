@@ -1,6 +1,7 @@
 package com.s95ammar.weeklyschedule.di.main
 
 import com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment
+import com.s95ammar.weeklyschedule.views.fragments.EventEditorFragment
 import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment
 import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment
 import com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryEditorDialog
@@ -24,5 +25,8 @@ abstract class MainActivityFragmentsModule {
 
 	@ContributesAndroidInjector
 	abstract fun contributeScheduleEditorDialog(): ScheduleEditorDialog
+
+	@ContributesAndroidInjector
+	abstract fun contributeEventEditorFragment(): EventEditorFragment
 
 }

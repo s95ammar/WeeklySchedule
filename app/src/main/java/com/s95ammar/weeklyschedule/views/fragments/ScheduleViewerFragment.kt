@@ -66,12 +66,12 @@ class ScheduleViewerFragment : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
 		startObservers()
-		button_add_event.setOnClickListener { /*TODO: start event editor fragment*/ }
+		button_add_event.setOnClickListener { viewModel.showEventEditorFragment() }
 		viewModel.setMode(ScheduleMode.VIEW)
 	}
 
 	private fun startObservers() {
-		viewModel.schedule.observe(viewLifecycleOwner, Observer {
+		viewModel.schedule.observeOnce(Observer {
 			Log.d(t, "startObservers: $it")
 			it?.let {
 				schedule = it
@@ -79,6 +79,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 			} ?: clearScheduleLayout()
 		})
 		viewModel.mode.observe(viewLifecycleOwner, Observer {
+			Log.d(t, "startObservers: $it")
 			it?.let {
 				mode = it
 				doAfterPropertiesInitialization { manageModeChange() }
@@ -100,11 +101,14 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	private fun setEventsTextViewsOnClickListeners(mode: ScheduleMode) {
 		for (dayNum in 0 until daysAmount)
-			for (event in getEventsOfDay(dayNum)) {
-				val textView: TextView? = mapEventsTextViews[event]
+			for (event in getEventsOfDay(dayNum))
+				mapEventsTextViews[event]?.let { eventTextView->
 				when (mode) {
-					ScheduleMode.VIEW -> textView?.setOnClickListener {}
-					ScheduleMode.EDIT -> textView?.setOnClickListener { /*TODO: startEventRefactorActivity(event)*/ }
+					ScheduleMode.VIEW -> eventTextView.setOnClickListener {}
+					ScheduleMode.EDIT -> eventTextView.setOnClickListener {
+						viewModel.setEditedEvent(event)
+						viewModel.showEventEditorFragment()
+					}
 				}
 			}
 	}

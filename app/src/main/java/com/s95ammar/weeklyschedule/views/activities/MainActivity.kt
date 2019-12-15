@@ -68,6 +68,9 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 
 	private fun startObservers() {
 		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
+		scheduleViewerViewModel.showEventEditorFragment.observe(this, Observer {
+			navController.navigate(R.id.action_nav_active_schedule_to_eventEditorFragment)
+		})
 		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)

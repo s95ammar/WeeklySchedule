@@ -9,6 +9,7 @@ import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.ScheduleMode
 import com.s95ammar.weeklyschedule.util.launchIO
+import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
 class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
@@ -17,10 +18,14 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	private val _actionBarTitle = MutableLiveData<String>()
 	private val _mode = MutableLiveData<ScheduleMode>()
 	private val _schedule = MutableLiveData<Schedule?>()
+	private val _editedEvent = MutableLiveData<Event>()
+	private val _showEventEditorFragment = SingleLiveEvent<Unit>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
 	val mode: LiveData<ScheduleMode> = _mode
 	val schedule: LiveData<Schedule?> = _schedule
+	val editedEvent: LiveData<Event> = _editedEvent
+	val showEventEditorFragment: LiveData<Unit> = _showEventEditorFragment
 
 	init {
 		Log.d(t, "init: ")
@@ -46,4 +51,11 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	fun setMode(mode: ScheduleMode) {
 		_mode.value = mode
 	}
+
+	fun setEditedEvent(event: Event) {
+		_editedEvent.value = event
+	}
+
+	fun showEventEditorFragment() = _showEventEditorFragment.call()
+
 }
