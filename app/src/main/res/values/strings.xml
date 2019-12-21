@@ -22,7 +22,7 @@
     <string name="title_activity_info">Info</string>
     <string name="done">Done</string>
     <string name="edit">Edit</string>
-    <string name="no_active_schedule">Active schedule will be shown\n here once selected</string>
+    <string name="no_active_schedule">Active schedule will be shown\nhere once selected</string>
     <string name="start_time">Start Time:</string>
     <string name="end_time">End Time:</string>
     <string name="empty_name_error">Name cannot be blank</string>
@@ -57,8 +57,9 @@
     <string name="schedule_empty_name">Schedule was not created because name was blank</string>
 	<string name="active_schedule_delete_error">Cannot delete active schedule. Please deactive it first, if you really want to delete it</string>
     <string name="days">Days:</string>
+	<string name="key_schedule_id">scheduleId</string>
 
-    <string-array
+	<string-array
         name="days_amount">
         <item>7</item>
         <item>14</item>

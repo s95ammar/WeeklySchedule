@@ -22,6 +22,7 @@ import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_schedule_viewer.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -35,9 +36,14 @@ class ScheduleViewerFragment : DaggerFragment() {
 	private lateinit var viewModel: ScheduleViewerViewModel
 	private lateinit var schedule: Schedule
 	private lateinit var events: List<Event>
-	private lateinit var scheduleDays: Array<String>
-	private lateinit var mode: ScheduleMode
-	private val daysAmount: Int
+
+	private val scheduleDays
+		get() = when (schedule.daysAmount) {
+			DaysAmount.OneWeek -> DAYS_OF_ONE_WEEK
+			DaysAmount.TwoWeeks -> DAYS_OF_TWO_WEEKS
+		}
+
+	private val daysAmount
 		get() = schedule.daysAmount.value
 
 	companion object {
@@ -48,9 +54,10 @@ class ScheduleViewerFragment : DaggerFragment() {
 	}
 
 	private val timePattern by lazy { requireActivity().application.SYSTEM_TIME_PATTERN }
-	private val textViewsDays by lazy { ArrayList<TextView>() }
-	private val textViewsHours by lazy { ArrayList<TextView>() }
+	private val textViewsDays = ArrayList<TextView>()
+	private val textViewsHours = ArrayList<TextView>()
 	private lateinit var mapEventsTextViews: HashMap<Event, TextView>
+
 	private enum class Direction { Horizontal, Vertical }
 
 	init {
@@ -65,88 +72,81 @@ class ScheduleViewerFragment : DaggerFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
-		startObservers()
 		button_add_event.setOnClickListener { viewModel.showEventEditorFragment() }
-		viewModel.setMode(ScheduleMode.VIEW)
-	}
-
-	private fun startObservers() {
-		viewModel.schedule.observeOnce(Observer {
-			Log.d(t, "startObservers: $it")
-			it?.let {
-				schedule = it
-				setLayoutForSchedule()
-			} ?: clearScheduleLayout()
-		})
-		viewModel.mode.observe(viewLifecycleOwner, Observer {
-			Log.d(t, "startObservers: $it")
-			it?.let {
-				mode = it
-				doAfterPropertiesInitialization { manageModeChange() }
+		arguments?.getInt(resources.getString(R.string.key_schedule_id))?.let { id ->
+			startObservers()
+			when (id) {
+				0 -> {
+					viewModel.setMode(ScheduleMode.NOT_DISPLAYED)
+				}
+				else -> {
+					showSchedule(id)
+					viewModel.setMode(ScheduleMode.VIEW)
+				}
 			}
-		})
+		}
 	}
 
-	private fun doAfterPropertiesInitialization(action: () -> Unit) {
+	private fun doAfterScheduleInit(action: () -> Unit) {
 		launchIO {
-			while (!::schedule.isInitialized || !::events.isInitialized) { delay(5) }
+			while (!::schedule.isInitialized) delay(50)
 			withContext(Dispatchers.Main) { action() }
 		}
 	}
 
-	private fun manageModeChange() {
-		setButtonAddVisibility()
-		setEventsTextViewsOnClickListeners(mode)
+	private fun startObservers() {
+		viewModel.mode.observe(viewLifecycleOwner, Observer {
+			it?.let { mode ->
+				when (mode) {
+					ScheduleMode.NOT_DISPLAYED -> {
+						text_no_active_schedule.visibility = VISIBLE
+					}
+					ScheduleMode.VIEW -> {
+						button_add_event.visibility = GONE
+					}
+					ScheduleMode.EDIT -> {
+						button_add_event.visibility = VISIBLE
+					}
+				}
+				setEventsTextViewsOnClickListeners(mode)
+			}
+		})
+
 	}
 
 	private fun setEventsTextViewsOnClickListeners(mode: ScheduleMode) {
-		for (dayNum in 0 until daysAmount)
-			for (event in getEventsOfDay(dayNum))
-				mapEventsTextViews[event]?.let { eventTextView->
-				when (mode) {
-					ScheduleMode.VIEW -> eventTextView.setOnClickListener {}
-					ScheduleMode.EDIT -> eventTextView.setOnClickListener {
-						viewModel.setEditedEvent(event)
-						viewModel.showEventEditorFragment()
+		doAfterScheduleInit {
+			for (dayNum in 0 until daysAmount)
+				for (event in getEventsOfDay(dayNum))
+					mapEventsTextViews[event]?.let { eventTextView ->
+						when (mode) {
+							ScheduleMode.EDIT -> eventTextView.setOnClickListener {
+								viewModel.setEditedEvent(event)
+								viewModel.showEventEditorFragment()
+							}
+							else -> eventTextView.setOnClickListener {}
+						}
 					}
-				}
-			}
+		}
 	}
 
 	private fun getEventsOfDay(dayNum: Int) = events.filter { schedule.getDayOfSchedule(dayNum) == it.day }
 
-	private fun setButtonAddVisibility() {
-		button_add_event.visibility = when (mode) {
-			ScheduleMode.VIEW -> GONE
-			ScheduleMode.EDIT -> VISIBLE
-		}
-	}
+	private fun showSchedule(scheduleId: Int) {
+		viewModel.getScheduleById(scheduleId).observeOnce(Observer {
+			it?.let {
+				schedule = it
+				viewModel.setActionBarTitle(it.name)
+				viewModel.getEventsOfSchedule(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
+					events = scheduleEvents
 
-	private fun clearScheduleLayout() {
-		viewModel.setActionBarTitle(getString(R.string.active_schedule))
-		text_no_active_schedule.visibility = VISIBLE
-	}
-
-	private fun setLayoutForSchedule() {
-		scheduleDays = when (schedule.daysAmount) {
-			DaysAmount.OneWeek -> DAYS_OF_ONE_WEEK
-			DaysAmount.TwoWeeks -> DAYS_OF_TWO_WEEKS
-		}
-
-		viewModel.getEventsOfSchedule(schedule.id).observe(viewLifecycleOwner, Observer {
-			events = it
-			showSchedule()
+					prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
+					prepareHeaderTextViews(textViewsDays, daysAmount, scheduleDays)
+					prepareEventTextViews()
+					connectTextViews()
+				})
+			}
 		})
-		viewModel.setActionBarTitle(schedule.name)
-		text_no_active_schedule.visibility = GONE
-
-	}
-
-	private fun showSchedule() {
-		prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
-		prepareHeaderTextViews(textViewsDays, daysAmount, scheduleDays)
-		prepareEventTextViews()
-		connectTextViews()
 	}
 
 	private fun prepareHeaderTextViews(textViews: ArrayList<TextView>, length: Int, stringArray: Array<String>) {
@@ -249,7 +249,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 					constraintSet.connect(eventTextViewId, ConstraintSet.LEFT, ec.targetDayId, ConstraintSet.LEFT)
 					constraintSet.connect(eventTextViewId, ConstraintSet.RIGHT, ec.targetDayId, ConstraintSet.RIGHT)
 					constraintSet.constrainDefaultHeight(eventTextViewId, ConstraintSet.MATCH_CONSTRAINT_SPREAD)
-			}
+				}
 	}
 
 	private inner class EventConstraints(event: Event) {

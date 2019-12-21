@@ -46,9 +46,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 	}
 
 	override fun onItemClicked(item: Schedule) {
-		item.let {
-			// TODO: open schedule
-		}
+		item.let { viewModel.navigateToScheduleViewer(it.id) }
 	}
 
 	override fun onMoreClicked(item: Schedule, buttonMore: Button) = showPopupMenu(R.menu.schedules_more_menu, buttonMore,

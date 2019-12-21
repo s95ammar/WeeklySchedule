@@ -18,10 +18,12 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	private val _editedSchedule = MutableLiveData<Schedule>()
 	private val _showScheduleEditorDialog = SingleLiveEvent<Unit>()
 	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
+	private val _onScheduleItemClick = SingleLiveEvent<Int>()
 
 	val editedSchedule: LiveData<Schedule> = _editedSchedule
 	val showScheduleEditorDialog: LiveData<Unit> = _showScheduleEditorDialog
 	val onActiveScheduleIdChanged: LiveData<Unit> = _onActiveScheduleChanged
+	val onScheduleItemClick: LiveData<Int> = _onScheduleItemClick
 
 	init {
 		Log.d(t, "init: ")
@@ -44,6 +46,10 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 
 	fun clearEditorDialogValues() {
 		_editedSchedule.value = null
+	}
+
+	fun navigateToScheduleViewer(scheduleId: Int) {
+		_onScheduleItemClick.value = scheduleId
 	}
 
 	private fun manageScheduleDeactivation(schedule: Schedule) {

@@ -3,16 +3,21 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/nav_graph"
-	app:startDestination="@id/nav_active_schedule">
+	app:startDestination="@id/nav_schedule_viewer">
 
 	<fragment
-		android:id="@id/nav_active_schedule"
+		android:id="@id/nav_schedule_viewer"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
 		android:label="@string/active_schedule"
 		tools:layout="@layout/fragment_schedule_viewer" >
 		<action
-			android:id="@+id/action_nav_active_schedule_to_eventEditorFragment"
-			app:destination="@id/eventEditorFragment" />
+			android:id="@+id/action_nav_schedule_viewer_to_eventEditorFragment"
+			app:destination="@id/eventEditorFragment">
+			<argument
+				android:name="@string/key_schedule_id"
+				app:argType="integer"
+				android:defaultValue="0" />
+		</action>
 	</fragment>
 
 	<fragment
@@ -23,6 +28,9 @@
 		<action
 			android:id="@+id/action_nav_schedules_to_scheduleEditorDialog"
 			app:destination="@id/scheduleEditorDialog" />
+		<action
+			android:id="@+id/action_nav_schedules_to_nav_schedule_viewer"
+			app:destination="@id/nav_schedule_viewer" />
 	</fragment>
 
 	<fragment

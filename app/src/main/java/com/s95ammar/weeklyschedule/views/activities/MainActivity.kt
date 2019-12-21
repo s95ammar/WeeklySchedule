@@ -4,19 +4,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.os.bundleOf
 import androidx.core.view.iterator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.*
+import androidx.navigation.ui.*
+import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
+import com.google.android.material.navigation.NavigationView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
@@ -28,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 
-class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChangedListener {
+class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 	private val t = "log_${javaClass.simpleName}"
 
 	@Inject lateinit var factory: ViewModelProvider.Factory
@@ -37,7 +35,8 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	private lateinit var categoriesListViewModel: CategoriesListViewModel
 	private lateinit var navController: NavController
 	private lateinit var appBarConfig: AppBarConfiguration
-	private lateinit var scheduleModeMenu: Menu
+	private lateinit var scheduleToolbarMenu: Menu
+	private val topLevelDestinations = setOf(R.id.nav_schedule_viewer, R.id.nav_schedules, R.id.nav_categories)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -50,18 +49,20 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	}
 
 	private fun initNavController() {
-		val topLevelDestinations = setOf(R.id.nav_active_schedule, R.id.nav_schedules, R.id.nav_categories)
 		appBarConfig = AppBarConfiguration(topLevelDestinations, drawer_layout)
 		navController = findNavController(R.id.nav_host_fragment)
+		navController.setGraph(R.navigation.nav_graph, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
+
 		setupActionBarWithNavController(navController, appBarConfig)
 		nav_view.setupWithNavController(navController)
+		navController.addOnDestinationChangedListener(this)
+		nav_view.setNavigationItemSelectedListener(this)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.toolbar_menu, menu)
-		menu?.let { scheduleModeMenu = it }
-		navController.addOnDestinationChangedListener(this)
-		scheduleViewerViewModel.mode.observe(this, Observer { setScheduleMenuMode(it) })
+		menu?.let { scheduleToolbarMenu = it }
+		scheduleViewerViewModel.mode.observe(this, Observer { setScheduleToolbarMenuMode(it) })
 		return true
 
 	}
@@ -69,11 +70,16 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	private fun startObservers() {
 		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
 		scheduleViewerViewModel.showEventEditorFragment.observe(this, Observer {
-			navController.navigate(R.id.action_nav_active_schedule_to_eventEditorFragment)
+			// TODO: make sure there's no need for an action
+			navController.navigate(R.id.eventEditorFragment)
 		})
 		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
+		})
+		schedulesListViewModel.onScheduleItemClick.observe(this, Observer {
+			// TODO: fix: schedules opens in Active Schedule tab
+			navController.navigate(R.id.action_nav_schedules_to_nav_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to it))
 		})
 		categoriesListViewModel.showCategoryEditorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog)
@@ -81,28 +87,29 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
 	}
 
-	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
-		when (destination.id) {
-			R.id.nav_active_schedule -> {
-				schedulesListViewModel.getActiveSchedule().observeOnce(Observer {
-					scheduleViewerViewModel.setSchedule(it)
-					if (it == null) hideScheduleMenu()
-				})
-			}
-			else -> hideScheduleMenu()
+	override fun onNavigationItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		R.id.nav_schedule_viewer -> {
+			navController.navigate(R.id.nav_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
+			if (drawer_layout.isOpen()) drawer_layout.close()
+			true
+		}
+		else -> onNavDestinationSelected(item, navController).also { handled ->
+			if (handled && drawer_layout.isOpen()) drawer_layout.close()
 		}
 	}
 
-	private fun hideScheduleMenu() { if (scheduleModeMenu.hasVisibleItems()) scheduleModeMenu.iterator().forEach { it.isVisible = false } }
+	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
+		if (destination.id != R.id.nav_schedule_viewer) scheduleViewerViewModel.setMode(ScheduleMode.NOT_DISPLAYED)
+	}
 
-	private fun setScheduleMenuMode(mode: ScheduleMode) {
-		scheduleModeMenu.findItem(R.id.button_edit).isVisible = when (mode) {
+	private fun setScheduleToolbarMenuMode(mode: ScheduleMode) {
+		scheduleToolbarMenu.findItem(R.id.button_edit).isVisible = when (mode) {
 			ScheduleMode.VIEW -> true
-			ScheduleMode.EDIT -> false
+			else -> false
 		}
-		scheduleModeMenu.findItem(R.id.button_done).isVisible = when (mode) {
-			ScheduleMode.VIEW -> false
+		scheduleToolbarMenu.findItem(R.id.button_done).isVisible = when (mode) {
 			ScheduleMode.EDIT -> true
+			else -> false
 		}
 	}
 
