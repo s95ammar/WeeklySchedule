@@ -5,13 +5,17 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.os.bundleOf
-import androidx.core.view.iterator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.*
-import androidx.navigation.ui.*
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
 import com.google.android.material.navigation.NavigationView
@@ -36,7 +40,7 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	private lateinit var navController: NavController
 	private lateinit var appBarConfig: AppBarConfiguration
 	private lateinit var scheduleToolbarMenu: Menu
-	private val topLevelDestinations = setOf(R.id.nav_schedule_viewer, R.id.nav_schedules, R.id.nav_categories)
+	private val topLevelDestinations = setOf(R.id.nav_top_level_schedule_viewer, R.id.nav_top_level_schedules, R.id.nav_top_level_categories)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -71,14 +75,13 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
 		scheduleViewerViewModel.showEventEditorFragment.observe(this, Observer {
 			// TODO: make sure there's no need for an action
-			navController.navigate(R.id.eventEditorFragment)
+			navController.navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment)
 		})
 		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
 		})
 		schedulesListViewModel.onScheduleItemClick.observe(this, Observer {
-			// TODO: fix: schedules opens in Active Schedule tab
 			navController.navigate(R.id.action_nav_schedules_to_nav_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to it))
 		})
 		categoriesListViewModel.showCategoryEditorDialog.observe(this, Observer {
@@ -88,8 +91,8 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		R.id.nav_schedule_viewer -> {
-			navController.navigate(R.id.nav_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
+		R.id.nav_top_level_schedule_viewer -> {
+			navController.navigate(R.id.nav_top_level_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
 			if (drawer_layout.isOpen()) drawer_layout.close()
 			true
 		}
@@ -99,7 +102,7 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	}
 
 	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
-		if (destination.id != R.id.nav_schedule_viewer) scheduleViewerViewModel.setMode(ScheduleMode.NOT_DISPLAYED)
+		if (destination.id != R.id.nav_top_level_schedule_viewer) scheduleViewerViewModel.setMode(ScheduleMode.NOT_DISPLAYED)
 	}
 
 	private fun setScheduleToolbarMenuMode(mode: ScheduleMode) {

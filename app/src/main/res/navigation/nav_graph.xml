@@ -3,10 +3,11 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/nav_graph"
-	app:startDestination="@id/nav_schedule_viewer">
+	app:startDestination="@id/nav_top_level_schedule_viewer"
+	tools:ignore="UnusedNavigation">
 
 	<fragment
-		android:id="@id/nav_schedule_viewer"
+		android:id="@id/nav_top_level_schedule_viewer"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
 		android:label="@string/active_schedule"
 		tools:layout="@layout/fragment_schedule_viewer" >
@@ -21,7 +22,7 @@
 	</fragment>
 
 	<fragment
-		android:id="@id/nav_schedules"
+		android:id="@id/nav_top_level_schedules"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment"
 		android:label="@string/schedules"
 		tools:layout="@layout/fragment_schedules_list" >
@@ -34,7 +35,7 @@
 	</fragment>
 
 	<fragment
-		android:id="@id/nav_categories"
+		android:id="@id/nav_top_level_categories"
 		android:name="com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment"
 		android:label="@string/categories"
 		tools:layout="@layout/fragment_categories_list">
@@ -66,5 +67,19 @@
 		android:name="com.s95ammar.weeklyschedule.views.fragments.EventEditorFragment"
 		android:label="fragment_event_editor"
 		tools:layout="@layout/fragment_event_editor" />
+	<fragment
+		android:id="@+id/nav_schedule_viewer"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
+		android:label="@string/active_schedule"
+		tools:layout="@layout/fragment_schedule_viewer">
+		<action
+			android:id="@+id/action_nav_schedule_viewer_to_eventEditorFragment"
+			app:destination="@id/eventEditorFragment">
+			<argument
+				android:name="@string/key_schedule_id"
+				android:defaultValue="0"
+				app:argType="integer" />
+		</action>
+	</fragment>
 
 </navigation>

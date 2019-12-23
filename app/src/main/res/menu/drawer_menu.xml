@@ -3,27 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_top_level"
+        android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_schedule_viewer"
+            android:id="@+id/nav_top_level_schedule_viewer"
             android:icon="@drawable/ic_current_schedule"
             android:title="@string/active_schedule" />
 
         <item
-            android:id="@+id/nav_schedules"
+            android:id="@+id/nav_top_level_schedules"
             android:icon="@drawable/ic_schedules"
             android:title="@string/schedules" />
 
         <item
-            android:id="@+id/nav_categories"
+            android:id="@+id/nav_top_level_categories"
             android:icon="@drawable/ic_category"
             android:title="@string/categories" />
+    </group>
 
+    <group
+        android:id="@+id/nav_ttop_level"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_info"
             android:icon="@drawable/ic_info"
             android:title="@string/info" />
-
     </group>
 
 </menu>

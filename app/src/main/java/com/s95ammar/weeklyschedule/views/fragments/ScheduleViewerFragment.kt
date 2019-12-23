@@ -21,10 +21,6 @@ import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_schedule_viewer.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /* GET READY TO SEE SOME FREAKY SHIT XD */
@@ -53,6 +49,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		private const val PADDING = 8
 	}
 
+	private lateinit var mode: ScheduleMode
 	private val timePattern by lazy { requireActivity().application.SYSTEM_TIME_PATTERN }
 	private val textViewsDays = ArrayList<TextView>()
 	private val textViewsHours = ArrayList<TextView>()
@@ -74,63 +71,28 @@ class ScheduleViewerFragment : DaggerFragment() {
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
 		button_add_event.setOnClickListener { viewModel.showEventEditorFragment() }
 		arguments?.getInt(resources.getString(R.string.key_schedule_id))?.let { id ->
-			startObservers()
-			when (id) {
-				0 -> {
-					viewModel.setMode(ScheduleMode.NOT_DISPLAYED)
-				}
-				else -> {
-					showSchedule(id)
-					viewModel.setMode(ScheduleMode.VIEW)
-				}
-			}
-		}
-	}
-
-	private fun doAfterScheduleInit(action: () -> Unit) {
-		launchIO {
-			while (!::schedule.isInitialized) delay(50)
-			withContext(Dispatchers.Main) { action() }
-		}
-	}
-
-	private fun startObservers() {
-		viewModel.mode.observe(viewLifecycleOwner, Observer {
-			it?.let { mode ->
-				when (mode) {
-					ScheduleMode.NOT_DISPLAYED -> {
-						text_no_active_schedule.visibility = VISIBLE
-					}
-					ScheduleMode.VIEW -> {
-						button_add_event.visibility = GONE
-					}
-					ScheduleMode.EDIT -> {
-						button_add_event.visibility = VISIBLE
-					}
-				}
-				setEventsTextViewsOnClickListeners(mode)
-			}
-		})
-
-	}
-
-	private fun setEventsTextViewsOnClickListeners(mode: ScheduleMode) {
-		doAfterScheduleInit {
-			for (dayNum in 0 until daysAmount)
-				for (event in getEventsOfDay(dayNum))
-					mapEventsTextViews[event]?.let { eventTextView ->
-						when (mode) {
-							ScheduleMode.EDIT -> eventTextView.setOnClickListener {
-								viewModel.setEditedEvent(event)
-								viewModel.showEventEditorFragment()
-							}
-							else -> eventTextView.setOnClickListener {}
+			viewModel.setMode(when (id) {
+				0 -> ScheduleMode.NOT_DISPLAYED
+				else -> ScheduleMode.VIEW
+			})
+			viewModel.mode.observe(viewLifecycleOwner, Observer {
+				it?.let { mode ->
+					this.mode = mode
+					when (mode) {
+						ScheduleMode.NOT_DISPLAYED -> text_no_active_schedule.visibility = VISIBLE
+						ScheduleMode.VIEW -> {
+							button_add_event.visibility = GONE
+							showSchedule(id)
+						}
+						ScheduleMode.EDIT -> {
+							button_add_event.visibility = VISIBLE
+							showSchedule(id)
 						}
 					}
+				}
+			})
 		}
 	}
-
-	private fun getEventsOfDay(dayNum: Int) = events.filter { schedule.getDayOfSchedule(dayNum) == it.day }
 
 	private fun showSchedule(scheduleId: Int) {
 		viewModel.getScheduleById(scheduleId).observeOnce(Observer {
@@ -148,6 +110,22 @@ class ScheduleViewerFragment : DaggerFragment() {
 			}
 		})
 	}
+
+	private fun setEventsTextViewsOnClickListeners() {
+		for (dayNum in 0 until daysAmount)
+			for (event in getEventsOfDay(dayNum))
+				mapEventsTextViews[event]?.let { eventTextView ->
+					when (mode) {
+						ScheduleMode.EDIT -> eventTextView.setOnClickListener {
+							viewModel.setEditedEvent(event)
+							viewModel.showEventEditorFragment()
+						}
+						else -> eventTextView.setOnClickListener {}
+					}
+				}
+	}
+
+	private fun getEventsOfDay(dayNum: Int) = events.filter { schedule.getDayOfSchedule(dayNum) == it.day }
 
 	private fun prepareHeaderTextViews(textViews: ArrayList<TextView>, length: Int, stringArray: Array<String>) {
 		for (i in 0 until length) {
@@ -170,6 +148,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 				layout_schedule_viewer.addView(tv)
 			}
 		}
+		setEventsTextViewsOnClickListeners()
 	}
 
 	private fun getTableTextView() = TextView(activity).apply {
