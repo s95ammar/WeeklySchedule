@@ -23,6 +23,7 @@ val Application.SYSTEM_TIME_PATTERN
 // Just to improve readability
 fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
+fun DrawerLayout.closeIfOpen() { if (isOpen()) close() }
 
 fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
 	observeForever(object : Observer<T> {

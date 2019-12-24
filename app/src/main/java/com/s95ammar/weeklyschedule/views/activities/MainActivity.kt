@@ -90,16 +90,23 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
 	}
 
-	override fun onNavigationItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		R.id.nav_top_level_schedule_viewer -> {
-			navController.navigate(R.id.nav_top_level_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
-			if (drawer_layout.isOpen()) drawer_layout.close()
-			true
-		}
-		else -> onNavDestinationSelected(item, navController).also { handled ->
-			if (handled && drawer_layout.isOpen()) drawer_layout.close()
-		}
-	}
+	override fun onNavigationItemSelected(item: MenuItem): Boolean =
+			if (navController.currentDestination?.id != item.itemId) {
+				if (topLevelDestinations.contains(item.itemId)) navController.popBackStack()
+				when (item.itemId) {
+					R.id.nav_top_level_schedule_viewer -> {
+						navController.navigate(R.id.nav_top_level_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
+						drawer_layout.closeIfOpen()
+						true
+					}
+					else -> onNavDestinationSelected(item, navController).also { handled ->
+						if (handled) drawer_layout.closeIfOpen()
+					}
+				}
+			} else {
+				drawer_layout.closeIfOpen()
+				false
+			}
 
 	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
 		if (destination.id != R.id.nav_top_level_schedule_viewer) scheduleViewerViewModel.setMode(ScheduleMode.NOT_DISPLAYED)
@@ -127,7 +134,8 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		when (item.itemId) {
 			android.R.id.home ->
 				if (drawer_layout.isOpen()) {
-					drawer_layout.close(); return true
+					drawer_layout.close()
+					return true
 				}
 		}
 		return false

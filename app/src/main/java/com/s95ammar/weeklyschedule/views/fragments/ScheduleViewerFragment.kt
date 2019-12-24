@@ -49,7 +49,6 @@ class ScheduleViewerFragment : DaggerFragment() {
 		private const val PADDING = 8
 	}
 
-	private lateinit var mode: ScheduleMode
 	private val timePattern by lazy { requireActivity().application.SYSTEM_TIME_PATTERN }
 	private val textViewsDays = ArrayList<TextView>()
 	private val textViewsHours = ArrayList<TextView>()
@@ -77,26 +76,26 @@ class ScheduleViewerFragment : DaggerFragment() {
 			})
 			viewModel.mode.observe(viewLifecycleOwner, Observer {
 				it?.let { mode ->
-					this.mode = mode
 					when (mode) {
 						ScheduleMode.NOT_DISPLAYED -> text_no_active_schedule.visibility = VISIBLE
 						ScheduleMode.VIEW -> {
 							button_add_event.visibility = GONE
-							showSchedule(id)
 						}
 						ScheduleMode.EDIT -> {
 							button_add_event.visibility = VISIBLE
-							showSchedule(id)
 						}
 					}
 				}
 			})
+			viewModel.mode.observeOnce(Observer { if (it != ScheduleMode.NOT_DISPLAYED) showSchedule(id) })
 		}
+
 	}
 
 	private fun showSchedule(scheduleId: Int) {
 		viewModel.getScheduleById(scheduleId).observeOnce(Observer {
 			it?.let {
+				Log.d(t, "showSchedule: $it")
 				schedule = it
 				viewModel.setActionBarTitle(it.name)
 				viewModel.getEventsOfSchedule(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
@@ -115,7 +114,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		for (dayNum in 0 until daysAmount)
 			for (event in getEventsOfDay(dayNum))
 				mapEventsTextViews[event]?.let { eventTextView ->
-					when (mode) {
+					when (viewModel.mode.value) {
 						ScheduleMode.EDIT -> eventTextView.setOnClickListener {
 							viewModel.setEditedEvent(event)
 							viewModel.showEventEditorFragment()
