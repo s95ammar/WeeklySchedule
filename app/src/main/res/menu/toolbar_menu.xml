@@ -5,7 +5,6 @@
 	<item
 		android:id="@+id/button_edit"
 		android:icon="@drawable/ic_edit"
-		android:onClick="scheduleMenuEditListener"
 		android:title="@string/edit"
 		android:visible="false"
 		app:showAsAction="ifRoom" />
@@ -13,7 +12,6 @@
 	<item
 		android:id="@+id/button_done"
 		android:icon="@drawable/ic_done"
-		android:onClick="scheduleMenuDoneListener"
 		android:title="@string/done"
 		android:visible="false"
 		app:showAsAction="ifRoom" />

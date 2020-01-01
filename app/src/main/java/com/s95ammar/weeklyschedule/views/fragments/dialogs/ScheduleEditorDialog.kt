@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -16,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.util.DaysAmount
 import com.s95ammar.weeklyschedule.models.data.Schedule
-import com.s95ammar.weeklyschedule.util.ListMode
+import com.s95ammar.weeklyschedule.util.Mode
 import com.s95ammar.weeklyschedule.util.input
 import com.s95ammar.weeklyschedule.util.toast
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
@@ -24,12 +23,11 @@ import com.s95ammar.weeklyschedule.views.BlankFieldRequiredException
 import com.s95ammar.weeklyschedule.views.requireNonBlankFields
 import dagger.android.support.DaggerDialogFragment
 import kotlinx.android.synthetic.main.dialog_edit_schedule.*
-import kotlinx.android.synthetic.main.dialog_edit_schedule.view.*
 import javax.inject.Inject
 
 
 class ScheduleEditorDialog : DaggerDialogFragment() {
-	private var mode = ListMode.ADD
+	private var mode = Mode.ADD
 	private lateinit var editedSchedule: Schedule
 	private var scheduleName = ""
 		set(value) {
@@ -77,7 +75,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 	}
 
 	private fun setModeEdit() {
-		mode = ListMode.EDIT
+		mode = Mode.EDIT
 		textView_edit_schedule_days.visibility = GONE
 		spinner_edit_schedule.visibility = GONE
 		scheduleName = editedSchedule.name
@@ -89,14 +87,14 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 		try {
 			requireNonBlankFields(editText_edit_schedule_name to "schedule name")
 			when (mode) {
-				ListMode.ADD -> {
+				Mode.ADD -> {
 					val newSchedule = Schedule(
 							editText_edit_schedule_name.input,
 							DaysAmount.fromInt(spinner_edit_schedule.selectedItem.toString().toInt())
 					)
 					viewModel.insertSchedule(newSchedule)
 				}
-				ListMode.EDIT -> viewModel.update(getUpdatedSchedule())
+				Mode.EDIT -> viewModel.update(getUpdatedSchedule())
 			}
 		} catch (e: BlankFieldRequiredException) {
 			toast(e.message, Toast.LENGTH_LONG)

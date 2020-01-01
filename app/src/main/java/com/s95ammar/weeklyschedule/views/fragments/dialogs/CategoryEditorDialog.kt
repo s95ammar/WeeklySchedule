@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.dialog_edit_category.*
 import javax.inject.Inject
 
 class CategoryEditorDialog : DaggerDialogFragment() {
-	private var mode = ListMode.ADD
+	private var mode = Mode.ADD
 	private lateinit var editedCategory: Category
 	private var categoryName = ""
 		set(value) {
@@ -82,7 +82,7 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 	}
 
 	private fun setModeEdit() {
-		mode = ListMode.EDIT
+		mode = Mode.EDIT
 		selectedFillColor = editedCategory.fillColor
 		selectedTextColor = editedCategory.textColor
 		categoryName = editedCategory.name
@@ -128,8 +128,8 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 			requireNonBlankFields(editText_edit_category_name to "category name")
 			val category = Category(editText_edit_category_name.input, selectedFillColor, selectedTextColor)
 			when (mode) {
-				ListMode.ADD -> viewModel.insert(category)
-				ListMode.EDIT -> viewModel.update(category.apply { id = editedCategory.id })
+				Mode.ADD -> viewModel.insert(category)
+				Mode.EDIT -> viewModel.update(category.apply { id = editedCategory.id })
 			}
 		} catch (e: BlankFieldRequiredException) {
 			toast(e.message)

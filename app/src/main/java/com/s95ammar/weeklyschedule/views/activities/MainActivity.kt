@@ -123,10 +123,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		}
 	}
 
-	fun scheduleMenuEditListener(item: MenuItem) = scheduleViewerViewModel.setMode(ScheduleMode.EDIT)
-
-	fun scheduleMenuDoneListener(item: MenuItem) = scheduleViewerViewModel.setMode(ScheduleMode.VIEW)
-
 	// adds functionality to burger icon (only for opening the drawer) and back arrow
 	override fun onSupportNavigateUp() = navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
 
@@ -137,6 +133,8 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 					drawer_layout.close()
 					return true
 				}
+			R.id.button_edit -> scheduleViewerViewModel.setMode(ScheduleMode.EDIT)
+			R.id.button_done -> scheduleViewerViewModel.setMode(ScheduleMode.VIEW)
 		}
 		return false
 	}
