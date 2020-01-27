@@ -18,6 +18,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
+import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.google.android.material.navigation.NavigationView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
@@ -139,11 +140,15 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		return false
 	}
 
-	override fun onBackPressed() {
-		if (drawer_layout.isOpen())
-			drawer_layout.close()
-		else
-			super.onBackPressed()
+	private fun openDaysPickerDialog(schedule: Schedule) {
+		MaterialDialog(this).show {
+			listItemsMultiChoice(items = schedule.days.asList()) { a, index, text ->
+				Log.d(t, "openDaysPickerDialog: $a")
+				Log.d(t, "openDaysPickerDialog: $index")
+				Log.d(t, "openDaysPickerDialog: $text")
+			}
+		}
+
 	}
 
 	private fun openColorPicker(colorDetails: ColorDetails) {
@@ -165,6 +170,13 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 			negativeButton(R.string.cancel)
 		}
 
+	}
+
+	override fun onBackPressed() {
+		if (drawer_layout.isOpen())
+			drawer_layout.close()
+		else
+			super.onBackPressed()
 	}
 
 	private fun saveActiveScheduleId(activeScheduleId: Int) {

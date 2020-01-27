@@ -1,6 +1,7 @@
 package com.s95ammar.weeklyschedule.models.data
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.s95ammar.weeklyschedule.util.DAYS_OF_ONE_WEEK
@@ -21,10 +22,15 @@ data class Schedule(
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = 0
 
-	fun getDayOfSchedule(dayNum: Int) = when {
-		daysAmount == OneWeek && (dayNum in 0 until OneWeek.value) -> DAYS_OF_ONE_WEEK[dayNum]
-		daysAmount == TwoWeeks && (dayNum in 0 until TwoWeeks.value) -> DAYS_OF_TWO_WEEKS[dayNum]
-		else -> throw RuntimeException("dayNum must be in range of 0 until $daysAmount")
+	@Ignore
+	val days = when (daysAmount) {
+		OneWeek -> DAYS_OF_ONE_WEEK
+		TwoWeeks -> DAYS_OF_TWO_WEEKS
+	}
+
+	fun getDayOfSchedule(dayNum: Int) = when (dayNum) {
+		in 0 until daysAmount.value -> days[dayNum]
+		else -> throw RuntimeException("dayNum must be in range of 0 until ${daysAmount.value}")
 	}
 
 	companion object {

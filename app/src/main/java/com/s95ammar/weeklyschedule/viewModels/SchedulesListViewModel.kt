@@ -3,12 +3,11 @@ package com.s95ammar.weeklyschedule.viewModels
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.launchIO
-import com.s95ammar.weeklyschedule.util.observeOnce
+import com.s95ammar.weeklyschedule.util.fetchValue
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
@@ -67,7 +66,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	}
 
 	private fun manageActiveScheduleReplacement(newActiveSchedule: Schedule) {
-		getActiveSchedule().observeOnce(Observer {
+		getActiveSchedule().fetchValue {
 			it?.let { activeSchedule ->
 				if (activeSchedule != newActiveSchedule) { // true only when RecyclerView is being built
 					activeSchedule.isActive = false
@@ -76,7 +75,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 					update(activeSchedule, newActiveSchedule)
 				}
 			}
-		})
+		}
 	}
 
 	private fun setActiveScheduleId(id: Int) {

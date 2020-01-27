@@ -8,7 +8,6 @@ import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineScope
@@ -25,11 +24,11 @@ fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
 fun DrawerLayout.closeIfOpen() { if (isOpen()) close() }
 
-fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
+fun <T> LiveData<T>.fetchValue(action: (t: T?) -> Unit) {
 	observeForever(object : Observer<T> {
 		override fun onChanged(t: T?) {
 			removeObserver(this)
-			observer.onChanged(t)
+			action(t)
 		}
 	})
 }

@@ -17,11 +17,13 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 
 	private val _actionBarTitle = MutableLiveData<String>()
 	private val _mode = MutableLiveData<ScheduleMode>()
+	private val _editedSchedule = MutableLiveData<Schedule>()
 	private val _editedEvent = MutableLiveData<Event>()
 	private val _showEventEditorFragment = SingleLiveEvent<Unit>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
 	val mode: LiveData<ScheduleMode> = _mode
+	val editedSchedule: LiveData<Schedule> = _editedSchedule
 	val editedEvent: LiveData<Event> = _editedEvent
 	val showEventEditorFragment: LiveData<Unit> = _showEventEditorFragment
 
@@ -33,9 +35,7 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	fun insert(event: Event) = launchIO { repo.insert(event) }
 	fun update(event: Event) = launchIO { repo.update(event) }
 	fun delete(event: Event) = launchIO { repo.delete(event) }
-	fun deleteAllEvents() = launchIO { repo.deleteAllEvents() }
 	fun getEventsOfSchedule(scheduleId: Int) = repo.getEventsOfSchedule(scheduleId)
-	fun getAllEvents() = repo.getAllEvents()
 
 	fun getCategoryById(id: Int) = repo.getCategoryById(id)
 
@@ -49,6 +49,10 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 
 	fun setEditedEvent(event: Event) {
 		_editedEvent.value = event
+	}
+
+	fun setEditedSchedule(schedule: Schedule) {
+		_editedSchedule.value = schedule
 	}
 
 	fun showEventEditorFragment() = _showEventEditorFragment.call()
