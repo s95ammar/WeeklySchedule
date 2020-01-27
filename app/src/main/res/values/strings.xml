@@ -13,7 +13,7 @@
     <string name="status">Status:</string>
     <string name="status_active">active</string>
     <string name="status_inactive">inactive</string>
-    <string name="name">Name:</string>
+    <string name="name">Name</string>
     <string name="schedule_list_is_empty">Schedule list is empty</string>
     <string name="popup_rename">Rename</string>
     <string name="popup_delete">Delete</string>
@@ -23,8 +23,8 @@
     <string name="done">Done</string>
     <string name="edit">Edit</string>
     <string name="no_active_schedule">Active schedule will be shown\nhere once selected</string>
-    <string name="start_time">Start Time:</string>
-    <string name="end_time">End Time:</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
     <string name="empty_name_error">Name cannot be blank</string>
     <string name="start_end_time_error">End time must be after start time</string>
     <string name="default_time">12:00</string>
@@ -32,7 +32,7 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="new_event">New Event</string>
-    <string name="day">Day:</string>
+    <string name="day">Day</string>
     <string name="categories">Categories</string>
     <string name="event">Event</string>
     <string name="category_list_is_empty">Category list is empty</string>
