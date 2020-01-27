@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
+import com.s95ammar.weeklyschedule.di.TimePattern
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
@@ -22,13 +23,15 @@ import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_schedule_viewer.*
 import javax.inject.Inject
+import javax.inject.Named
 
 /* GET READY TO SEE SOME FREAKY SHIT XD */
 
 class ScheduleViewerFragment : DaggerFragment() {
 	private val t = "log_${javaClass.simpleName}"
 
-	@Inject lateinit var factory: ViewModelProvider.Factory
+	@Inject
+	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: ScheduleViewerViewModel
 	private lateinit var schedule: Schedule
 	private lateinit var events: List<Event>
@@ -43,7 +46,8 @@ class ScheduleViewerFragment : DaggerFragment() {
 		private const val PADDING = 8
 	}
 
-	private val timePattern by lazy { requireActivity().application.SYSTEM_TIME_PATTERN }
+	@field: [Inject TimePattern]
+	lateinit var timePattern: String
 	private val textViewsDays = ArrayList<TextView>()
 	private val textViewsHours = ArrayList<TextView>()
 	private lateinit var mapEventsTextViews: HashMap<Event, TextView>
@@ -62,26 +66,26 @@ class ScheduleViewerFragment : DaggerFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
-		button_add_event.setOnClickListener { viewModel.showEventEditorFragment() }
 		arguments?.getInt(resources.getString(R.string.key_schedule_id))?.let { id ->
-			viewModel.setMode(when (id) {
+			viewModel.setScheduleViewerMode(when (id) {
 				0 -> ScheduleMode.NOT_DISPLAYED
 				else -> ScheduleMode.VIEW
 			})
-			viewModel.mode.observe(viewLifecycleOwner, Observer {
+			viewModel.scheduleMode.observe(viewLifecycleOwner, Observer {
 				it?.let { mode ->
 					when (mode) {
-						ScheduleMode.NOT_DISPLAYED -> text_no_active_schedule.visibility = VISIBLE
+						ScheduleMode.NOT_DISPLAYED -> textView_no_active_schedule.visibility = VISIBLE
 						ScheduleMode.VIEW -> {
 							button_add_event.visibility = GONE
 						}
 						ScheduleMode.EDIT -> {
 							button_add_event.visibility = VISIBLE
+							button_add_event.setOnClickListener { viewModel.showEventEditorFragment(resources.getString(R.string.key_schedule_id) to id) }
 						}
 					}
 				}
 			})
-			viewModel.mode.fetchValue { if (it != ScheduleMode.NOT_DISPLAYED) showSchedule(id) }
+			if (viewModel.scheduleMode.value != ScheduleMode.NOT_DISPLAYED) showSchedule(id)
 		}
 
 	}
@@ -92,7 +96,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 				Log.d(t, "showSchedule: $it")
 				schedule = it
 				viewModel.setActionBarTitle(it.name)
-				viewModel.getEventsOfSchedule(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
+				viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
 					events = scheduleEvents
 					prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
 					prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days)
@@ -104,17 +108,21 @@ class ScheduleViewerFragment : DaggerFragment() {
 	}
 
 	private fun setEventsTextViewsOnClickListeners() {
-		for (dayNum in 0 until daysAmount)
-			for (event in getEventsOfDay(dayNum))
-				mapEventsTextViews[event]?.let { eventTextView ->
-					when (viewModel.mode.value) {
-						ScheduleMode.EDIT -> eventTextView.setOnClickListener {
-							viewModel.setEditedEvent(event)
-							viewModel.showEventEditorFragment()
+		schedule.days.forEach { day->
+			viewModel.getEventsBy(schedule.id, day).fetchValue {
+				it?.forEach { event ->
+					mapEventsTextViews[event]?.let { eventTextView ->
+						when (viewModel.scheduleMode.value) {
+							ScheduleMode.EDIT -> eventTextView.setOnClickListener {
+								viewModel.setEditedEvent(event)
+								viewModel.showEventEditorFragment(resources.getString(R.string.key_event_id) to event.id)
+							}
+							else -> eventTextView.setOnClickListener {}
 						}
-						else -> eventTextView.setOnClickListener {}
 					}
 				}
+			}
+		}
 	}
 
 	private fun getEventsOfDay(dayNum: Int) = events.filter { schedule.getDayOfSchedule(dayNum) == it.day }

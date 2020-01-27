@@ -40,7 +40,7 @@ class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, Catego
 	}
 
 	inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-		var tvCategoryName: TextView = itemView.text_category_name
+		var tvCategoryName: TextView = itemView.textView_category_name
 		var buttonMore: Button = itemView.button_more_categories
 		var cardView: CardView = itemView.cardView_categories
 

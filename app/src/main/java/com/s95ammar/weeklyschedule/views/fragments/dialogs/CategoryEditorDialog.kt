@@ -138,12 +138,12 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 
 	private fun assignFillColor() {
 		view_edit_category_fill_color.background.setColorFilter(selectedFillColor, PorterDuff.Mode.SRC) // changes color but not shape
-		text_edit_category_preview_value.setBackgroundColor(selectedFillColor)
+		textView_edit_category_preview_value.setBackgroundColor(selectedFillColor)
 	}
 
 	private fun assignTextColor() {
 		view_edit_category_text_color.background.setColorFilter(selectedTextColor, PorterDuff.Mode.SRC)
-		text_edit_category_preview_value.setTextColor(selectedTextColor)
+		textView_edit_category_preview_value.setTextColor(selectedTextColor)
 	}
 
 	override fun onDetach() {

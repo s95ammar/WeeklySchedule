@@ -27,7 +27,7 @@
 
 
     <TextView
-        android:id="@+id/text_no_active_schedule"
+        android:id="@+id/textView_no_active_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/no_active_schedule"

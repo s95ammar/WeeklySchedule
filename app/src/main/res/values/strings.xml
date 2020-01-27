@@ -58,6 +58,7 @@
 	<string name="active_schedule_delete_error">Cannot delete active schedule. Please deactive it first, if you really want to delete it</string>
     <string name="days">Days:</string>
 	<string name="key_schedule_id">scheduleId</string>
+	<string name="key_event_id">eventId</string>
 
 	<string-array
         name="days_amount">

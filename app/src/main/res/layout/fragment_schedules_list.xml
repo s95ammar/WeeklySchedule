@@ -26,7 +26,7 @@
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
-		android:id="@+id/text_no_schedules"
+		android:id="@+id/textView_no_schedules"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/schedule_list_is_empty"

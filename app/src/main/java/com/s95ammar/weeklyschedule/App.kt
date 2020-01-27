@@ -1,6 +1,5 @@
 package com.s95ammar.weeklyschedule
 
-import android.util.Log
 import com.s95ammar.weeklyschedule.di.app.DaggerAppComponent
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.ACTIVE_SCHEDULE_ID_KEY
@@ -15,7 +14,7 @@ class App : DaggerApplication() {
 
 	override fun onCreate() {
 		super.onCreate()
-		Schedule.activeScheduleId = loadActiveScheduleId().also { Log.d(t, "loadActiveScheduleId: $it") }
+		Schedule.activeScheduleId = loadActiveScheduleId()
 	}
 
 	private fun loadActiveScheduleId() = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)

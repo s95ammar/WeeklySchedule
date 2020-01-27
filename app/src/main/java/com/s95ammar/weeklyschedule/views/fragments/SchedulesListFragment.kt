@@ -42,7 +42,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 
 	override fun onListChanged(itemsList: List<Schedule>) {
 		listAdapter.submitList(itemsList)
-		text_no_schedules.visibility = if (itemsList.isEmpty()) View.VISIBLE else View.GONE
+		textView_no_schedules.visibility = if (itemsList.isEmpty()) View.VISIBLE else View.GONE
 	}
 
 	override fun onItemClicked(item: Schedule) {

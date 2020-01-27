@@ -37,7 +37,11 @@ class Repository @Inject constructor(
 	suspend fun update(event: Event) = eventDao.update(event)
 	suspend fun delete(event: Event) = eventDao.delete(event)
 	suspend fun deleteAllEvents() = eventDao.deleteAllEvents()
-	fun getEventsOfSchedule(scheduleId: Int) = eventDao.getEventsOfSchedule(scheduleId)
+	fun getEventById(id: Int) = eventDao.getEventById(id)
+	fun getEventsBy(scheduleId: Int) = eventDao.getEventsBy(scheduleId)
+	fun getEventsBy(scheduleId: Int, day: String) = eventDao.getEventsBy(scheduleId, day)
+	fun getEventsBy(categoryId: Int, scheduleId: Int) = eventDao.getEventsBy(categoryId, scheduleId)
+
 	fun getAllEvents() = eventDao.getAllEvents()
 
 }

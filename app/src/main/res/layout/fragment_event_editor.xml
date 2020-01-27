@@ -33,7 +33,7 @@
 					android:padding="12dp">
 
 					<TextView
-						android:id="@+id/text_event_category"
+						android:id="@+id/textView_event_category"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="@string/category"
@@ -44,7 +44,7 @@
 						app:layout_constraintTop_toTopOf="parent" />
 
 					<Spinner
-						android:id="@+id/spinner_categories"
+						android:id="@+id/spinner_event_categories"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:gravity="end"
@@ -71,7 +71,7 @@
 					android:padding="12dp">
 
 					<TextView
-						android:id="@+id/text_event_name"
+						android:id="@+id/textView_event_name"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="@string/name"
@@ -92,7 +92,7 @@
 						android:maxLines="1"
 						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintStart_toEndOf="@+id/text_event_name"
+						app:layout_constraintStart_toEndOf="@+id/textView_event_name"
 						app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -118,7 +118,7 @@
 					android:padding="12dp">
 
 					<TextView
-						android:id="@+id/text_event_day"
+						android:id="@+id/textView_event_day"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="@string/day"
@@ -127,6 +127,17 @@
 						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent" />
+
+					<Spinner
+						android:id="@+id/spinner_event_days"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:gravity="end"
+						android:visibility="gone"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toTopOf="parent" />
+
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -150,7 +161,7 @@
 					android:padding="12dp">
 
 					<TextView
-						android:id="@+id/text_event_start"
+						android:id="@+id/textView_event_start"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="@string/start_time"
@@ -193,7 +204,7 @@
 					android:padding="12dp">
 
 					<TextView
-						android:id="@+id/text_event_end"
+						android:id="@+id/textView_event_end"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="@string/end_time"

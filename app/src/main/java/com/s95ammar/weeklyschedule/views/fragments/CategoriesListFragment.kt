@@ -41,7 +41,7 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 
 	override fun onListChanged(itemsList: List<Category>) {
 		listAdapter.submitList(itemsList)
-		text_no_categories.visibility = if (itemsList.isEmpty()) View.VISIBLE else View.GONE
+		textView_no_categories.visibility = if (itemsList.isEmpty()) View.VISIBLE else View.GONE
 	}
 
 	override fun onItemClicked(item: Category) {

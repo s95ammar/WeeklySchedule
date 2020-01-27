@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.os.bundleOf
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -67,17 +68,18 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.toolbar_menu, menu)
 		menu?.let { scheduleToolbarMenu = it }
-		scheduleViewerViewModel.mode.observe(this, Observer { setScheduleToolbarMenuMode(it) })
+		scheduleViewerViewModel.scheduleMode.observe(this, Observer { setScheduleToolbarMenuMode(it) })
 		return true
 
 	}
 
 	private fun startObservers() {
 		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
-		scheduleViewerViewModel.showEventEditorFragment.observe(this, Observer {
+		scheduleViewerViewModel.showEventEditorFragment.observe(this, Observer { (key, id) ->
 			// TODO: make sure there's no need for an action
-			navController.navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment)
+			navController.navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment, bundleOf(key to id))
 		})
+		scheduleViewerViewModel.showDaysMultiChoiceDialog.observe(this, Observer { showDaysMultiChoiceDialog(it) })
 		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
@@ -110,7 +112,8 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 			}
 
 	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
-		if (destination.id != R.id.nav_top_level_schedule_viewer) scheduleViewerViewModel.setMode(ScheduleMode.NOT_DISPLAYED)
+		if (destination.id != R.id.nav_top_level_schedule_viewer) scheduleViewerViewModel.setScheduleViewerMode(ScheduleMode.NOT_DISPLAYED)
+		drawer_layout.setDrawerLockMode(if (topLevelDestinations.contains(destination.id)) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 	}
 
 	private fun setScheduleToolbarMenuMode(mode: ScheduleMode) {
@@ -134,15 +137,15 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 					drawer_layout.close()
 					return true
 				}
-			R.id.button_edit -> scheduleViewerViewModel.setMode(ScheduleMode.EDIT)
-			R.id.button_done -> scheduleViewerViewModel.setMode(ScheduleMode.VIEW)
+			R.id.button_edit -> scheduleViewerViewModel.setScheduleViewerMode(ScheduleMode.EDIT)
+			R.id.button_done -> scheduleViewerViewModel.setScheduleViewerMode(ScheduleMode.VIEW)
 		}
 		return false
 	}
 
-	private fun openDaysPickerDialog(schedule: Schedule) {
+	private fun showDaysMultiChoiceDialog(days: Array<String>) {
 		MaterialDialog(this).show {
-			listItemsMultiChoice(items = schedule.days.asList()) { a, index, text ->
+			listItemsMultiChoice(items = days.asList()) { a, index, text ->
 				Log.d(t, "openDaysPickerDialog: $a")
 				Log.d(t, "openDaysPickerDialog: $index")
 				Log.d(t, "openDaysPickerDialog: $text")

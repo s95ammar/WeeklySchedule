@@ -18,7 +18,7 @@
 		android:padding="8dp">
 
 		<TextView
-			android:id="@+id/text_category_name"
+			android:id="@+id/textView_category_name"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="@android:color/black"

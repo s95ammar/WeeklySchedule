@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.Mode
 import com.s95ammar.weeklyschedule.util.ScheduleMode
 import com.s95ammar.weeklyschedule.util.launchIO
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
@@ -16,16 +17,20 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	private val t = "log_${javaClass.simpleName}"
 
 	private val _actionBarTitle = MutableLiveData<String>()
-	private val _mode = MutableLiveData<ScheduleMode>()
+	private val _scheduleMode = MutableLiveData<ScheduleMode>()
 	private val _editedSchedule = MutableLiveData<Schedule>()
 	private val _editedEvent = MutableLiveData<Event>()
-	private val _showEventEditorFragment = SingleLiveEvent<Unit>()
+	private val _showEventEditorFragment = SingleLiveEvent<Pair<String, Int>>()
+	private val _eventEditorMode = MutableLiveData<Mode>()
+	private val _showDaysMultiChoiceDialog = SingleLiveEvent<Array<String>>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
-	val mode: LiveData<ScheduleMode> = _mode
+	val scheduleMode: LiveData<ScheduleMode> = _scheduleMode
 	val editedSchedule: LiveData<Schedule> = _editedSchedule
 	val editedEvent: LiveData<Event> = _editedEvent
-	val showEventEditorFragment: LiveData<Unit> = _showEventEditorFragment
+	val showEventEditorFragment: LiveData<Pair<String, Int>> = _showEventEditorFragment
+	val eventEditorMode: LiveData<Mode> = _eventEditorMode
+	val showDaysMultiChoiceDialog: LiveData<Array<String>> = _showDaysMultiChoiceDialog
 
 	init {
 		Log.d(t, "init: ")
@@ -35,7 +40,10 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	fun insert(event: Event) = launchIO { repo.insert(event) }
 	fun update(event: Event) = launchIO { repo.update(event) }
 	fun delete(event: Event) = launchIO { repo.delete(event) }
-	fun getEventsOfSchedule(scheduleId: Int) = repo.getEventsOfSchedule(scheduleId)
+	fun getEventById(id: Int) = repo.getEventById(id)
+	fun getEventsBy(scheduleId: Int) = repo.getEventsBy(scheduleId)
+	fun getEventsBy(scheduleId: Int, day: String) = repo.getEventsBy(scheduleId, day)
+	fun getEventsBy(categoryId: Int, scheduleId: Int) = repo.getEventsBy(categoryId, scheduleId)
 
 	fun getCategoryById(id: Int) = repo.getCategoryById(id)
 
@@ -43,18 +51,29 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 		_actionBarTitle.value = title
 	}
 
-	fun setMode(mode: ScheduleMode) {
-		_mode.value = mode
+	fun setScheduleViewerMode(scheduleMode: ScheduleMode) {
+		_scheduleMode.value = scheduleMode
 	}
 
 	fun setEditedEvent(event: Event) {
 		_editedEvent.value = event
 	}
 
+	fun setEventEditorMode(mode: Mode) {
+		_eventEditorMode.value = mode
+	}
+
 	fun setEditedSchedule(schedule: Schedule) {
 		_editedSchedule.value = schedule
 	}
 
-	fun showEventEditorFragment() = _showEventEditorFragment.call()
+	fun showEventEditorFragment(keyToId: Pair<String, Int>) {
+		_showEventEditorFragment.value = keyToId
+	}
+
+	fun showDaysMultiChoiceDialog(days: Array<String>) {
+		_showDaysMultiChoiceDialog.value = days
+	}
+
 
 }
