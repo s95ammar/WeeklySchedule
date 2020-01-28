@@ -29,8 +29,14 @@ class EventEditorFragment : DaggerFragment() {
 	lateinit var timePattern: String
 
 	private lateinit var viewModel: ScheduleViewerViewModel
-
 	private lateinit var schedule: Schedule
+	private lateinit var event: Event
+	private val mode
+		get() = viewModel.eventEditorMode.value
+	private val argEventId
+		get() = arguments?.getInt(resources.getString(R.string.key_event_id)) ?: 0
+	private val argScheduleId
+		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
 	                          savedInstanceState: Bundle?): View? {
@@ -40,52 +46,49 @@ class EventEditorFragment : DaggerFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
-		startListeners()
-		arguments?.getInt(resources.getString(R.string.key_event_id))?.let { eventId ->
-			when (eventId) {
-				0 -> arguments?.getInt(resources.getString(R.string.key_schedule_id))?.let { scheduleId -> setValuesFromSchedule(scheduleId) }
-				else -> setValuesFromEvent(eventId)
-			}
-			setUpCardViewDays()
-		}
+		setMode()
+		setValues()
+		setUpLayout()
 	}
 
-	private fun setValuesFromSchedule(scheduleId: Int) {
-		viewModel.setEventEditorMode(Mode.ADD)
-		viewModel.getScheduleById(scheduleId).fetchValue {
-			it?.let {
-				schedule = it
-//				setUpCardViewDays()
-			}
-		}
+	private fun setMode() {
+		viewModel.setEventEditorMode(when (argEventId) {
+			0 -> Mode.ADD
+			else -> Mode.EDIT
+		})
 	}
 
-	private fun setValuesFromEvent(eventId: Int) {
-		viewModel.setEventEditorMode(Mode.EDIT)
-		viewModel.getEventById(eventId).fetchValue {
-			it?.let { event -> setUiValues(event) }
-//			setUpCardViewDays()
-		}
-	}
-
-	private fun setUiValues(event: Event) {
-		viewModel.getCategoryById(event.categoryId).fetchValue {
-			//		TODO: selectCategory
-		}
-		textView_event_name.text = event.name
-		viewModel.getScheduleById(event.scheduleId).fetchValue {
-			it?.let { schedule ->
-				this.schedule = schedule
-				spinner_event_days.setSelection(schedule.days.indexOf(event.day))
+	private fun setValues() {
+		when (mode) {
+			Mode.ADD -> setSchedule(argScheduleId)
+			Mode.EDIT -> viewModel.getEventById(argEventId).fetchValue {
+				it?.let { event ->
+					this.event = event
+					setSchedule(event.scheduleId)
+				}
 			}
 		}
-		textView_event_start_value.text = event.startTime.toString(timePattern)
-		textView_event_end_value.text = event.endTime.toString(timePattern)
-
 	}
 
-	private fun setUpCardViewDays() {
-		when (viewModel.eventEditorMode.value) {
+	private fun setSchedule(scheduleId: Int) =
+			viewModel.getScheduleById(scheduleId).fetchValue { schedule -> schedule?.let { this.schedule = schedule } }
+
+	private fun setUpLayout() {
+		if (mode == Mode.EDIT) {
+			viewModel.getCategoryById(event.categoryId).fetchValue {
+				//		TODO: selectCategory
+			}
+			textView_event_name.text = event.name
+			spinner_event_days.setSelection(schedule.days.indexOf(event.day))
+			textView_event_start_value.text = event.startTime.toString(timePattern)
+			textView_event_end_value.text = event.endTime.toString(timePattern)
+		}
+		setUpDaysCardView()
+	}
+
+
+	private fun setUpDaysCardView() {
+		when (mode) {
 			Mode.EDIT -> {
 				spinner_event_days.visibility = View.VISIBLE
 				cardView_event_day.setOnClickListener { spinner_event_days.performClick() }
@@ -96,10 +99,6 @@ class EventEditorFragment : DaggerFragment() {
 			}
 
 		}
-	}
-
-	private fun startListeners() {
-//		cardView_event_day.setOnClickListener { viewModel.showDaysMultiChoiceDialog() }
 	}
 
 
