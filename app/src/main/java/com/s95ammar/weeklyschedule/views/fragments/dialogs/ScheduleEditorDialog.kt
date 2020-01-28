@@ -9,15 +9,11 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
-import com.s95ammar.weeklyschedule.util.DaysAmount
 import com.s95ammar.weeklyschedule.models.data.Schedule
-import com.s95ammar.weeklyschedule.util.Mode
-import com.s95ammar.weeklyschedule.util.input
-import com.s95ammar.weeklyschedule.util.toast
+import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 import com.s95ammar.weeklyschedule.views.BlankFieldRequiredException
 import com.s95ammar.weeklyschedule.views.requireNonBlankFields
@@ -27,21 +23,19 @@ import javax.inject.Inject
 
 
 class ScheduleEditorDialog : DaggerDialogFragment() {
-	private var mode = Mode.ADD
-	private lateinit var editedSchedule: Schedule
-	private var scheduleName = ""
-		set(value) {
-			field = value
-			editText_edit_schedule_name.setText(scheduleName)
-		}
+	private lateinit var mode: Mode
+	private val argScheduleId
+		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
+	private val daysSelection
+		get() = spinner_edit_schedule.selectedItem.toString().toInt()
 
-	@Inject lateinit var factory: ViewModelProvider.Factory
+	@Inject
+	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: SchedulesListViewModel
 	private var dialogView: View? = null
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_edit_schedule, null)
-//		setUpDaysSpinner()
 		return AlertDialog.Builder(requireActivity())
 				.setView(dialogView)
 				.setTitle(R.string.schedule_add_title)
@@ -61,55 +55,42 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(SchedulesListViewModel::class.java)
-		initObservers()
-		editText_edit_schedule_name.setText(scheduleName)
+		setMode()
+		setViews()
 	}
 
-	private fun initObservers() {
-		viewModel.editedSchedule.observe(viewLifecycleOwner, Observer {
-			it?.let { schedule ->
-				editedSchedule = schedule
-				setModeEdit()
+
+	private fun setMode() {
+		mode = when (argScheduleId) {
+			0 -> Mode.ADD
+			else -> Mode.EDIT
+		}
+	}
+
+	private fun setViews() {
+		if (mode == Mode.EDIT) viewModel.getScheduleById(argScheduleId).fetchValue {
+			it?.let { editedSchedule ->
+				dialog?.setTitle(R.string.schedule_rename_title)
+				editText_edit_schedule_name.setText(editedSchedule.name)
+				textView_edit_schedule_days.visibility = GONE
+				spinner_edit_schedule.visibility = GONE
 			}
-		})
+		}
 	}
 
-	private fun setModeEdit() {
-		mode = Mode.EDIT
-		textView_edit_schedule_days.visibility = GONE
-		spinner_edit_schedule.visibility = GONE
-		scheduleName = editedSchedule.name
-		dialog?.setTitle(R.string.schedule_rename_title)
-	}
-
-	private val t = "log_${javaClass.simpleName}"
 	private fun onOkListener() = DialogInterface.OnClickListener { _, _ ->
 		try {
 			requireNonBlankFields(editText_edit_schedule_name to "schedule name")
 			when (mode) {
 				Mode.ADD -> {
-					val newSchedule = Schedule(
-							editText_edit_schedule_name.input,
-							DaysAmount.fromInt(spinner_edit_schedule.selectedItem.toString().toInt())
-					)
-					viewModel.insertSchedule(newSchedule)
+					Schedule(editText_edit_schedule_name.input, DaysAmount.fromInt(daysSelection))
+							.let { viewModel.insertSchedule(it) }
 				}
-				Mode.EDIT -> viewModel.update(getUpdatedSchedule())
+				Mode.EDIT -> viewModel.renameSchedule(argScheduleId, editText_edit_schedule_name.input)
 			}
 		} catch (e: BlankFieldRequiredException) {
 			toast(e.message, Toast.LENGTH_LONG)
 		}
 	}
 
-
-	private fun getUpdatedSchedule() = Schedule(
-			editText_edit_schedule_name.input,
-			editedSchedule.daysAmount,
-			editedSchedule.isActive
-	).apply { id = editedSchedule.id }
-
-	override fun onDetach() {
-		viewModel.clearEditorDialogValues()
-		super.onDetach()
-	}
 }

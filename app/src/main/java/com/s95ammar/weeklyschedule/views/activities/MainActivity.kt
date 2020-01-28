@@ -35,7 +35,8 @@ import javax.inject.Inject
 class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 	private val t = "log_${javaClass.simpleName}"
 
-	@Inject lateinit var factory: ViewModelProvider.Factory
+	@Inject
+	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var scheduleViewerViewModel: ScheduleViewerViewModel
 	private lateinit var schedulesListViewModel: SchedulesListViewModel
 	private lateinit var categoriesListViewModel: CategoriesListViewModel
@@ -82,13 +83,15 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		scheduleViewerViewModel.showDaysMultiChoiceDialog.observe(this, Observer { showDaysMultiChoiceDialog(it) })
 		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
+			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog,
+					bundleOf(resources.getString(R.string.key_schedule_id) to it))
 		})
 		schedulesListViewModel.onScheduleItemClick.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_nav_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to it))
 		})
 		categoriesListViewModel.showCategoryEditorDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog)
+			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog,
+					bundleOf(resources.getString(R.string.key_category_id) to it))
 		})
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
 	}

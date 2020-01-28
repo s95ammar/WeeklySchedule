@@ -23,23 +23,14 @@ import kotlinx.android.synthetic.main.dialog_edit_category.*
 import javax.inject.Inject
 
 class CategoryEditorDialog : DaggerDialogFragment() {
-	private var mode = Mode.ADD
-	private lateinit var editedCategory: Category
-	private var categoryName = ""
-		set(value) {
-			field = value
-			editText_edit_category_name.setText(categoryName)
-		}
-	@ColorInt private var selectedFillColor = COLOR_GREEN
-		set(value) {
-			field = value
-			assignFillColor()
-		}
-	@ColorInt private var selectedTextColor = COLOR_BLACK
-		set(value) {
-			field = value
-			assignTextColor()
-		}
+	private lateinit var mode: Mode
+	private val argCategoryId
+		get() = arguments?.getInt(resources.getString(R.string.key_category_id)) ?: 0
+
+	@ColorInt
+	private var selectedFillColor: Int = COLOR_GREEN
+	@ColorInt
+	private var selectedTextColor: Int = COLOR_BLACK
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
@@ -67,32 +58,35 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(CategoriesListViewModel::class.java)
-		initObservers()
+		setMode()
 		setViews()
 		setListeners()
 	}
 
-	private fun initObservers() {
-		viewModel.editedCategory.observe(viewLifecycleOwner, Observer {
-			it?.let { category ->
-				editedCategory = category
-				setModeEdit()
-			}
-		})
-	}
-
-	private fun setModeEdit() {
-		mode = Mode.EDIT
-		selectedFillColor = editedCategory.fillColor
-		selectedTextColor = editedCategory.textColor
-		categoryName = editedCategory.name
-		dialog?.setTitle(R.string.category_edit_title)
+	private fun setMode() {
+		mode = when (argCategoryId) {
+			0 -> Mode.ADD
+			else -> Mode.EDIT
+		}
 	}
 
 	private fun setViews() {
-		editText_edit_category_name.setText(categoryName)
-		assignFillColor()
-		assignTextColor()
+		when (mode) {
+			Mode.EDIT -> {
+				viewModel.getCategoryById(argCategoryId).fetchValue {
+					it?.let { editedCategory ->
+						assignFillColor(editedCategory.fillColor)
+						assignTextColor(editedCategory.textColor)
+						dialog?.setTitle(R.string.category_edit_title)
+						editText_edit_category_name.setText(editedCategory.name)
+					}
+				}
+			}
+			Mode.ADD -> {
+				assignFillColor(COLOR_GREEN)
+				assignTextColor(COLOR_BLACK)
+			}
+		}
 	}
 
 	private fun setListeners() {
@@ -103,8 +97,8 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 
 	private fun reverseColors() {
 		val fillColor = selectedFillColor
-		selectedFillColor = selectedTextColor
-		selectedTextColor = fillColor
+		assignFillColor(selectedTextColor)
+		assignTextColor(fillColor)
 	}
 
 	private fun onColorClicked(colorDetails: ColorDetails) {
@@ -116,34 +110,36 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 		viewModel.onCategoryColorSelected.observe(viewLifecycleOwner, Observer { colorDetails ->
 			colorDetails?.let {
 				when (it.target) {
-					ColorTarget.FILL -> selectedFillColor = it.color
-					ColorTarget.TEXT -> selectedTextColor = it.color
+					ColorTarget.FILL -> assignFillColor(it.color)
+					ColorTarget.TEXT -> assignTextColor(it.color)
 				}
 			}
 		})
 	}
 
-	private fun onOkListener() = DialogInterface.OnClickListener { _,_ ->
+	private fun onOkListener() = DialogInterface.OnClickListener { _, _ ->
 		try {
 			requireNonBlankFields(editText_edit_category_name to "category name")
 			val category = Category(editText_edit_category_name.input, selectedFillColor, selectedTextColor)
 			when (mode) {
 				Mode.ADD -> viewModel.insert(category)
-				Mode.EDIT -> viewModel.update(category.apply { id = editedCategory.id })
+				Mode.EDIT -> viewModel.update(category.apply { id = argCategoryId })
 			}
 		} catch (e: BlankFieldRequiredException) {
 			toast(e.message)
 		}
 	}
 
-	private fun assignFillColor() {
-		view_edit_category_fill_color.background.setColorFilter(selectedFillColor, PorterDuff.Mode.SRC) // changes color but not shape
-		textView_edit_category_preview_value.setBackgroundColor(selectedFillColor)
+	private fun assignFillColor(@ColorInt colorInt: Int) {
+		view_edit_category_fill_color.background.setColorFilter(colorInt, PorterDuff.Mode.SRC) // changes color but not shape
+		textView_edit_category_preview_value.setBackgroundColor(colorInt)
+		selectedFillColor = colorInt
 	}
 
-	private fun assignTextColor() {
-		view_edit_category_text_color.background.setColorFilter(selectedTextColor, PorterDuff.Mode.SRC)
-		textView_edit_category_preview_value.setTextColor(selectedTextColor)
+	private fun assignTextColor(@ColorInt colorInt: Int) {
+		view_edit_category_text_color.background.setColorFilter(colorInt, PorterDuff.Mode.SRC)
+		textView_edit_category_preview_value.setTextColor(colorInt)
+		selectedTextColor = colorInt
 	}
 
 	override fun onDetach() {

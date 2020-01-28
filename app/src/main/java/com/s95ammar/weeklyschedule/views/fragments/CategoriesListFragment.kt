@@ -45,8 +45,7 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 	}
 
 	override fun onItemClicked(item: Category) {
-		viewModel.setEditedCategory(item)
-		viewModel.showCategoryEditorDialog()
+		viewModel.showCategoryEditorDialog(item.id)
 	}
 
 	override fun onMoreClicked(item: Category, buttonMore: Button) = showPopupMenu(R.menu.categories_more_menu, buttonMore,

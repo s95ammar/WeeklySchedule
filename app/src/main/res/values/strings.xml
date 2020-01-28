@@ -59,6 +59,7 @@
     <string name="days">Days:</string>
 	<string name="key_schedule_id">scheduleId</string>
 	<string name="key_event_id">eventId</string>
+	<string name="key_category_id">category</string>
 
 	<string-array
         name="days_amount">

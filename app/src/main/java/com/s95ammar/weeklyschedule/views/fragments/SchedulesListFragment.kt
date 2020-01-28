@@ -57,8 +57,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 	private fun onMenuItemClick(schedule: Schedule, menuItem: MenuItem): Boolean {
 		when (menuItem.itemId) {
 			R.id.schedules_more_rename -> schedule.let {
-				viewModel.setEditedSchedule(it)
-				viewModel.showScheduleEditorDialog()
+				viewModel.showScheduleEditorDialog(it.id)
 			}
 			R.id.schedules_more_delete -> schedule.let {
 				if (!it.isActive) viewModel.delete(it) else toast(R.string.active_schedule_delete_error, Toast.LENGTH_LONG)
