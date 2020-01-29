@@ -2,7 +2,6 @@ package com.s95ammar.weeklyschedule.views.fragments
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import com.s95ammar.weeklyschedule.di.TimePattern
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.Mode
-import com.s95ammar.weeklyschedule.util.fetchValue
+import com.s95ammar.weeklyschedule.util.fetchAndIfExists
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
@@ -64,17 +63,15 @@ class EventEditorFragment : DaggerFragment() {
 	private fun setValues() {
 		when (mode) {
 			Mode.ADD -> setSchedule(argScheduleId)
-			Mode.EDIT -> viewModel.getEventById(argEventId).fetchValue {
-				it?.let { event ->
-					this.event = event
-					setSchedule(event.scheduleId)
-				}
+			Mode.EDIT -> viewModel.getEventById(argEventId).fetchAndIfExists { event ->
+				this.event = event
+				setSchedule(event.scheduleId)
 			}
 		}
 	}
 
 	private fun setSchedule(scheduleId: Int) =
-			viewModel.getScheduleById(scheduleId).fetchValue { schedule -> schedule?.let { this.schedule = schedule } }
+			viewModel.getScheduleById(scheduleId).fetchAndIfExists { schedule -> this.schedule = schedule }
 
 	private fun setUpLayout() {
 		setUpCategorySpinner()
@@ -91,19 +88,16 @@ class EventEditorFragment : DaggerFragment() {
 	}
 
 	private fun setUpCategorySpinner() {
-		viewModel.getAllCategories().fetchValue {
-			Log.d(t, "setUpCategorySpinner: $it")
-			it?.let { allCategories -> spinner_event_categories.adapter = CategorySpinnerAdapter(requireContext(), allCategories) }
+		viewModel.getAllCategories().fetchAndIfExists { allCategories ->
+			spinner_event_categories.adapter = CategorySpinnerAdapter(requireContext(), allCategories)
 			cardView_event_category.setOnClickListener { spinner_event_categories.performClick() }
 		}
 	}
 
 	private fun setCategorySpinnerSelection() {
-		viewModel.getCategoryById(event.categoryId).fetchValue { category ->
-			category?.let {
-				viewModel.getAllCategories().fetchValue { allCategories ->
-					allCategories?.let { spinner_event_categories.setSelection(allCategories.indexOf(category)) }
-				}
+		viewModel.getCategoryById(event.categoryId).fetchAndIfExists { category ->
+			viewModel.getAllCategories().fetchAndIfExists { allCategories ->
+				spinner_event_categories.setSelection(allCategories.indexOf(category))
 			}
 		}
 	}
@@ -127,7 +121,8 @@ class EventEditorFragment : DaggerFragment() {
 
 	private fun observeDaysSelection() {
 		viewModel.onDaysSelected.observe(viewLifecycleOwner, Observer {
-			it?.let {  values -> textView_event_days_value.text = values
+			it?.let { values ->
+				textView_event_days_value.text = values
 			}
 		})
 	}

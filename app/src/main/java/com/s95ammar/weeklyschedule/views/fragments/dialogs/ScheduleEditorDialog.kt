@@ -68,13 +68,11 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 	}
 
 	private fun setViews() {
-		if (mode == Mode.EDIT) viewModel.getScheduleById(argScheduleId).fetchValue {
-			it?.let { editedSchedule ->
-				dialog?.setTitle(R.string.schedule_rename_title)
-				editText_edit_schedule_name.setText(editedSchedule.name)
-				textView_edit_schedule_days.visibility = GONE
-				spinner_edit_schedule.visibility = GONE
-			}
+		if (mode == Mode.EDIT) viewModel.getScheduleById(argScheduleId).fetchAndIfExists { editedSchedule ->
+			dialog?.setTitle(R.string.schedule_rename_title)
+			editText_edit_schedule_name.setText(editedSchedule.name)
+			textView_edit_schedule_days.visibility = GONE
+			spinner_edit_schedule.visibility = GONE
 		}
 	}
 

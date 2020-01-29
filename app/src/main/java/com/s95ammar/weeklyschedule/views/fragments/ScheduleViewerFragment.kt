@@ -91,26 +91,24 @@ class ScheduleViewerFragment : DaggerFragment() {
 	}
 
 	private fun showSchedule(scheduleId: Int) {
-		viewModel.getScheduleById(scheduleId).fetchValue {
-			it?.let {
-				Log.d(t, "showSchedule: $it")
-				schedule = it
-				viewModel.setActionBarTitle(it.name)
-				viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
-					events = scheduleEvents
-					prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
-					prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days)
-					prepareEventTextViews()
-					connectTextViews()
-				})
-			}
+		viewModel.getScheduleById(scheduleId).fetchAndIfExists {
+			Log.d(t, "showSchedule: $it")
+			schedule = it
+			viewModel.setActionBarTitle(it.name)
+			viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
+				events = scheduleEvents
+				prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
+				prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days)
+				prepareEventTextViews()
+				connectTextViews()
+			})
 		}
 	}
 
 	private fun setEventsTextViewsOnClickListeners() {
-		schedule.days.forEach { day->
-			viewModel.getEventsBy(schedule.id, day).fetchValue {
-				it?.forEach { event ->
+		schedule.days.forEach { day ->
+			viewModel.getEventsBy(schedule.id, day).fetchAndIfExists {
+				it.forEach { event ->
 					mapEventsTextViews[event]?.let { eventTextView ->
 						when (viewModel.scheduleMode.value) {
 							ScheduleMode.EDIT -> eventTextView.setOnClickListener {
@@ -171,14 +169,12 @@ class ScheduleViewerFragment : DaggerFragment() {
 	}
 
 	private fun formatEventTextView(tv: TextView, event: Event) {
-		viewModel.getCategoryById(event.categoryId).fetchValue {
-			it?.let { category ->
-				tv.apply {
-					text = event.name
-					setTextColor(category.textColor)
-					background.mutate().setTint(category.fillColor)
-					layoutParams = ConstraintLayout.LayoutParams(TEXT_VIEWS_WIDTH, 0)
-				}
+		viewModel.getCategoryById(event.categoryId).fetchAndIfExists { category ->
+			tv.apply {
+				text = event.name
+				setTextColor(category.textColor)
+				background.mutate().setTint(category.fillColor)
+				layoutParams = ConstraintLayout.LayoutParams(TEXT_VIEWS_WIDTH, 0)
 			}
 		}
 	}

@@ -149,10 +149,10 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 
 	private fun showDaysMultiChoiceDialog(days: Array<String>) {
 		MaterialDialog(this).show {
+			title(R.string.days)
 			listItemsMultiChoice(items = days.asList()) { _, _, selection ->
 				scheduleViewerViewModel.displaySelectedDays(selection)
 			}
-			title(R.string.days)
 			positiveButton(R.string.select)
 			negativeButton(R.string.cancel)
 		}

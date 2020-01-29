@@ -73,14 +73,13 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 	private fun setViews() {
 		when (mode) {
 			Mode.EDIT -> {
-				viewModel.getCategoryById(argCategoryId).fetchValue {
-					it?.let { editedCategory ->
-						assignFillColor(editedCategory.fillColor)
-						assignTextColor(editedCategory.textColor)
-						dialog?.setTitle(R.string.category_edit_title)
-						editText_edit_category_name.setText(editedCategory.name)
-					}
+				viewModel.getCategoryById(argCategoryId).fetchAndIfExists { editedCategory ->
+					assignFillColor(editedCategory.fillColor)
+					assignTextColor(editedCategory.textColor)
+					dialog?.setTitle(R.string.category_edit_title)
+					editText_edit_category_name.setText(editedCategory.name)
 				}
+
 			}
 			Mode.ADD -> {
 				assignFillColor(COLOR_GREEN)
