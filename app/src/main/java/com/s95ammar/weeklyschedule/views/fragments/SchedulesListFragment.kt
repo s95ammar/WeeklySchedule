@@ -16,7 +16,7 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.toast
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
-import com.s95ammar.weeklyschedule.views.recViewAdapters.SchedulesListAdapter
+import com.s95ammar.weeklyschedule.views.adapters.SchedulesListAdapter
 import kotlinx.android.synthetic.main.fragment_schedules_list.*
 import javax.inject.Inject
 

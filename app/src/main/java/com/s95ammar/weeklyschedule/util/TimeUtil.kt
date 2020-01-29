@@ -36,6 +36,18 @@ val DAYS_OF_TWO_WEEKS = arrayOf(
 		"Sunday II", "Monday II", "Tuesday II", "Wednesday II", "Thursday II", "Friday II", "Saturday II"
 )
 
+fun getDaysAbbreviations(days: Array<String>): Array<String> {
+	val isWeekNumbered = days[0].split(" ").size == 2
+	val daysAbbrev = Array(days.size) { "" }
+	days.forEachIndexed { i, day ->
+		daysAbbrev[i] = StringBuilder().apply {
+			append(day.substring(0..2))
+			if (isWeekNumbered) append(" ${day.split(" ")[1]}")
+		}.toString()
+	}
+	return daysAbbrev
+}
+
 fun getHoursStringArray(timePattern: String) = Array<String>(HOURS_IN_DAY) { i ->
 	LocalTime.MIDNIGHT.plusHours(i).toString(timePattern)
 }

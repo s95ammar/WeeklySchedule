@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
-import com.s95ammar.weeklyschedule.views.recViewAdapters.CategoriesListAdapter
-import com.s95ammar.weeklyschedule.views.recViewAdapters.OnListItemClickListener
+import com.s95ammar.weeklyschedule.views.adapters.CategoriesListAdapter
+import com.s95ammar.weeklyschedule.views.adapters.OnListItemClickListener
 import kotlinx.android.synthetic.main.fragment_categories_list.*
 import javax.inject.Inject
 

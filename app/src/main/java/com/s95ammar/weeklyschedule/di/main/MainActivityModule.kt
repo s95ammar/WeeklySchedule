@@ -7,13 +7,8 @@ import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 import com.s95ammar.weeklyschedule.views.activities.MainActivity
-import com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment
-import com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment
-import com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment
-import com.s95ammar.weeklyschedule.views.recViewAdapters.CategoriesListAdapter
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.multibindings.IntoMap
 
 @Module

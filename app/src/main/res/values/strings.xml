@@ -36,8 +36,8 @@
     <string name="categories">Categories</string>
     <string name="event">Event</string>
     <string name="category_list_is_empty">Category list is empty</string>
-    <string name="text_color">Text color:</string>
-    <string name="fill_color">Fill color:</string>
+    <string name="text_color">Text color</string>
+    <string name="fill_color">Fill color</string>
     <string name="category_add_title">New Category</string>
     <string name="category_edit_title">Edit Category</string>
     <string name="category_preview">Preview:</string>
@@ -56,7 +56,7 @@
     <string name="schedule_rename_title">Rename Schedule</string>
     <string name="schedule_empty_name">Schedule was not created because name was blank</string>
 	<string name="active_schedule_delete_error">Cannot delete active schedule. Please deactive it first, if you really want to delete it</string>
-    <string name="days">Days:</string>
+    <string name="days">Days</string>
 	<string name="key_schedule_id">scheduleId</string>
 	<string name="key_event_id">eventId</string>
 	<string name="key_category_id">category</string>

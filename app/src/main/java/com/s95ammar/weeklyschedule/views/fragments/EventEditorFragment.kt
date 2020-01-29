@@ -2,9 +2,11 @@ package com.s95ammar.weeklyschedule.views.fragments
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
@@ -14,6 +16,7 @@ import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.Mode
 import com.s95ammar.weeklyschedule.util.fetchValue
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
+import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_event_editor.*
 import javax.inject.Inject
@@ -74,18 +77,36 @@ class EventEditorFragment : DaggerFragment() {
 			viewModel.getScheduleById(scheduleId).fetchValue { schedule -> schedule?.let { this.schedule = schedule } }
 
 	private fun setUpLayout() {
+		setUpCategorySpinner()
+		setUpDaysCardView()
+
 		if (mode == Mode.EDIT) {
-			viewModel.getCategoryById(event.categoryId).fetchValue {
-				//		TODO: selectCategory
-			}
+			setCategorySpinnerSelection()
+			textView_event_days.setText(R.string.day)
 			textView_event_name.text = event.name
 			spinner_event_days.setSelection(schedule.days.indexOf(event.day))
 			textView_event_start_value.text = event.startTime.toString(timePattern)
 			textView_event_end_value.text = event.endTime.toString(timePattern)
 		}
-		setUpDaysCardView()
 	}
 
+	private fun setUpCategorySpinner() {
+		viewModel.getAllCategories().fetchValue {
+			Log.d(t, "setUpCategorySpinner: $it")
+			it?.let { allCategories -> spinner_event_categories.adapter = CategorySpinnerAdapter(requireContext(), allCategories) }
+			cardView_event_category.setOnClickListener { spinner_event_categories.performClick() }
+		}
+	}
+
+	private fun setCategorySpinnerSelection() {
+		viewModel.getCategoryById(event.categoryId).fetchValue { category ->
+			category?.let {
+				viewModel.getAllCategories().fetchValue { allCategories ->
+					allCategories?.let { spinner_event_categories.setSelection(allCategories.indexOf(category)) }
+				}
+			}
+		}
+	}
 
 	private fun setUpDaysCardView() {
 		when (mode) {
@@ -95,10 +116,20 @@ class EventEditorFragment : DaggerFragment() {
 			}
 			Mode.ADD -> {
 				spinner_event_days.visibility = View.GONE
-				cardView_event_day.setOnClickListener { viewModel.showDaysMultiChoiceDialog(schedule.days) }
+				cardView_event_day.setOnClickListener {
+					viewModel.showDaysMultiChoiceDialog(schedule.days)
+					observeDaysSelection()
+				}
 			}
 
 		}
+	}
+
+	private fun observeDaysSelection() {
+		viewModel.onDaysSelected.observe(viewLifecycleOwner, Observer {
+			it?.let {  values -> textView_event_days_value.text = values
+			}
+		})
 	}
 
 

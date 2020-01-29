@@ -9,9 +9,6 @@ import com.s95ammar.weeklyschedule.util.DAYS_OF_TWO_WEEKS
 import com.s95ammar.weeklyschedule.util.DaysAmount
 import com.s95ammar.weeklyschedule.util.DaysAmount.OneWeek
 import com.s95ammar.weeklyschedule.util.DaysAmount.TwoWeeks
-import com.s95ammar.weeklyschedule.util.HOURS_IN_DAY
-import org.joda.time.LocalTime
-import java.lang.RuntimeException
 
 @Entity(indices = [Index("id")])
 data class Schedule(

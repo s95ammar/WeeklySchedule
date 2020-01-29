@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
@@ -148,17 +149,18 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 
 	private fun showDaysMultiChoiceDialog(days: Array<String>) {
 		MaterialDialog(this).show {
-			listItemsMultiChoice(items = days.asList()) { a, index, text ->
-				Log.d(t, "openDaysPickerDialog: $a")
-				Log.d(t, "openDaysPickerDialog: $index")
-				Log.d(t, "openDaysPickerDialog: $text")
+			listItemsMultiChoice(items = days.asList()) { _, _, selection ->
+				scheduleViewerViewModel.displaySelectedDays(selection)
 			}
+			title(R.string.days)
+			positiveButton(R.string.select)
+			negativeButton(R.string.cancel)
 		}
 
 	}
 
 	private fun openColorPicker(colorDetails: ColorDetails) {
-		MaterialDialog(this).show {
+			MaterialDialog(this).show {
 			title(when (colorDetails.target) {
 				ColorTarget.FILL -> R.string.fill_color
 				ColorTarget.TEXT -> R.string.text_color

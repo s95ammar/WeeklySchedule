@@ -1,4 +1,4 @@
-package com.s95ammar.weeklyschedule.views.recViewAdapters
+package com.s95ammar.weeklyschedule.views.adapters
 
 import android.graphics.Typeface
 import android.view.LayoutInflater

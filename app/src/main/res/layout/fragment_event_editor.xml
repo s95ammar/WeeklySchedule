@@ -33,6 +33,8 @@
 					android:padding="12dp">
 
 					<TextView
+						android:paddingTop="8dp"
+						android:paddingBottom="8dp"
 						android:id="@+id/textView_event_category"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -44,9 +46,10 @@
 						app:layout_constraintTop_toTopOf="parent" />
 
 					<Spinner
+						android:background="@null"
 						android:id="@+id/spinner_event_categories"
-						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:layout_width="wrap_content"
 						android:gravity="end"
 						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
@@ -118,14 +121,28 @@
 					android:padding="12dp">
 
 					<TextView
-						android:id="@+id/textView_event_day"
+						android:id="@+id/textView_event_days"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="@string/day"
+						android:text="@string/days"
 						android:textColor="@android:color/black"
 						android:textSize="16sp"
 						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent" />
+
+					<TextView
+						android:id="@+id/textView_event_days_value"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="24dp"
+						android:textAlignment="viewEnd"
+						android:textColor="@android:color/black"
+						android:textSize="16sp"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="1.0"
+						app:layout_constraintStart_toEndOf="@+id/textView_event_days"
 						app:layout_constraintTop_toTopOf="parent" />
 
 					<Spinner

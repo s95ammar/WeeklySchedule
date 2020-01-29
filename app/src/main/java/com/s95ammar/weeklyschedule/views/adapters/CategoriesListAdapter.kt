@@ -1,7 +1,6 @@
-package com.s95ammar.weeklyschedule.views.recViewAdapters
+package com.s95ammar.weeklyschedule.views.adapters
 
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.OnClick
 import androidx.cardview.widget.CardView
 import android.widget.TextView
 import android.view.LayoutInflater
