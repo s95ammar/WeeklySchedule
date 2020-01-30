@@ -31,7 +31,7 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 
 	override fun setListeners() = button_add_category.setOnClickListener { viewModel.showCategoryEditorDialog() }
 
-	override fun initViewModel() = ViewModelProviders.of(requireActivity(), factory).get(CategoriesListViewModel::class.java)
+	override fun initViewModel() = ViewModelProvider(requireActivity(), factory).get(CategoriesListViewModel::class.java)
 
 	override fun assignItemsList() = viewModel.getAllCategories()
 

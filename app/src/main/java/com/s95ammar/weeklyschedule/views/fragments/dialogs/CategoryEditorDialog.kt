@@ -57,7 +57,7 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		viewModel = ViewModelProviders.of(requireActivity(), factory).get(CategoriesListViewModel::class.java)
+		viewModel = ViewModelProvider(requireActivity(), factory).get(CategoriesListViewModel::class.java)
 		setMode()
 		setViews()
 		setListeners()

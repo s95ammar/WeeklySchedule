@@ -53,9 +53,9 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
-		scheduleViewerViewModel = ViewModelProviders.of(this, factory).get(ScheduleViewerViewModel::class.java)
-		schedulesListViewModel = ViewModelProviders.of(this, factory).get(SchedulesListViewModel::class.java)
-		categoriesListViewModel = ViewModelProviders.of(this, factory).get(CategoriesListViewModel::class.java)
+		scheduleViewerViewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
+		schedulesListViewModel = ViewModelProvider(this, factory).get(SchedulesListViewModel::class.java)
+		categoriesListViewModel = ViewModelProvider(this, factory).get(CategoriesListViewModel::class.java)
 		startObservers()
 		initNavController()
 	}

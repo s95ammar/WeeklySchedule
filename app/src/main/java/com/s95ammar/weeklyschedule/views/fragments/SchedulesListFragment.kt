@@ -32,7 +32,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 
 	override fun setListeners() = button_add_schedule.setOnClickListener { viewModel.showScheduleEditorDialog() }
 
-	override fun initViewModel() = ViewModelProviders.of(requireActivity(), factory).get(SchedulesListViewModel::class.java)
+	override fun initViewModel() = ViewModelProvider(requireActivity(), factory).get(SchedulesListViewModel::class.java)
 
 	override fun assignItemsList() = viewModel.getAllSchedules()
 
