@@ -9,6 +9,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -38,6 +39,9 @@ class ScheduleViewerFragment : DaggerFragment() {
 	private val daysAmount
 		get() = schedule.days.amount
 
+	private val argScheduleId
+		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
+
 	companion object {
 		private const val TEXT_VIEW_HEADER_HEIGHT = 100
 		private const val TEXT_SIZE = 20f
@@ -65,28 +69,36 @@ class ScheduleViewerFragment : DaggerFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProviders.of(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
-		arguments?.getInt(resources.getString(R.string.key_schedule_id))?.let { id ->
-			viewModel.setScheduleViewerMode(when (id) {
-				0 -> ScheduleMode.NOT_DISPLAYED
-				else -> ScheduleMode.VIEW
-			})
-			viewModel.scheduleMode.observe(viewLifecycleOwner, Observer {
-				it?.let { mode ->
-					when (mode) {
-						ScheduleMode.NOT_DISPLAYED -> textView_no_active_schedule.visibility = VISIBLE
-						ScheduleMode.VIEW -> {
-							button_add_event.visibility = GONE
-						}
-						ScheduleMode.EDIT -> {
-							button_add_event.visibility = VISIBLE
-							button_add_event.setOnClickListener { viewModel.showEventEditorFragment(resources.getString(R.string.key_schedule_id) to id) }
-						}
+		setMode()
+		startObservers()
+		if (viewModel.scheduleMode.value != ScheduleMode.NOT_DISPLAYED) showSchedule(argScheduleId)
+	}
+
+	private fun setMode() {
+		viewModel.setScheduleViewerMode(when (argScheduleId) {
+			0 -> ScheduleMode.NOT_DISPLAYED
+			else -> ScheduleMode.VIEW
+		})
+	}
+
+	private fun startObservers() {
+		viewModel.scheduleMode.observe(viewLifecycleOwner, getModeObserver())
+	}
+
+	private fun getModeObserver(): Observer<ScheduleMode> = Observer { mode ->
+		when (mode) {
+			ScheduleMode.NOT_DISPLAYED -> textView_no_active_schedule.visibility = VISIBLE
+			ScheduleMode.VIEW -> button_add_event.visibility = GONE
+			ScheduleMode.EDIT -> {
+				button_add_event.visibility = VISIBLE
+				button_add_event.setOnClickListener {
+					viewModel.getAllCategories().fetchAndIfExists {
+						if (it.isNotEmpty()) viewModel.showEventEditorFragment(resources.getString(R.string.key_schedule_id) to argScheduleId)
+						else Toast.makeText(requireContext(), R.string.category_list_empty_error, Toast.LENGTH_LONG).show()
 					}
 				}
-			})
-			if (viewModel.scheduleMode.value != ScheduleMode.NOT_DISPLAYED) showSchedule(id)
+			}
 		}
-
 	}
 
 	private fun showSchedule(scheduleId: Int) {

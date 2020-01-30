@@ -1,6 +1,7 @@
 package com.s95ammar.weeklyschedule.views.activities
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -18,10 +19,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.setActionButtonEnabled
 import com.afollestad.materialdialogs.color.colorChooser
 import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.datetime.timePicker
 import com.afollestad.materialdialogs.list.*
 import com.google.android.material.navigation.NavigationView
 import com.s95ammar.weeklyschedule.R
@@ -33,6 +33,7 @@ import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_days_multi_choice_buttons.*
+import org.joda.time.LocalTime
 import javax.inject.Inject
 
 
@@ -81,21 +82,19 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	private fun startObservers() {
 		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
 		scheduleViewerViewModel.showEventEditorFragment.observe(this, Observer { (key, id) ->
-			// TODO: make sure there's no need for an action
 			navController.navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment, bundleOf(key to id))
 		})
 		scheduleViewerViewModel.showDaysMultiChoiceDialog.observe(this, Observer { showDaysMultiChoiceDialog(it) })
+		scheduleViewerViewModel.showEventTimePicker.observe(this, Observer { showTimePicker(it) })
 		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
 		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog,
-					bundleOf(resources.getString(R.string.key_schedule_id) to it))
+			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog, bundleOf(resources.getString(R.string.key_schedule_id) to it))
 		})
 		schedulesListViewModel.onScheduleItemClick.observe(this, Observer {
 			navController.navigate(R.id.action_nav_schedules_to_nav_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to it))
 		})
 		categoriesListViewModel.showCategoryEditorDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog,
-					bundleOf(resources.getString(R.string.key_category_id) to it))
+			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog, bundleOf(resources.getString(R.string.key_category_id) to it))
 		})
 		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
 	}
@@ -158,17 +157,17 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 					button_days_select_all.setOnClickListener { checkAllItems() }
 					button_days_clear.setOnClickListener { uncheckAllItems() }
 				}
-				listItemsMultiChoice(items = days.array.asList(), initialSelection = selectionIndices, allowEmptySelection = true) { _, _, selection ->
-					val newSelectionIndices = IntArray(selection.size) { i ->
-						days.array.indexOf(selection[i])
-					}
+				listItemsMultiChoice(items = days.array.asList(),
+						initialSelection = selectionIndices,
+						allowEmptySelection = true
+				) { _, _, selection ->
+					val newSelectionIndices = IntArray(selection.size) { i -> days.array.indexOf(selection[i]) }
 					scheduleViewerViewModel.displaySelectedDays(newSelectionIndices)
 				}
 				positiveButton(R.string.select)
 				negativeButton(R.string.cancel)
 			}
 		}
-
 	}
 
 	private fun openColorPicker(colorDetails: ColorDetails) {
@@ -189,7 +188,24 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 			positiveButton(R.string.select)
 			negativeButton(R.string.cancel)
 		}
+	}
 
+	private fun showTimePicker(timeDetails: TimeDetails) {
+		MaterialDialog(this).show {
+			title(when (timeDetails.target) {
+				TimeTarget.START_TIME -> R.string.start_time
+				TimeTarget.END_TIME -> R.string.end_time
+			})
+			timePicker(
+					currentTime = timeDetails.time.toCalendar(),
+					show24HoursView = DateFormat.is24HourFormat(this@MainActivity)
+			) {
+				_, time ->
+				scheduleViewerViewModel.setEventTime(TimeDetails(LocalTime.fromCalendarFields(time), timeDetails.target))
+			}
+			positiveButton(R.string.ok)
+			negativeButton(R.string.cancel)
+		}
 	}
 
 	override fun onBackPressed() {

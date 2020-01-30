@@ -12,12 +12,13 @@ import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.di.TimePattern
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
-import com.s95ammar.weeklyschedule.util.Mode
-import com.s95ammar.weeklyschedule.util.fetchAndIfExists
+import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_event_editor.*
+import org.joda.time.LocalTime
+import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 
 
@@ -80,6 +81,7 @@ class EventEditorFragment : DaggerFragment() {
 	private fun setUpLayout() {
 		setUpCategorySpinner()
 		setUpDaysCardView()
+		setUpTimeCardViews()
 
 		if (mode == Mode.EDIT) {
 			setCategorySpinnerSelection()
@@ -122,6 +124,17 @@ class EventEditorFragment : DaggerFragment() {
 		}
 	}
 
+	private fun setUpTimeCardViews() {
+		textView_event_start_value.text = DEFAULT_TIME.toString(timePattern)
+		textView_event_end_value.text = DEFAULT_TIME.toString(timePattern)
+		cardView_event_start.setOnClickListener { onTimeClicked(
+				TimeDetails(LocalTime.parse(textView_event_start_value.text.toString(), DateTimeFormat.forPattern(timePattern)), TimeTarget.START_TIME)
+		)}
+		cardView_event_end.setOnClickListener { onTimeClicked(
+				TimeDetails(LocalTime.parse(textView_event_end_value.text.toString(), DateTimeFormat.forPattern(timePattern)), TimeTarget.END_TIME)
+		)}
+	}
+
 	private fun observeDaysSelection() {
 		viewModel.onDaysSelected.observe(viewLifecycleOwner, Observer {
 			it?.let { selectedDaysIndices ->
@@ -131,6 +144,23 @@ class EventEditorFragment : DaggerFragment() {
 				}
 				textView_event_days_value.text = viewModel.getDaysAbbreviationsString(selectedDays)
 				viewModel.onDaysSelected.removeObservers(viewLifecycleOwner)
+			}
+		})
+	}
+
+	private fun onTimeClicked(timeDetails: TimeDetails) {
+		viewModel.showEventTimePicker(timeDetails)
+		observeTimeSet()
+	}
+
+
+	private fun observeTimeSet() {
+		viewModel.onEventTimeSet.observe(viewLifecycleOwner, Observer { timeDetails ->
+			timeDetails?.let {
+				when (it.target) {
+					TimeTarget.START_TIME -> textView_event_start_value.text = it.time.toString(timePattern)
+					TimeTarget.END_TIME -> textView_event_end_value.text = it.time.toString(timePattern)
+				}
 			}
 		})
 	}

@@ -12,22 +12,25 @@ import javax.inject.Inject
 
 class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 	private val t = "log_${javaClass.simpleName}"
-
 	private val _actionBarTitle = MutableLiveData<String>()
 	private val _scheduleMode = MutableLiveData<ScheduleMode>()
 	private val _editedEvent = MutableLiveData<Event>()
 	private val _showEventEditorFragment = SingleLiveEvent<Pair<String, Int>>()
+	private val _showEventTimePicker = SingleLiveEvent<TimeDetails>()
 	private val _eventEditorMode = MutableLiveData<Mode>()
 	private val _showDaysMultiChoiceDialog = SingleLiveEvent<Pair<Days, IntArray>>()
 	private val _onDaysSelected = SingleLiveEvent<IntArray>()
+	private val _onEventTimeSet = SingleLiveEvent<TimeDetails>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
 	val scheduleMode: LiveData<ScheduleMode> = _scheduleMode
 	val editedEvent: LiveData<Event> = _editedEvent
 	val showEventEditorFragment: LiveData<Pair<String, Int>> = _showEventEditorFragment
+	val showEventTimePicker: LiveData<TimeDetails> = _showEventTimePicker
 	val eventEditorMode: LiveData<Mode> = _eventEditorMode
 	val showDaysMultiChoiceDialog: LiveData<Pair<Days, IntArray>> = _showDaysMultiChoiceDialog
 	val onDaysSelected: LiveData<IntArray> = _onDaysSelected
+	val onEventTimeSet: LiveData<TimeDetails> = _onEventTimeSet
 
 	init {
 		Log.d(t, "init: ")
@@ -77,6 +80,14 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	fun getDaysAbbreviationsString(days: List<String>): String {
 		val str = getDaysAbbreviations(days).toString()
 		return str.substring(1, str.lastIndex)
+	}
+
+	fun showEventTimePicker(timeDetails: TimeDetails) {
+		_showEventTimePicker.value = timeDetails
+	}
+
+	fun setEventTime(timeDetails: TimeDetails) {
+		_onEventTimeSet.value = timeDetails
 	}
 
 }
