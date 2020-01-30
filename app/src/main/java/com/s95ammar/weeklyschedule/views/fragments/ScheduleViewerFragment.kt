@@ -23,7 +23,6 @@ import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_schedule_viewer.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /* GET READY TO SEE SOME FREAKY SHIT XD */
 
@@ -37,7 +36,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 	private lateinit var events: List<Event>
 
 	private val daysAmount
-		get() = schedule.daysAmount.value
+		get() = schedule.days.amount
 
 	companion object {
 		private const val TEXT_VIEW_HEADER_HEIGHT = 100
@@ -98,7 +97,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 			viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
 				events = scheduleEvents
 				prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
-				prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days)
+				prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days.array)
 				prepareEventTextViews()
 				connectTextViews()
 			})
@@ -106,7 +105,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 	}
 
 	private fun setEventsTextViewsOnClickListeners() {
-		schedule.days.forEach { day ->
+		schedule.days.array.forEach { day ->
 			viewModel.getEventsBy(schedule.id, day).fetchAndIfExists {
 				it.forEach { event ->
 					mapEventsTextViews[event]?.let { eventTextView ->
@@ -233,7 +232,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 	private inner class EventConstraints(event: Event) {
 		private val minuteHeight = TEXT_VIEW_HEADER_HEIGHT.toDouble() / MINUTES_IN_HOUR
 
-		val targetDayId: Int = textViewsDays[schedule.days.indexOf(event.day)].id
+		val targetDayId: Int = textViewsDays[schedule.days.array.indexOf(event.day)].id
 		val targetStartHourId: Int = textViewsHours[event.startHour].id
 		val targetEndHourId: Int = textViewsHours[event.endHour].id
 

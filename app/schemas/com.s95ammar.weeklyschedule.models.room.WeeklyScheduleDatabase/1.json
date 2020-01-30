@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f5cc286e0a0e7c7fce78edfafff5cec0",
+    "identityHash": "8b4cf78fbd4ad1bf23141f0e2d8af8e6",
     "entities": [
       {
         "tableName": "Schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `daysAmount` INTEGER NOT NULL, `isActive` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `days` INTEGER NOT NULL, `isActive` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,8 +21,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "daysAmount",
-            "columnName": "daysAmount",
+            "fieldPath": "days",
+            "columnName": "days",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -198,7 +198,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f5cc286e0a0e7c7fce78edfafff5cec0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8b4cf78fbd4ad1bf23141f0e2d8af8e6')"
     ]
   }
 }

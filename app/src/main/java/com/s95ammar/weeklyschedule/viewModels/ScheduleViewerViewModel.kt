@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Event
-import com.s95ammar.weeklyschedule.util.Mode
-import com.s95ammar.weeklyschedule.util.ScheduleMode
-import com.s95ammar.weeklyschedule.util.getDaysAbbreviations
-import com.s95ammar.weeklyschedule.util.launchIO
+import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
@@ -21,16 +18,16 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	private val _editedEvent = MutableLiveData<Event>()
 	private val _showEventEditorFragment = SingleLiveEvent<Pair<String, Int>>()
 	private val _eventEditorMode = MutableLiveData<Mode>()
-	private val _showDaysMultiChoiceDialog = SingleLiveEvent<Pair<List<String>, IntArray>>()
-	private val _onDaysSelected = SingleLiveEvent<Array<String>>()
+	private val _showDaysMultiChoiceDialog = SingleLiveEvent<Pair<Days, IntArray>>()
+	private val _onDaysSelected = SingleLiveEvent<IntArray>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
 	val scheduleMode: LiveData<ScheduleMode> = _scheduleMode
 	val editedEvent: LiveData<Event> = _editedEvent
 	val showEventEditorFragment: LiveData<Pair<String, Int>> = _showEventEditorFragment
 	val eventEditorMode: LiveData<Mode> = _eventEditorMode
-	val showDaysMultiChoiceDialog: LiveData<Pair<List<String>, IntArray>> = _showDaysMultiChoiceDialog
-	val onDaysSelected: LiveData<Array<String>> = _onDaysSelected
+	val showDaysMultiChoiceDialog: LiveData<Pair<Days, IntArray>> = _showDaysMultiChoiceDialog
+	val onDaysSelected: LiveData<IntArray> = _onDaysSelected
 
 	init {
 		Log.d(t, "init: ")
@@ -69,19 +66,17 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 		_showEventEditorFragment.value = keyToId
 	}
 
-	fun showDaysMultiChoiceDialog(days: Array<String>, selectedDays: Array<String>) {
-		val selectionIndices = ArrayList<Int>(selectedDays.size)
-		selectedDays.forEach { day -> selectionIndices.add(days.indexOf(day)) }
-		_showDaysMultiChoiceDialog.value = days.toList() to selectionIndices.toIntArray()
+	fun showDaysMultiChoiceDialog(days: Days, selectionIndices: IntArray) {
+		_showDaysMultiChoiceDialog.value = days to selectionIndices
 	}
 
-	fun displaySelectedDays(selection: List<CharSequence>) {
-		_onDaysSelected.value = Array(selection.size) { i -> selection[i].toString() }
+	fun displaySelectedDays(indices: IntArray) {
+		_onDaysSelected.value = indices
 	}
 
-	fun getDaysAbbreviationsString(days: Array<String>): String {
-		val daysAbbrevToString = getDaysAbbreviations(days).contentToString()
-		return daysAbbrevToString.substring(1, daysAbbrevToString.lastIndex)
+	fun getDaysAbbreviationsString(days: List<String>): String {
+		val str = getDaysAbbreviations(days).toString()
+		return str.substring(1, str.lastIndex)
 	}
 
 }

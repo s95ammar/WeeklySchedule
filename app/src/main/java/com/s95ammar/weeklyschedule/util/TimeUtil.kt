@@ -4,47 +4,44 @@ import androidx.room.TypeConverter
 import org.joda.time.LocalTime
 import java.lang.RuntimeException
 
-enum class DaysAmount(val value: Int) {
-	OneWeek(7),
-	TwoWeeks(14);
+enum class Days(val amount: Int, val array: Array<String>) {
+	OneWeek(7, arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")),
+	TwoWeeks(14, arrayOf(
+			"Sunday I", "Monday I", "Tuesday I", "Wednesday I", "Thursday I", "Friday I", "Saturday I",
+			"Sunday II", "Monday II", "Tuesday II", "Wednesday II", "Thursday II", "Friday II", "Saturday II"
+	));
 
 	companion object {
 		fun fromInt(daysAmount: Int) = when (daysAmount) {
-			OneWeek.value -> OneWeek
-			TwoWeeks.value -> TwoWeeks
+			OneWeek.amount -> OneWeek
+			TwoWeeks.amount -> TwoWeeks
 			else -> throw RuntimeException("daysAmount value is invalid")
 		}
 
-		fun toInt(daysAmount: DaysAmount) = when (daysAmount) {
-			OneWeek -> OneWeek.value
-			TwoWeeks -> TwoWeeks.value
+		fun toInt(days: Days) = when (days) {
+			OneWeek -> OneWeek.amount
+			TwoWeeks -> TwoWeeks.amount
 		}
 	}
 
 	class Converter {
 		@TypeConverter
-		fun fromInt(daysAmount: Int): DaysAmount = DaysAmount.fromInt(daysAmount)
+		fun fromInt(daysAmount: Int): Days = Days.fromInt(daysAmount)
 
 		@TypeConverter
-		fun toInt(daysAmount: DaysAmount): Int = DaysAmount.toInt(daysAmount)
+		fun toInt(days: Days): Int = Days.toInt(days)
 	}
 }
 
-val DAYS_OF_ONE_WEEK = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
-val DAYS_OF_TWO_WEEKS = arrayOf(
-		"Sunday I", "Monday I", "Tuesday I", "Wednesday I", "Thursday I", "Friday I", "Saturday I",
-		"Sunday II", "Monday II", "Tuesday II", "Wednesday II", "Thursday II", "Friday II", "Saturday II"
-)
-
-fun getDaysAbbreviations(days: Array<String>): Array<String> {
-	if (days.isEmpty()) return emptyArray()
+fun getDaysAbbreviations(days: List<String>): List<String> {
+	if (days.isEmpty()) return emptyList()
 	val isWeekNumbered = days[0].split(" ").size == 2
-	val daysAbbrev = Array(days.size) { "" }
-	days.forEachIndexed { i, day ->
-		daysAbbrev[i] = StringBuilder().apply {
+	val daysAbbrev = ArrayList<String>(days.size)
+	days.forEach { day ->
+		daysAbbrev.add(StringBuilder().apply {
 			append(day.substring(0..2))
 			if (isWeekNumbered) append(" ${day.split(" ")[1]}")
-		}.toString()
+		}.toString())
 	}
 	return daysAbbrev
 }

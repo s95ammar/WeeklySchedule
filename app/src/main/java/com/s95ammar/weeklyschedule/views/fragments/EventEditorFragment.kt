@@ -33,7 +33,7 @@ class EventEditorFragment : DaggerFragment() {
 	private lateinit var viewModel: ScheduleViewerViewModel
 	private lateinit var schedule: Schedule
 	private lateinit var event: Event
-	private var selectedDays: Array<String> = emptyArray()
+	private lateinit var selectedDaysIndices: IntArray
 	private val mode
 		get() = viewModel.eventEditorMode.value
 	private val argEventId
@@ -72,7 +72,10 @@ class EventEditorFragment : DaggerFragment() {
 	}
 
 	private fun setSchedule(scheduleId: Int) =
-			viewModel.getScheduleById(scheduleId).fetchAndIfExists { schedule -> this.schedule = schedule }
+			viewModel.getScheduleById(scheduleId).fetchAndIfExists { schedule ->
+				this.schedule = schedule
+				selectedDaysIndices = emptyArray<Int>().toIntArray()
+			}
 
 	private fun setUpLayout() {
 		setUpCategorySpinner()
@@ -82,7 +85,7 @@ class EventEditorFragment : DaggerFragment() {
 			setCategorySpinnerSelection()
 			textView_event_name.text = event.name
 			textView_event_days.setText(R.string.day)
-			spinner_event_days.setSelection(schedule.days.indexOf(event.day))
+			spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
 			textView_event_start_value.text = event.startTime.toString(timePattern)
 			textView_event_end_value.text = event.endTime.toString(timePattern)
 		}
@@ -112,7 +115,7 @@ class EventEditorFragment : DaggerFragment() {
 			Mode.ADD -> {
 				spinner_event_days.visibility = View.GONE
 				cardView_event_day.setOnClickListener {
-					viewModel.showDaysMultiChoiceDialog(schedule.days, selectedDays)
+					viewModel.showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices)
 					observeDaysSelection()
 				}
 			}
@@ -121,9 +124,12 @@ class EventEditorFragment : DaggerFragment() {
 
 	private fun observeDaysSelection() {
 		viewModel.onDaysSelected.observe(viewLifecycleOwner, Observer {
-			it?.let { selectionArr ->
-				selectedDays = selectionArr
-				textView_event_days_value.text = viewModel.getDaysAbbreviationsString(selectionArr)
+			it?.let { selectedDaysIndices ->
+				this.selectedDaysIndices = selectedDaysIndices
+				val selectedDays: List<String> = schedule.days.array.filterIndexed { i, _ ->
+					selectedDaysIndices.contains(i)
+				}
+				textView_event_days_value.text = viewModel.getDaysAbbreviationsString(selectedDays)
 				viewModel.onDaysSelected.removeObservers(viewLifecycleOwner)
 			}
 		})

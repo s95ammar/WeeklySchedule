@@ -45,7 +45,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 
 	fun renameSchedule(id: Int, newName: String) {
 		getScheduleById(id).fetchAndIfExists {
-			update(Schedule(newName, it.daysAmount, it.isActive).apply { this.id = it.id })
+			update(Schedule(newName, it.days, it.isActive).apply { this.id = it.id })
 		}
 	}
 

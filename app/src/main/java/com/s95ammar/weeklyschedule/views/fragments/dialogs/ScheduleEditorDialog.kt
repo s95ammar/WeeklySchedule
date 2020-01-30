@@ -81,7 +81,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 			requireNonBlankFields(editText_edit_schedule_name to "schedule name")
 			when (mode) {
 				Mode.ADD -> {
-					Schedule(editText_edit_schedule_name.input, DaysAmount.fromInt(daysSelection))
+					Schedule(editText_edit_schedule_name.input, Days.fromInt(daysSelection))
 							.let { viewModel.insertSchedule(it) }
 				}
 				Mode.EDIT -> viewModel.renameSchedule(argScheduleId, editText_edit_schedule_name.input)

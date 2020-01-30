@@ -150,7 +150,7 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		return false
 	}
 
-	private fun showDaysMultiChoiceDialog(daysToSelectionIndices: Pair<List<String>, IntArray>) {
+	private fun showDaysMultiChoiceDialog(daysToSelectionIndices: Pair<Days, IntArray>) {
 		daysToSelectionIndices.let { (days, selectionIndices) ->
 			MaterialDialog(this).show {
 				title(R.string.days)
@@ -158,9 +158,11 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 					button_days_select_all.setOnClickListener { checkAllItems() }
 					button_days_clear.setOnClickListener { uncheckAllItems() }
 				}
-				listItemsMultiChoice(items = days, initialSelection = selectionIndices, allowEmptySelection = true) { _, _, selection ->
-					val sortedSelection = days.filter { selection.contains(it) }
-					scheduleViewerViewModel.displaySelectedDays(sortedSelection)
+				listItemsMultiChoice(items = days.array.asList(), initialSelection = selectionIndices, allowEmptySelection = true) { _, _, selection ->
+					val newSelectionIndices = IntArray(selection.size) { i ->
+						days.array.indexOf(selection[i])
+					}
+					scheduleViewerViewModel.displaySelectedDays(newSelectionIndices)
 				}
 				positiveButton(R.string.select)
 				negativeButton(R.string.cancel)
