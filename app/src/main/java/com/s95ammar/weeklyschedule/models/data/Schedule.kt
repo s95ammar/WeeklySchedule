@@ -1,7 +1,6 @@
 package com.s95ammar.weeklyschedule.models.data
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.s95ammar.weeklyschedule.util.DAYS_OF_ONE_WEEK
@@ -19,11 +18,11 @@ data class Schedule(
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = 0
 
-	@Ignore
-	val days = when (daysAmount) {
-		OneWeek -> DAYS_OF_ONE_WEEK
-		TwoWeeks -> DAYS_OF_TWO_WEEKS
-	}
+	val days
+		get() = when (daysAmount) {
+			OneWeek -> DAYS_OF_ONE_WEEK
+			TwoWeeks -> DAYS_OF_TWO_WEEKS
+		}
 
 	fun getDayOfSchedule(dayNum: Int) = when (dayNum) {
 		in 0 until daysAmount.value -> days[dayNum]

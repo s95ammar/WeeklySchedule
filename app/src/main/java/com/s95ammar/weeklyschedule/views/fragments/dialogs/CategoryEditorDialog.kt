@@ -79,7 +79,6 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 					dialog?.setTitle(R.string.category_edit_title)
 					editText_edit_category_name.setText(editedCategory.name)
 				}
-
 			}
 			Mode.ADD -> {
 				assignFillColor(COLOR_GREEN)

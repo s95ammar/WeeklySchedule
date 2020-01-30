@@ -33,6 +33,7 @@ class EventEditorFragment : DaggerFragment() {
 	private lateinit var viewModel: ScheduleViewerViewModel
 	private lateinit var schedule: Schedule
 	private lateinit var event: Event
+	private var selectedDays: Array<String> = emptyArray()
 	private val mode
 		get() = viewModel.eventEditorMode.value
 	private val argEventId
@@ -79,8 +80,8 @@ class EventEditorFragment : DaggerFragment() {
 
 		if (mode == Mode.EDIT) {
 			setCategorySpinnerSelection()
-			textView_event_days.setText(R.string.day)
 			textView_event_name.text = event.name
+			textView_event_days.setText(R.string.day)
 			spinner_event_days.setSelection(schedule.days.indexOf(event.day))
 			textView_event_start_value.text = event.startTime.toString(timePattern)
 			textView_event_end_value.text = event.endTime.toString(timePattern)
@@ -95,9 +96,9 @@ class EventEditorFragment : DaggerFragment() {
 	}
 
 	private fun setCategorySpinnerSelection() {
-		viewModel.getCategoryById(event.categoryId).fetchAndIfExists { category ->
+		viewModel.getCategoryById(event.categoryId).fetchAndIfExists { eventCategory ->
 			viewModel.getAllCategories().fetchAndIfExists { allCategories ->
-				spinner_event_categories.setSelection(allCategories.indexOf(category))
+				spinner_event_categories.setSelection(allCategories.indexOf(eventCategory))
 			}
 		}
 	}
@@ -111,18 +112,19 @@ class EventEditorFragment : DaggerFragment() {
 			Mode.ADD -> {
 				spinner_event_days.visibility = View.GONE
 				cardView_event_day.setOnClickListener {
-					viewModel.showDaysMultiChoiceDialog(schedule.days)
+					viewModel.showDaysMultiChoiceDialog(schedule.days, selectedDays)
 					observeDaysSelection()
 				}
 			}
-
 		}
 	}
 
 	private fun observeDaysSelection() {
 		viewModel.onDaysSelected.observe(viewLifecycleOwner, Observer {
-			it?.let { values ->
-				textView_event_days_value.text = values
+			it?.let { selectionArr ->
+				selectedDays = selectionArr
+				textView_event_days_value.text = viewModel.getDaysAbbreviationsString(selectionArr)
+				viewModel.onDaysSelected.removeObservers(viewLifecycleOwner)
 			}
 		})
 	}

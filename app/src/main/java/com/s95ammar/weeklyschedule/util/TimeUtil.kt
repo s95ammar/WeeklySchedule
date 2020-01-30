@@ -37,6 +37,7 @@ val DAYS_OF_TWO_WEEKS = arrayOf(
 )
 
 fun getDaysAbbreviations(days: Array<String>): Array<String> {
+	if (days.isEmpty()) return emptyArray()
 	val isWeekNumbered = days[0].split(" ").size == 2
 	val daysAbbrev = Array(days.size) { "" }
 	days.forEachIndexed { i, day ->

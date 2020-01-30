@@ -21,16 +21,16 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	private val _editedEvent = MutableLiveData<Event>()
 	private val _showEventEditorFragment = SingleLiveEvent<Pair<String, Int>>()
 	private val _eventEditorMode = MutableLiveData<Mode>()
-	private val _showDaysMultiChoiceDialog = SingleLiveEvent<Array<String>>()
-	private val _onDaysSelected = SingleLiveEvent<String>()
+	private val _showDaysMultiChoiceDialog = SingleLiveEvent<Pair<List<String>, IntArray>>()
+	private val _onDaysSelected = SingleLiveEvent<Array<String>>()
 
 	val actionBarTitle: LiveData<String> = _actionBarTitle
 	val scheduleMode: LiveData<ScheduleMode> = _scheduleMode
 	val editedEvent: LiveData<Event> = _editedEvent
 	val showEventEditorFragment: LiveData<Pair<String, Int>> = _showEventEditorFragment
 	val eventEditorMode: LiveData<Mode> = _eventEditorMode
-	val showDaysMultiChoiceDialog: LiveData<Array<String>> = _showDaysMultiChoiceDialog
-	val onDaysSelected: LiveData<String> = _onDaysSelected
+	val showDaysMultiChoiceDialog: LiveData<Pair<List<String>, IntArray>> = _showDaysMultiChoiceDialog
+	val onDaysSelected: LiveData<Array<String>> = _onDaysSelected
 
 	init {
 		Log.d(t, "init: ")
@@ -69,15 +69,19 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 		_showEventEditorFragment.value = keyToId
 	}
 
-	fun showDaysMultiChoiceDialog(days: Array<String>) {
-		_showDaysMultiChoiceDialog.value = days
+	fun showDaysMultiChoiceDialog(days: Array<String>, selectedDays: Array<String>) {
+		val selectionIndices = ArrayList<Int>(selectedDays.size)
+		selectedDays.forEach { day -> selectionIndices.add(days.indexOf(day)) }
+		_showDaysMultiChoiceDialog.value = days.toList() to selectionIndices.toIntArray()
 	}
 
 	fun displaySelectedDays(selection: List<CharSequence>) {
-		val selectedStringArr = Array(selection.size) { i -> selection[i].toString() }
-		val daysAbbrevString = getDaysAbbreviations(selectedStringArr).asList().toString()
-		_onDaysSelected.value = daysAbbrevString.substring(1, daysAbbrevString.lastIndex)
+		_onDaysSelected.value = Array(selection.size) { i -> selection[i].toString() }
 	}
 
+	fun getDaysAbbreviationsString(days: Array<String>): String {
+		val daysAbbrevToString = getDaysAbbreviations(days).contentToString()
+		return daysAbbrevToString.substring(1, daysAbbrevToString.lastIndex)
+	}
 
 }

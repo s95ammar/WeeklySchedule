@@ -17,10 +17,12 @@ import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.setActionButtonEnabled
 import com.afollestad.materialdialogs.color.colorChooser
-import com.afollestad.materialdialogs.list.listItemsMultiChoice
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.list.*
 import com.google.android.material.navigation.NavigationView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
@@ -30,6 +32,7 @@ import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_days_multi_choice_buttons.*
 import javax.inject.Inject
 
 
@@ -147,20 +150,27 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		return false
 	}
 
-	private fun showDaysMultiChoiceDialog(days: Array<String>) {
-		MaterialDialog(this).show {
-			title(R.string.days)
-			listItemsMultiChoice(items = days.asList()) { _, _, selection ->
-				scheduleViewerViewModel.displaySelectedDays(selection)
+	private fun showDaysMultiChoiceDialog(daysToSelectionIndices: Pair<List<String>, IntArray>) {
+		daysToSelectionIndices.let { (days, selectionIndices) ->
+			MaterialDialog(this).show {
+				title(R.string.days)
+				customView(R.layout.dialog_days_multi_choice_buttons).apply {
+					button_days_select_all.setOnClickListener { checkAllItems() }
+					button_days_clear.setOnClickListener { uncheckAllItems() }
+				}
+				listItemsMultiChoice(items = days, initialSelection = selectionIndices, allowEmptySelection = true) { _, _, selection ->
+					val sortedSelection = days.filter { selection.contains(it) }
+					scheduleViewerViewModel.displaySelectedDays(sortedSelection)
+				}
+				positiveButton(R.string.select)
+				negativeButton(R.string.cancel)
 			}
-			positiveButton(R.string.select)
-			negativeButton(R.string.cancel)
 		}
 
 	}
 
 	private fun openColorPicker(colorDetails: ColorDetails) {
-			MaterialDialog(this).show {
+		MaterialDialog(this).show {
 			title(when (colorDetails.target) {
 				ColorTarget.FILL -> R.string.fill_color
 				ColorTarget.TEXT -> R.string.text_color
