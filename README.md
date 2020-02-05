@@ -1,7 +1,7 @@
 # WeeklySchedule
 Android app for organizing weekly schedules by categories and displaying them in tables.
 
-#### 🛠 Currently in progress on other branch(es): 🛠
+#### 🛠 Code is still being refactored 🛠
 
 * Code:
   - [x] Convert to `Kotlin`. (The awfully written Java version is still on another branch).
