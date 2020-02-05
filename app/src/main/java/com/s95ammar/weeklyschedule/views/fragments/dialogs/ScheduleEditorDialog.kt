@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
@@ -27,7 +26,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 	private val argScheduleId
 		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
 	private val daysSelection
-		get() = spinner_edit_schedule.selectedItem.toString().toInt()
+		get() = spinner_edit_schedule.selectedItem as Int
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
@@ -68,7 +67,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 	}
 
 	private fun setViews() {
-		if (mode == Mode.EDIT) viewModel.getScheduleById(argScheduleId).fetchAndIfExists { editedSchedule ->
+		if (mode == Mode.EDIT) viewModel.getScheduleById(argScheduleId).safeFetch { editedSchedule ->
 			dialog?.setTitle(R.string.schedule_rename_title)
 			editText_edit_schedule_name.setText(editedSchedule.name)
 			textView_edit_schedule_days.visibility = GONE

@@ -18,7 +18,7 @@ class Repository @Inject constructor(
 
 	// Schedule CRUD
 	suspend fun insert(schedule: Schedule) = scheduleDao.insert(schedule)
-	suspend fun update(vararg schedule: Schedule) = scheduleDao.update(*schedule)
+	suspend fun update(vararg schedules: Schedule) = scheduleDao.update(*schedules)
 	suspend fun delete(schedule: Schedule) = scheduleDao.delete(schedule)
 	suspend fun deleteAllSchedules() = scheduleDao.deleteAllSchedules()
 	fun getScheduleById(id: Int) = scheduleDao.getScheduleById(id)
@@ -33,7 +33,7 @@ class Repository @Inject constructor(
 	fun getAllCategories() = categoryDao.getAllCategories()
 
 	// Event CRUD
-	suspend fun insert(event: Event) = eventDao.insert(event)
+	suspend fun insert(vararg events: Event) = eventDao.insert(*events)
 	suspend fun update(event: Event) = eventDao.update(event)
 	suspend fun delete(event: Event) = eventDao.delete(event)
 	suspend fun deleteAllEvents() = eventDao.deleteAllEvents()

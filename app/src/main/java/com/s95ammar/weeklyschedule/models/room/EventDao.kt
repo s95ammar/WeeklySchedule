@@ -7,7 +7,7 @@ import com.s95ammar.weeklyschedule.models.data.Event
 @Dao
 interface EventDao {
 	@Insert
-	suspend fun insert(event: Event)
+	suspend fun insert(vararg events: Event)
 
 	@Update
 	suspend fun update(event: Event)

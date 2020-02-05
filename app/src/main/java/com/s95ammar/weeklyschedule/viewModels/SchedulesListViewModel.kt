@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
-import com.s95ammar.weeklyschedule.util.fetchAndIfExists
+import com.s95ammar.weeklyschedule.util.safeFetch
 import com.s95ammar.weeklyschedule.util.launchIO
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
@@ -44,7 +44,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	}
 
 	fun renameSchedule(id: Int, newName: String) {
-		getScheduleById(id).fetchAndIfExists {
+		getScheduleById(id).safeFetch {
 			update(Schedule(newName, it.days, it.isActive).apply { this.id = it.id })
 		}
 	}
@@ -64,7 +64,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	}
 
 	private fun manageActiveScheduleReplacement(newActiveSchedule: Schedule) {
-		getActiveSchedule().fetchAndIfExists { activeSchedule ->
+		getActiveSchedule().safeFetch { activeSchedule ->
 			if (activeSchedule != newActiveSchedule) { // true only when RecyclerView is being built
 				activeSchedule.isActive = false
 				newActiveSchedule.isActive = true

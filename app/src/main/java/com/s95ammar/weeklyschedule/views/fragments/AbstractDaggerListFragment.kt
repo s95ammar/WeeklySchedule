@@ -30,10 +30,7 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 	protected lateinit var viewModel: VM
 	private lateinit var itemsList: LiveData<List<T>>
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		setListeners()
-	}
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) = setListeners()
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)

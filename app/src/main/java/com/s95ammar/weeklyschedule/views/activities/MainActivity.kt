@@ -157,7 +157,8 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 					button_days_select_all.setOnClickListener { checkAllItems() }
 					button_days_clear.setOnClickListener { uncheckAllItems() }
 				}
-				listItemsMultiChoice(items = days.array.asList(),
+				listItemsMultiChoice(
+						items = days.array.asList(),
 						initialSelection = selectionIndices,
 						allowEmptySelection = true
 				) { _, _, selection ->

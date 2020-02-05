@@ -1,9 +1,8 @@
 package com.s95ammar.weeklyschedule.util
 
-import android.util.Log
 import androidx.room.TypeConverter
 import org.joda.time.LocalTime
-import java.lang.RuntimeException
+import org.joda.time.format.DateTimeFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -54,7 +53,20 @@ fun getHoursStringArray(timePattern: String) = Array<String>(HOURS_IN_DAY) { i -
 }
 
 enum class TimeTarget { START_TIME, END_TIME }
-class TimeDetails(var time: LocalTime, var target: TimeTarget)
+class TimeDetails {
+	var time: LocalTime
+	var target: TimeTarget
+
+	constructor(time: LocalTime, target: TimeTarget) {
+		this.time = time
+		this.target = target
+	}
+
+	constructor(timeStr: String, timePattern: String, target: TimeTarget) {
+		time = LocalTime.parse(timeStr, DateTimeFormat.forPattern(timePattern))
+		this.target = target
+	}
+}
 
 fun LocalTime.toCalendar(): Calendar = Calendar.getInstance().apply {
 	set(Calendar.HOUR_OF_DAY, this@toCalendar.hourOfDay)

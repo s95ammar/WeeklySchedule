@@ -62,9 +62,7 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    def butterknife_version = "10.2.0"
-    implementation "com.jakewharton:butterknife:$butterknife_version"
-    kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 
     // Time library
     implementation 'joda-time:joda-time:2.10.2'
@@ -89,7 +87,7 @@ dependencies {
     implementation "com.afollestad.material-dialogs:color:$material_dialogs_version"
     implementation "com.afollestad.material-dialogs:datetime:$material_dialogs_version"
 
-    def nav_version = "2.1.0"
+    def nav_version = "2.2.0"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 

@@ -11,7 +11,6 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.util.*
@@ -73,7 +72,7 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 	private fun setViews() {
 		when (mode) {
 			Mode.EDIT -> {
-				viewModel.getCategoryById(argCategoryId).fetchAndIfExists { editedCategory ->
+				viewModel.getCategoryById(argCategoryId).safeFetch { editedCategory ->
 					assignFillColor(editedCategory.fillColor)
 					assignTextColor(editedCategory.textColor)
 					dialog?.setTitle(R.string.category_edit_title)

@@ -33,11 +33,11 @@
 					android:padding="12dp">
 
 					<TextView
-						android:paddingTop="8dp"
-						android:paddingBottom="8dp"
 						android:id="@+id/textView_event_category"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:paddingTop="8dp"
+						android:paddingBottom="8dp"
 						android:text="@string/category"
 						android:textColor="@android:color/black"
 						android:textSize="16sp"
@@ -46,10 +46,10 @@
 						app:layout_constraintTop_toTopOf="parent" />
 
 					<Spinner
-						android:background="@null"
 						android:id="@+id/spinner_event_categories"
-						android:layout_height="wrap_content"
 						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:background="@null"
 						android:gravity="end"
 						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
@@ -88,8 +88,10 @@
 						android:id="@+id/editText_event_name"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
+						android:hint="Event name (optional)"
 						android:layout_marginStart="24dp"
 						android:completionThreshold="1"
+						android:imeOptions="actionDone"
 						android:inputType="text"
 						android:maxLength="25"
 						android:maxLines="1"
@@ -250,32 +252,33 @@
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<Button
-			android:id="@+id/button_ok"
+			android:id="@+id/button_event_ok"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:text="@string/ok"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toEndOf="@+id/button_delete" />
+			app:layout_constraintStart_toEndOf="@+id/button_event_delete" />
 
 		<Button
-			android:id="@+id/button_delete"
+			android:id="@+id/button_event_delete"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:text="@string/delete"
+			android:visibility="gone"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@+id/button_ok"
+			app:layout_constraintEnd_toStartOf="@+id/button_event_ok"
 			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toEndOf="@+id/button_cancel" />
+			app:layout_constraintStart_toEndOf="@+id/button_event_cancel" />
 
 		<Button
-			android:id="@+id/button_cancel"
+			android:id="@+id/button_event_cancel"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:text="@string/cancel"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@+id/button_delete"
+			app:layout_constraintEnd_toStartOf="@+id/button_event_delete"
 			app:layout_constraintHorizontal_bias="0.5"
 			app:layout_constraintStart_toStartOf="parent" />
 

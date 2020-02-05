@@ -24,7 +24,7 @@ fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
 fun DrawerLayout.closeIfOpen() { if (isOpen()) close() }
 
-fun <T> LiveData<T>.fetchAndIfExists(action: (t: T) -> Unit) {
+fun <T> LiveData<T>.safeFetch(action: (t: T) -> Unit) {
 	observeForever(object : Observer<T> {
 		override fun onChanged(t: T?) {
 			removeObserver(this)

@@ -43,10 +43,6 @@ data class Event(
 	val endMinute: Int
 		get() = endTime.minuteOfHour
 
-	object Validator {
-		fun isTimeValid(startTime: LocalTime, endTime: LocalTime) = endTime.isAfter(startTime)
-	}
-
 	fun overlapsWith(other: Event): Boolean {
 		return startTime.isEqual(other.startTime) ||
 				startTime.isBefore(other.startTime) && endTime.isAfter(other.startTime) ||
