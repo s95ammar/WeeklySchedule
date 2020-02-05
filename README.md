@@ -1,15 +1,9 @@
-# WeeklySchedule
-Android app for organizing weekly schedules by categories and displaying them in tables.
+# 🛑 *Branch out of date* 🛑
 
-#### 🛠 Currently in progress on other branch(es): 🛠
+The code on this branch was written in March - June.
 
-* Code:
-  - [ ] Convert to `Kotlin`.
-  - [ ] Rewrite with `MVVM Architecture` using `Room` for **SQLite** & `LiveData`.
-  - [ ] Apply **Dependency Injection** using `Dagger2`
-  - [ ] Use **Data binding**
+- Data was being saved as JSON in shared preferences as huge lists of objects.
+- Bugs occured when deleting objects, which are dependencies of other objects.
+- Architecture pattern was MV (yes, I know it doesn't exist. It's just Models & Views).
 
-* App interface & functionality:
-  - [ ] Add a **multi-choice dialog** for creating multiple events in multiple days at once.
-  - [ ] Enable **multi-day long events**.
-
+The code here is just bad. Seriously, for your own good, don't look at it. The only reason this branch is still here is that it holds good memories of the time I spent writing this awful code :)
