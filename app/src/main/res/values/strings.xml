@@ -13,7 +13,7 @@
     <string name="status">Status:</string>
     <string name="status_active">active</string>
     <string name="status_inactive">inactive</string>
-    <string name="name">Name:</string>
+    <string name="name">Name</string>
     <string name="schedule_list_is_empty">Schedule list is empty</string>
     <string name="popup_rename">Rename</string>
     <string name="popup_delete">Delete</string>
@@ -22,25 +22,27 @@
     <string name="title_activity_info">Info</string>
     <string name="done">Done</string>
     <string name="edit">Edit</string>
-    <string name="no_active_schedule">Active schedule will be shown\n here once selected</string>
-    <string name="start_time">Start Time:</string>
-    <string name="end_time">End Time:</string>
+    <string name="no_active_schedule">Active schedule will be shown\nhere once selected</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
     <string name="empty_name_error">Name cannot be blank</string>
-    <string name="start_end_time_error">End time must be after start time</string>
+    <string name="start_after_end_error">End time must be after start time</string>
     <string name="default_time">12:00</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="new_event">New Event</string>
-    <string name="day">Day:</string>
+    <string name="day">Day</string>
     <string name="categories">Categories</string>
-    <string name="category_preview_value">Event</string>
+    <string name="event">Event</string>
     <string name="category_list_is_empty">Category list is empty</string>
-    <string name="text_color">Text color:</string>
-    <string name="fill_color">Fill color:</string>
+    <string name="text_color">Text color</string>
+    <string name="fill_color">Fill color</string>
+    <string name="category_add_title">New Category</string>
+    <string name="category_edit_title">Edit Category</string>
     <string name="category_preview">Preview:</string>
     <string name="category">Category</string>
-    <string name="category_empty_name">Category was not created because name was empty</string>
+    <string name="category_empty_name">Category was not created because name was blank</string>
     <string name="category_list_empty_error">At least 1 category needed to create an event</string>
     <string name="event_overlap_error">An event already exists within this period</string>
     <string name="developer">Developer:</string>
@@ -49,6 +51,23 @@
     <string name="development_start_date_value">30.04.2019</string>
     <string name="hours_spent">Total hours spent on coding:</string>
     <string name="hours_spent_value">63 hours</string>
+	<string name="select">select</string>
+	<string name="schedule_add_title">New Schedule</string>
+    <string name="schedule_rename_title">Rename Schedule</string>
+    <string name="schedule_empty_name">Schedule was not created because name was blank</string>
+	<string name="active_schedule_delete_error">Cannot delete active schedule. Please deactive it first, if you really want to delete it</string>
+    <string name="days">Days</string>
+	<string name="key_schedule_id">scheduleId</string>
+	<string name="key_event_id">eventId</string>
+	<string name="key_category_id">categoryId</string>
+	<string name="select_all">Select all</string>
+    <string name="clear">Clear</string>
+    <string name="no_days_selected_error">At least 1 day must be selected to create an event</string>
 
+    <string-array
+        name="days_amount">
+        <item>7</item>
+        <item>14</item>
+    </string-array>
 
 </resources>

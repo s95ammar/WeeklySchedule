@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/nav_graph"
+	app:startDestination="@id/nav_top_level_schedule_viewer"
+	tools:ignore="UnusedNavigation">
+
+	<fragment
+		android:id="@id/nav_top_level_schedule_viewer"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
+		android:label="@string/active_schedule"
+		tools:layout="@layout/fragment_schedule_viewer">
+		<action
+			android:id="@+id/action_nav_schedule_viewer_to_eventEditorFragment"
+			app:destination="@id/eventEditorFragment" />
+	</fragment>
+
+	<fragment
+		android:id="@id/nav_top_level_schedules"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.SchedulesListFragment"
+		android:label="@string/schedules"
+		tools:layout="@layout/fragment_schedules_list">
+		<action
+			android:id="@+id/action_nav_schedules_to_scheduleEditorDialog"
+			app:destination="@id/scheduleEditorDialog" />
+		<action
+			android:id="@+id/action_nav_schedules_to_nav_schedule_viewer"
+			app:destination="@id/nav_schedule_viewer" />
+	</fragment>
+
+	<fragment
+		android:id="@id/nav_top_level_categories"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.CategoriesListFragment"
+		android:label="@string/categories"
+		tools:layout="@layout/fragment_categories_list">
+		<action
+			android:id="@+id/action_nav_categories_to_categoryEditorDialog"
+			app:destination="@id/categoryEditorDialog" />
+	</fragment>
+
+	<fragment
+		android:id="@id/nav_info"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.InfoFragment"
+		android:label="@string/info"
+		tools:layout="@layout/fragment_info" />
+
+	<dialog
+		android:id="@+id/categoryEditorDialog"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.CategoryEditorDialog"
+		android:label="CategoryEditorDialog"
+		tools:layout="@layout/dialog_edit_category">
+
+	</dialog>
+	<dialog
+		android:id="@+id/scheduleEditorDialog"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.dialogs.ScheduleEditorDialog"
+		android:label="ScheduleEditorDialog"
+		tools:layout="@layout/dialog_edit_schedule" />
+	<fragment
+		android:id="@+id/eventEditorFragment"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.EventEditorFragment"
+		tools:layout="@layout/fragment_event_editor" />
+	<fragment
+		android:id="@+id/nav_schedule_viewer"
+		android:name="com.s95ammar.weeklyschedule.views.fragments.ScheduleViewerFragment"
+		android:label="@string/active_schedule"
+		tools:layout="@layout/fragment_schedule_viewer">
+		<action
+			android:id="@+id/action_nav_schedule_viewer_to_eventEditorFragment"
+			app:destination="@id/eventEditorFragment"></action>
+	</fragment>
+
+</navigation>

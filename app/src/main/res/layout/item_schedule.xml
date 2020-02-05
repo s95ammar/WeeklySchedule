@@ -1,77 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="4dp">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/cardView_schedules"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_margin="4dp"
+	android:clickable="true"
+	android:focusable="true"
+	android:foreground="?android:attr/selectableItemBackground"
+	app:cardCornerRadius="4dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="4dp"
-        android:padding="8dp">
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_margin="4dp"
+		android:padding="8dp">
 
-        <TextView
-            android:id="@+id/text_schedule_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Schedule name"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+		<TextView
+			android:id="@+id/textView_schedule_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="@android:color/black"
+			android:textSize="20sp"
+			android:textStyle="bold"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="Schedule name" />
 
-        <TextView
-            android:id="@+id/text_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/status"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_schedule_name"
-            app:layout_constraintTop_toBottomOf="@+id/text_schedule_name" />
+		<TextView
+			android:id="@+id/textView_status"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="16dp"
+			android:text="@string/status"
+			android:textColor="@android:color/black"
+			android:textSize="16sp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="@+id/textView_schedule_name"
+			app:layout_constraintTop_toBottomOf="@+id/textView_schedule_name" />
 
-        <TextView
-            android:id="@+id/text_is_active"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/status_inactive"
-            android:textColor="@color/colorDarkerGray"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/text_status"
-            app:layout_constraintStart_toEndOf="@+id/text_status"
-            app:layout_constraintTop_toTopOf="@+id/text_status" />
-
-
-        <Switch
-            android:id="@+id/switch_is_active"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:switchPadding="20dp"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/text_status"
-            app:layout_constraintEnd_toStartOf="@+id/button_more_schedules"
-            app:layout_constraintTop_toTopOf="@+id/text_status" />
+		<TextView
+			android:id="@+id/textView_is_active"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:text="@string/status_inactive"
+			android:textColor="@color/colorGray"
+			android:textSize="16sp"
+			app:layout_constraintBottom_toBottomOf="@+id/textView_status"
+			app:layout_constraintStart_toEndOf="@+id/textView_status"
+			app:layout_constraintTop_toTopOf="@+id/textView_status" />
 
 
+		<Switch
+			android:id="@+id/switch_is_active"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:switchPadding="20dp"
+			android:textSize="16sp"
+			app:layout_constraintBottom_toBottomOf="@+id/textView_status"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/textView_status" />
 
-        <Button
-            android:id="@+id/button_more_schedules"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/switch_is_active"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/switch_is_active"
-            android:background="@drawable/ic_more_vert" />
+
+		<Button
+			android:id="@+id/button_more_schedules"
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:background="@drawable/ic_more_vert"
+			app:layout_constraintBottom_toBottomOf="@+id/textView_schedule_name"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/textView_schedule_name" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
