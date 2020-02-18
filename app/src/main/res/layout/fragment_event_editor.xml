@@ -88,7 +88,7 @@
 						android:id="@+id/editText_event_name"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:hint="Event name (optional)"
+						android:hint="@string/event_name_optional"
 						android:layout_marginStart="24dp"
 						android:completionThreshold="1"
 						android:imeOptions="actionDone"

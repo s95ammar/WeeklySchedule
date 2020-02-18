@@ -19,11 +19,10 @@ import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_event_editor.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 
@@ -56,14 +55,9 @@ class EventEditorFragment : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
 		setMode()
-		setValues()
-		// TODO: FIX
-		launchIO {
-			while (!::event.isInitialized && !::schedule.isInitialized) Thread.sleep(50)
-			withContext(Dispatchers.Main) {
-				setUpLayout()
-				setListeners()
-			}
+		setValues {
+			setUpLayout()
+			setListeners()
 		}
 	}
 
@@ -80,49 +74,48 @@ class EventEditorFragment : DaggerFragment() {
 		})
 	}
 
-	private fun setValues() {
-		when (mode) {
-			Mode.ADD -> setSchedule(argScheduleId)
-			Mode.EDIT -> viewModel.getEventById(argEventId).safeFetch { event ->
-				this.event = event
-				setSchedule(event.scheduleId)
+	private fun setValues(onComplete: () -> Unit) {
+		launchIO {
+			when (mode) {
+				Mode.ADD -> this.schedule = viewModel.getScheduleById(argScheduleId).suspendFetch()
+				Mode.EDIT -> {
+					this.event =  viewModel.getEventById(argEventId).suspendFetch()
+					this.schedule =  viewModel.getScheduleById(event.scheduleId).suspendFetch()
+				}
 			}
+			selectedDaysIndices = emptyArray<Int>().toIntArray()
+			withContext(Main) { onComplete() }
 		}
 	}
 
-	private fun setSchedule(scheduleId: Int) = viewModel.getScheduleById(scheduleId).safeFetch { schedule ->
-		this.schedule = schedule
-		selectedDaysIndices = emptyArray<Int>().toIntArray()
-	}
 
 	private fun setUpLayout() {
-		setUpCategorySpinner()
-		setUpDaysCardView()
-		setUpTimeCardViews()
-		if (mode == Mode.EDIT) {
-			setCategorySpinnerSelection()
-			editText_event_name.setText(event.name)
-			textView_event_days.setText(R.string.day)
-			spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
-			textView_event_start_value.text = event.startTime.toString(timePattern)
-			textView_event_end_value.text = event.endTime.toString(timePattern)
-			button_event_delete.visibility = View.VISIBLE
-			button_event_delete.setOnClickListener { viewModel.deleteEventById(argEventId) }
-		}
-	}
-
-	private fun setUpCategorySpinner() {
-		viewModel.getAllCategories().safeFetch { allCategories ->
-			spinner_event_categories.adapter = CategorySpinnerAdapter(requireContext(), allCategories)
-			cardView_event_category.setOnClickListener { spinner_event_categories.performClick() }
-		}
-	}
-
-	private fun setCategorySpinnerSelection() {
-		viewModel.getCategoryById(event.categoryId).safeFetch { eventCategory ->
-			viewModel.getAllCategories().safeFetch { allCategories ->
-				spinner_event_categories.setSelection(allCategories.indexOf(eventCategory))
+		viewModel.getAllCategories().safeFetch { allCategories->
+			setUpCategorySpinner(allCategories)
+			setUpDaysCardView()
+			setUpTimeCardViews()
+			if (mode == Mode.EDIT) {
+				setCategorySpinnerSelection(allCategories)
+				editText_event_name.setText(event.name)
+				textView_event_days.setText(R.string.day)
+				spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
+				textView_event_start_value.text = event.startTime.toString(timePattern)
+				textView_event_end_value.text = event.endTime.toString(timePattern)
+				button_event_delete.visibility = View.VISIBLE
+				button_event_delete.setOnClickListener { viewModel.deleteEventById(argEventId) }
 			}
+		}
+	}
+
+	private fun setUpCategorySpinner(allCategories: List<Category>) {
+		spinner_event_categories.adapter = CategorySpinnerAdapter(requireContext(), allCategories)
+		cardView_event_category.setOnClickListener { spinner_event_categories.performClick() }
+
+	}
+
+	private fun setCategorySpinnerSelection(allCategories: List<Category>) {
+		allCategories.find { it.id == event.categoryId }?.let { eventCategory ->
+			spinner_event_categories.setSelection(allCategories.indexOf(eventCategory))
 		}
 	}
 
@@ -195,7 +188,7 @@ class EventEditorFragment : DaggerFragment() {
 					override fun onChanged(it: Result) {
 						when (it) {
 							is Result.Success -> requireActivity().onBackPressed()
-							is Result.Error -> {toast(it.message)}
+							is Result.Error -> { toast(it.message) }
 						}
 						viewModel.onEventOperationAttempt.removeObserver(this)
 					}

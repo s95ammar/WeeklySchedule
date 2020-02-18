@@ -4,17 +4,19 @@ import android.app.Application
 import android.text.format.DateFormat
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.MainThread
 import androidx.annotation.StringRes
+import androidx.annotation.WorkerThread
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 val Application.SYSTEM_TIME_PATTERN
 	get() = if (DateFormat.is24HourFormat(this)) TIME_PATTERN_24H else TIME_PATTERN_12H
@@ -24,6 +26,7 @@ fun DrawerLayout.isOpen() = isDrawerOpen(GravityCompat.START)
 fun DrawerLayout.close() = closeDrawer(GravityCompat.START)
 fun DrawerLayout.closeIfOpen() { if (isOpen()) close() }
 
+@MainThread
 fun <T> LiveData<T>.safeFetch(action: (t: T) -> Unit) {
 	observeForever(object : Observer<T> {
 		override fun onChanged(t: T?) {
@@ -31,6 +34,21 @@ fun <T> LiveData<T>.safeFetch(action: (t: T) -> Unit) {
 			t?.let { action(it) }
 		}
 	})
+}
+
+@WorkerThread
+suspend fun <T> LiveData<T>.suspendFetch(): T = suspendCoroutine { continuation ->
+	launchMain {
+		safeFetch { continuation.resume(it) }
+	}
+}
+
+
+fun <T> LiveData<T>.suspendFetch(action: (t: T) -> Unit) {
+	launchIO {
+		val value = suspendFetch()
+		withContext(Main) { action(value) }
+	}
 }
 
 val EditText.input
@@ -45,4 +63,4 @@ fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
 }
 
 fun launchIO(block: suspend () -> Unit): Job = CoroutineScope(IO).launch { block() }
-fun lunchMain(block: suspend () -> Unit): Job = CoroutineScope(Main).launch { block() }
+fun launchMain(block: suspend () -> Unit): Job = CoroutineScope(Main).launch { block() }

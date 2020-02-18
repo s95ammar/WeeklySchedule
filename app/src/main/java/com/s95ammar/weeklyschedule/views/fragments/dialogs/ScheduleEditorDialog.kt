@@ -26,7 +26,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 	private val argScheduleId
 		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
 	private val daysSelection
-		get() = spinner_edit_schedule.selectedItem as Int
+		get() = spinner_edit_schedule.selectedItem.toString().toInt()
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory

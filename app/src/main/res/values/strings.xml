@@ -63,8 +63,9 @@
 	<string name="select_all">Select all</string>
     <string name="clear">Clear</string>
     <string name="no_days_selected_error">At least 1 day must be selected to create an event</string>
+	<string name="event_name_optional">Event name (optional)</string>
 
-    <string-array
+	<string-array
         name="days_amount">
         <item>7</item>
         <item>14</item>
