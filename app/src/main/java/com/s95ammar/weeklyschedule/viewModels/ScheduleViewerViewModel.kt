@@ -40,9 +40,9 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 
 	fun getScheduleById(id: Int) = repo.getScheduleById(id)
 
-	fun insert(vararg events: Event) = launchIO { repo.insert(*events) }
-	fun update(event: Event) = launchIO { repo.update(event) }
-	fun delete(event: Event) = launchIO { repo.delete(event) }
+	fun insert(vararg events: Event) = viewModelScope.launch { repo.insert(*events) }
+	fun update(event: Event) = viewModelScope.launch { repo.update(event) }
+	fun delete(event: Event) = viewModelScope.launch { repo.delete(event) }
 	fun deleteEventById(id: Int) = getEventById(id).safeFetch { delete(it) }
 	fun getEventById(id: Int) = repo.getEventById(id)
 	fun getEventsBy(scheduleId: Int) = repo.getEventsBy(scheduleId)

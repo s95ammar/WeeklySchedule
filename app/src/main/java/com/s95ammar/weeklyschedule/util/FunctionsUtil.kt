@@ -38,14 +38,14 @@ fun <T> LiveData<T>.safeFetch(action: (t: T) -> Unit) {
 
 @WorkerThread
 suspend fun <T> LiveData<T>.suspendFetch(): T = suspendCoroutine { continuation ->
-	launchMain {
+	CoroutineScope(Main).launch {
 		safeFetch { continuation.resume(it) }
 	}
 }
 
 
 fun <T> LiveData<T>.suspendFetch(action: (t: T) -> Unit) {
-	launchIO {
+	CoroutineScope(IO).launch {
 		val value = suspendFetch()
 		withContext(Main) { action(value) }
 	}
@@ -61,6 +61,3 @@ fun Fragment.toast(@StringRes stringRes: Int, length: Int = Toast.LENGTH_SHORT) 
 fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
 	Toast.makeText(activity, msg, length).show()
 }
-
-fun launchIO(block: suspend () -> Unit): Job = CoroutineScope(IO).launch { block() }
-fun launchMain(block: suspend () -> Unit): Job = CoroutineScope(Main).launch { block() }

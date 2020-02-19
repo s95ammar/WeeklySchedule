@@ -15,9 +15,6 @@ interface ScheduleDao {
 	@Delete
 	suspend fun delete(schedule: Schedule)
 
-	@Query("DELETE FROM schedule")
-	suspend fun deleteAllSchedules()
-
 	@Query("SELECT * FROM schedule WHERE id=:id")
 	fun getScheduleById(id: Int): LiveData<Schedule>
 

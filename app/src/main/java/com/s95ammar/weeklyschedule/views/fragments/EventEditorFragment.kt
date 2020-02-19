@@ -20,6 +20,7 @@ import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_event_editor.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
@@ -74,12 +75,12 @@ class EventEditorFragment : DaggerFragment() {
 	}
 
 	private fun setValues(onComplete: () -> Unit) {
-		launchIO {
+		CoroutineScope(IO).launch {
 			when (mode) {
-				Mode.ADD -> this.schedule = viewModel.getScheduleById(argScheduleId).suspendFetch()
+				Mode.ADD -> this@EventEditorFragment.schedule = viewModel.getScheduleById(argScheduleId).suspendFetch()
 				Mode.EDIT -> {
-					this.event =  viewModel.getEventById(argEventId).suspendFetch()
-					this.schedule =  viewModel.getScheduleById(event.scheduleId).suspendFetch()
+					this@EventEditorFragment.event =  viewModel.getEventById(argEventId).suspendFetch()
+					this@EventEditorFragment.schedule =  viewModel.getScheduleById(event.scheduleId).suspendFetch()
 				}
 			}
 			selectedDaysIndices = emptyArray<Int>().toIntArray()

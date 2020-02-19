@@ -30,6 +30,4 @@ interface EventDao {
 	@Query("SELECT * FROM event WHERE schedule_id=:scheduleId AND category_Id=:categoryId")
 	fun getEventsBy(categoryId: Int, scheduleId: Int): LiveData<List<Event>>
 
-	@Query("SELECT * FROM event")
-	fun getAllEvents(): LiveData<List<Event>>
 }

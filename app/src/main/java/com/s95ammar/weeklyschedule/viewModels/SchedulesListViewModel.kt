@@ -3,12 +3,13 @@ package com.s95ammar.weeklyschedule.viewModels
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.LOG_TAG
 import com.s95ammar.weeklyschedule.util.safeFetch
-import com.s95ammar.weeklyschedule.util.launchIO
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SchedulesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
@@ -26,11 +27,11 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	}
 
 	fun insertSchedule(schedule: Schedule) {
-		launchIO { repo.insert(schedule) }
+		viewModelScope.launch { repo.insert(schedule) }
 	}
 
-	fun update(vararg schedule: Schedule) = launchIO { repo.update(*schedule) }
-	fun delete(schedule: Schedule) = launchIO { repo.delete(schedule) }
+	fun update(vararg schedule: Schedule) = viewModelScope.launch { repo.update(*schedule) }
+	fun delete(schedule: Schedule) = viewModelScope.launch { repo.delete(schedule) }
 	fun getScheduleById(id: Int) = repo.getScheduleById(id)
 	fun getActiveSchedule() = repo.getScheduleById(Schedule.activeScheduleId)
 	fun getAllSchedules() = repo.getAllSchedules()
