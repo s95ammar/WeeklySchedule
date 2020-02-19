@@ -10,3 +10,6 @@ const val KEY_MODE = "mode"
 const val KEY_DAYS_INDICES = "days_indices"
 const val KEY_START_TIME = "start_time"
 const val KEY_END_TIME = "end_time"
+
+val Any.LOG_TAG
+	get() = "log_${this.javaClass.simpleName}"

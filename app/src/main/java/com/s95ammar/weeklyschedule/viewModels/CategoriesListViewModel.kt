@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.util.ColorDetails
+import com.s95ammar.weeklyschedule.util.LOG_TAG
 import com.s95ammar.weeklyschedule.util.launchIO
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
 class CategoriesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
-	private val t = "log_${javaClass.simpleName}"
 
 	private val _showCategoryEditorDialog = SingleLiveEvent<Int>()
 	private val _showCategoryColorPicker = SingleLiveEvent<ColorDetails>()
@@ -23,7 +23,7 @@ class CategoriesListViewModel @Inject constructor(private var repo: Repository) 
 	val onCategoryColorSelected: LiveData<ColorDetails> = _onCategoryColorSelected
 
 	init {
-		Log.d(t, "init: ")
+		Log.d(LOG_TAG, "init: ")
 	}
 
 	fun insert(category: Category) = launchIO { repo.insert(category) }

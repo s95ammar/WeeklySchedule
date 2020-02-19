@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.spinner_row_category.view.*
 
 
 class CategorySpinnerAdapter(context: Context, categoriesList: List<Category>) : ArrayAdapter<Category>(context, 0, categoriesList) {
-	private val t = "log_${javaClass.simpleName}"
 
 	override fun getView(position: Int, @Nullable convertView: View?, parent: ViewGroup): View {
 		return initView(position, convertView, parent)

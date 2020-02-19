@@ -2,7 +2,6 @@ package com.s95ammar.weeklyschedule.util
 
 import androidx.room.TypeConverter
 import org.joda.time.LocalTime
-import org.joda.time.format.DateTimeFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -53,20 +52,7 @@ fun getHoursStringArray(timePattern: String) = Array<String>(HOURS_IN_DAY) { i -
 }
 
 enum class TimeTarget { START_TIME, END_TIME }
-class TimeDetails {
-	var time: LocalTime
-	var target: TimeTarget
-
-	constructor(time: LocalTime, target: TimeTarget) {
-		this.time = time
-		this.target = target
-	}
-
-	constructor(timeStr: String, timePattern: String, target: TimeTarget) {
-		time = LocalTime.parse(timeStr, DateTimeFormat.forPattern(timePattern))
-		this.target = target
-	}
-}
+class TimeDetails(var time: LocalTime, var target: TimeTarget)
 
 fun LocalTime.toCalendar(): Calendar = Calendar.getInstance().apply {
 	set(Calendar.HOUR_OF_DAY, this@toCalendar.hourOfDay)
@@ -79,4 +65,3 @@ const val MINUTES_IN_HOUR = 60
 val DEFAULT_TIME = LocalTime(12, 0)
 const val TIME_PATTERN_12H = "hh:mm aa"
 const val TIME_PATTERN_24H = "HH:mm"
-

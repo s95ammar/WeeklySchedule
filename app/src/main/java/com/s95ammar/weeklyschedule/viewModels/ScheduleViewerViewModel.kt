@@ -2,19 +2,18 @@ package com.s95ammar.weeklyschedule.viewModels
 
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.joda.time.LocalTime
 import javax.inject.Inject
 
 class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
-	private val t = "log_${javaClass.simpleName}"
 	private val _actionBarTitle = MutableLiveData<String>()
 	private val _scheduleMode = MutableLiveData<ScheduleMode>()
 	private val _showEventEditorFragment = SingleLiveEvent<Pair<String, Int>>()
@@ -36,7 +35,7 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	val onEventOperationAttempt: LiveData<Result> = _onEventOperationAllowed
 
 	init {
-		Log.d(t, "init: ")
+		Log.d(LOG_TAG, "init: ")
 	}
 
 	fun getScheduleById(id: Int) = repo.getScheduleById(id)

@@ -5,13 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.LOG_TAG
 import com.s95ammar.weeklyschedule.util.safeFetch
 import com.s95ammar.weeklyschedule.util.launchIO
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import javax.inject.Inject
 
 class SchedulesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
-	private val t = "log_${javaClass.simpleName}"
 
 	private val _showScheduleEditorDialog = SingleLiveEvent<Int>()
 	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
@@ -22,7 +22,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	val onScheduleItemClick: LiveData<Int> = _onScheduleItemClick
 
 	init {
-		Log.d(t, "init: ")
+		Log.d(LOG_TAG, "init: ")
 	}
 
 	fun insertSchedule(schedule: Schedule) {

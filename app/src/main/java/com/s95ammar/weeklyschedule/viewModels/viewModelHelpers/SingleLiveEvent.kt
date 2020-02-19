@@ -6,6 +6,7 @@ import androidx.annotation.Nullable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.s95ammar.weeklyschedule.util.LOG_TAG
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -20,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 
 class SingleLiveEvent<T> : MutableLiveData<T>() {
-	private val t = "log_${javaClass.simpleName}"
 
 	private val mPending = AtomicBoolean(false)
 
@@ -28,7 +28,7 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
 	override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
 
 		if (hasActiveObservers()) {
-			Log.w(t, "Multiple observers registered but only one will be notified of changes.")
+			Log.w(LOG_TAG, "Multiple observers registered but only one will be notified of changes.")
 		}
 
 		// Observe the internal MutableLiveData

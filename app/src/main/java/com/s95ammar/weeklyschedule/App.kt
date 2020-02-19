@@ -8,7 +8,6 @@ import com.s95ammar.weeklyschedule.util.SYSTEM_TIME_PATTERN
 import dagger.android.DaggerApplication
 
 class App : DaggerApplication() {
-	private val t = "log_${javaClass.simpleName}"
 
 	override fun applicationInjector() = DaggerAppComponent.factory().create(this, SYSTEM_TIME_PATTERN)
 

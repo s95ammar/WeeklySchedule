@@ -27,7 +27,6 @@ import javax.inject.Inject
 /* GET READY TO SEE SOME FREAKY SHIT XD */
 
 class ScheduleViewerFragment : DaggerFragment() {
-	private val t = "log_${javaClass.simpleName}"
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
@@ -57,7 +56,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 	private enum class Direction { Horizontal, Vertical }
 
 	init {
-		Log.d(t, "init: $this")
+		Log.d(LOG_TAG, "init: $this")
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -102,13 +101,13 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	private fun showSchedule() {
 		viewModel.getScheduleById(argScheduleId).safeFetch {
-			Log.d(t, "showSchedule: $it")
+			Log.d(LOG_TAG, "showSchedule: $it")
 			schedule = it
 			viewModel.setActionBarTitle(it.name)
 			prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
 			prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days.array)
 			viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
-				Log.d(t, "showSchedule: $scheduleEvents")
+				Log.d(LOG_TAG, "showSchedule: $scheduleEvents")
 				events = scheduleEvents
 				prepareEventTextViews()
 				connectTextViews()

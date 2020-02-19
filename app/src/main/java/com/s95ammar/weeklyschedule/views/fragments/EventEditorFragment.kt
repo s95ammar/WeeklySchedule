@@ -27,7 +27,6 @@ import javax.inject.Inject
 
 
 class EventEditorFragment : DaggerFragment() {
-	private val t = "log_${javaClass.simpleName}"
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
@@ -102,7 +101,6 @@ class EventEditorFragment : DaggerFragment() {
 				textView_event_start_value.text = event.startTime.toString(timePattern)
 				textView_event_end_value.text = event.endTime.toString(timePattern)
 				button_event_delete.visibility = View.VISIBLE
-				button_event_delete.setOnClickListener { viewModel.deleteEventById(argEventId) }
 			}
 		}
 	}

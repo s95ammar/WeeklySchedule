@@ -38,7 +38,6 @@ import javax.inject.Inject
 
 
 class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
-	private val t = "log_${javaClass.simpleName}"
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
@@ -217,7 +216,7 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	}
 
 	private fun saveActiveScheduleId(activeScheduleId: Int) {
-		Log.d(t, "saveActiveScheduleId: $activeScheduleId")
+		Log.d(LOG_TAG, "saveActiveScheduleId: $activeScheduleId")
 		getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
 				.edit()
 				.putInt(ACTIVE_SCHEDULE_ID_KEY, activeScheduleId)
