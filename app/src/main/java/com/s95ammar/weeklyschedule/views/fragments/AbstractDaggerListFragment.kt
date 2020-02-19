@@ -3,6 +3,7 @@ package com.s95ammar.weeklyschedule.views.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
@@ -37,10 +38,7 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 		viewModel = initViewModel()
 		itemsList = assignItemsList()
 		buildRecyclerView()
-		itemsList.observe(viewLifecycleOwner, Observer {
-			Log.d("log_${javaClass.simpleName}", "onListChanged: $it")
-			onListChanged(it)
-		})
+		startObservers()
 	}
 
 	private fun buildRecyclerView() {
@@ -63,6 +61,14 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 		MenuPopupHelper(requireActivity(), popupMenu.menu as MenuBuilder, anchor)
 				.apply { setForceShowIcon(true) }
 				.show()
+	}
+
+	@CallSuper
+	protected open fun startObservers() {
+		itemsList.observe(viewLifecycleOwner, Observer {
+			Log.d("log_${javaClass.simpleName}", "onListChanged: $it")
+			onListChanged(it)
+		})
 	}
 
 	abstract fun setListeners()

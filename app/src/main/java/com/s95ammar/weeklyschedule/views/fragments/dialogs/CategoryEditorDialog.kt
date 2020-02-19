@@ -9,8 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.color.colorChooser
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.util.*
@@ -56,7 +57,7 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		viewModel = ViewModelProvider(requireActivity(), factory).get(CategoriesListViewModel::class.java)
+		viewModel = ViewModelProvider(this, factory).get(CategoriesListViewModel::class.java)
 		setMode()
 		setViews()
 		setListeners()
@@ -88,8 +89,8 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 
 	private fun setListeners() {
 		button_edit_category_reverse_colors.setOnClickListener { reverseColors() }
-		view_edit_category_fill_color.setOnClickListener { onColorClicked(ColorDetails(selectedFillColor, ColorTarget.FILL)) }
-		view_edit_category_text_color.setOnClickListener { onColorClicked(ColorDetails(selectedTextColor, ColorTarget.TEXT)) }
+		view_edit_category_fill_color.setOnClickListener { showColorPicker(selectedFillColor, ColorTarget.FILL) }
+		view_edit_category_text_color.setOnClickListener { showColorPicker(selectedTextColor, ColorTarget.TEXT) }
 	}
 
 	private fun reverseColors() {
@@ -98,21 +99,27 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 		assignTextColor(fillColor)
 	}
 
-	private fun onColorClicked(colorDetails: ColorDetails) {
-		viewModel.showColorPickerDialog(colorDetails)
-		observeColorSelection()
+	private fun showColorPicker(@ColorInt initialColor: Int, target: ColorTarget) {
+		MaterialDialog(requireActivity()).show {
+			title(when (target) {
+				ColorTarget.FILL -> R.string.fill_color
+				ColorTarget.TEXT -> R.string.text_color
+			})
+			colorChooser(MAIN_COLORS_ARRAY,
+					subColors = SHADES_OF_MAIN_COLORS,
+					allowCustomArgb = true,
+					showAlphaSelector = true,
+					initialSelection = initialColor) { _, selectedColor ->
+				when (target) {
+					ColorTarget.FILL -> assignFillColor(selectedColor)
+					ColorTarget.TEXT -> assignTextColor(selectedColor)
+				}
+				positiveButton(R.string.select)
+				negativeButton(R.string.cancel)
+			}
+		}
 	}
 
-	private fun observeColorSelection() {
-		viewModel.onCategoryColorSelected.observe(viewLifecycleOwner, Observer { colorDetails ->
-			colorDetails?.let {
-				when (it.target) {
-					ColorTarget.FILL -> assignFillColor(it.color)
-					ColorTarget.TEXT -> assignTextColor(it.color)
-				}
-			}
-		})
-	}
 
 	private fun onOkListener() = DialogInterface.OnClickListener { _, _ ->
 		try {
@@ -139,8 +146,4 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 		selectedTextColor = colorInt
 	}
 
-	override fun onDetach() {
-		viewModel.clearEditorDialogValues()
-		super.onDetach()
-	}
 }

@@ -42,8 +42,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var scheduleViewerViewModel: ScheduleViewerViewModel
-	private lateinit var schedulesListViewModel: SchedulesListViewModel
-	private lateinit var categoriesListViewModel: CategoriesListViewModel
 	private lateinit var navController: NavController
 	private lateinit var appBarConfig: AppBarConfiguration
 	private lateinit var scheduleToolbarMenu: Menu
@@ -53,8 +51,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		scheduleViewerViewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
-		schedulesListViewModel = ViewModelProvider(this, factory).get(SchedulesListViewModel::class.java)
-		categoriesListViewModel = ViewModelProvider(this, factory).get(CategoriesListViewModel::class.java)
 		startObservers()
 		initNavController()
 	}
@@ -85,17 +81,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		})
 		scheduleViewerViewModel.showDaysMultiChoiceDialog.observe(this, Observer { showDaysMultiChoiceDialog(it) })
 		scheduleViewerViewModel.showEventTimePicker.observe(this, Observer { showTimePicker(it) })
-		schedulesListViewModel.onActiveScheduleIdChanged.observe(this, Observer { saveActiveScheduleId(Schedule.activeScheduleId) })
-		schedulesListViewModel.showScheduleEditorDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog, bundleOf(resources.getString(R.string.key_schedule_id) to it))
-		})
-		schedulesListViewModel.onScheduleItemClick.observe(this, Observer {
-			navController.navigate(R.id.action_nav_schedules_to_nav_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to it))
-		})
-		categoriesListViewModel.showCategoryEditorDialog.observe(this, Observer {
-			navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog, bundleOf(resources.getString(R.string.key_category_id) to it))
-		})
-		categoriesListViewModel.showCategoryColorPicker.observe(this, Observer { openColorPicker(it) })
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean =
@@ -170,26 +155,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		}
 	}
 
-	private fun openColorPicker(colorDetails: ColorDetails) {
-		MaterialDialog(this).show {
-			title(when (colorDetails.target) {
-				ColorTarget.FILL -> R.string.fill_color
-				ColorTarget.TEXT -> R.string.text_color
-			})
-			colorChooser(
-					MAIN_COLORS_ARRAY,
-					subColors = SHADES_OF_MAIN_COLORS,
-					allowCustomArgb = true,
-					showAlphaSelector = true,
-					initialSelection = colorDetails.color
-			) { _, selectedColor ->
-				categoriesListViewModel.setCategoryColor(ColorDetails(selectedColor, colorDetails.target))
-			}
-			positiveButton(R.string.select)
-			negativeButton(R.string.cancel)
-		}
-	}
-
 	private fun showTimePicker(timeDetails: TimeDetails) {
 		MaterialDialog(this).show {
 			title(when (timeDetails.target) {
@@ -213,14 +178,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 			drawer_layout.close()
 		else
 			super.onBackPressed()
-	}
-
-	private fun saveActiveScheduleId(activeScheduleId: Int) {
-		Log.d(LOG_TAG, "saveActiveScheduleId: $activeScheduleId")
-		getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-				.edit()
-				.putInt(ACTIVE_SCHEDULE_ID_KEY, activeScheduleId)
-				.apply()
 	}
 
 }

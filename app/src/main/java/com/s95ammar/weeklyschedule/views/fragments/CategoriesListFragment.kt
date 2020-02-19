@@ -8,8 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
@@ -24,12 +25,17 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 
 	@Inject lateinit var factory: ViewModelProvider.Factory
 	@Inject lateinit var listAdapter: CategoriesListAdapter
+	private val navController
+		get() = requireActivity().findNavController(R.id.nav_host_fragment)
+
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 		return inflater.inflate(R.layout.fragment_categories_list, container, false)
 	}
 
-	override fun setListeners() = button_add_category.setOnClickListener { viewModel.showCategoryEditorDialog() }
+	override fun setListeners() = button_add_category.setOnClickListener {
+		navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog)
+	}
 
 	override fun initViewModel() = ViewModelProvider(requireActivity(), factory).get(CategoriesListViewModel::class.java)
 
@@ -45,7 +51,8 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 	}
 
 	override fun onItemClicked(item: Category) {
-		viewModel.showCategoryEditorDialog(item.id)
+		navController.navigate(R.id.action_nav_categories_to_categoryEditorDialog,
+				bundleOf(resources.getString(R.string.key_category_id) to item.id))
 	}
 
 	override fun onMoreClicked(item: Category, buttonMore: Button) = showPopupMenu(R.menu.categories_more_menu, buttonMore,

@@ -14,13 +14,9 @@ import javax.inject.Inject
 
 class SchedulesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 
-	private val _showScheduleEditorDialog = SingleLiveEvent<Int>()
-	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
-	private val _onScheduleItemClick = SingleLiveEvent<Int>()
+	val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
 
-	val showScheduleEditorDialog: LiveData<Int> = _showScheduleEditorDialog
 	val onActiveScheduleIdChanged: LiveData<Unit> = _onActiveScheduleChanged
-	val onScheduleItemClick: LiveData<Int> = _onScheduleItemClick
 
 	init {
 		Log.d(LOG_TAG, "init: ")
@@ -36,13 +32,6 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	fun getActiveSchedule() = repo.getScheduleById(Schedule.activeScheduleId)
 	fun getAllSchedules() = repo.getAllSchedules()
 
-	fun showScheduleEditorDialog(scheduleId: Int = 0) {
-		_showScheduleEditorDialog.value = scheduleId
-	}
-
-	fun navigateToScheduleViewer(scheduleId: Int) {
-		_onScheduleItemClick.value = scheduleId
-	}
 
 	fun renameSchedule(id: Int, newName: String) {
 		getScheduleById(id).safeFetch {
@@ -90,5 +79,8 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 		}
 	}
 
-
+	override fun onCleared() {
+		super.onCleared()
+		Log.d(LOG_TAG, "onCleared: ")
+	}
 }

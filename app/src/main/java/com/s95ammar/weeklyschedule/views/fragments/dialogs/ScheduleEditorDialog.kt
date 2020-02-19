@@ -53,7 +53,7 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		viewModel = ViewModelProvider(requireActivity(), factory).get(SchedulesListViewModel::class.java)
+		viewModel = ViewModelProvider(this, factory).get(SchedulesListViewModel::class.java)
 		setMode()
 		setViews()
 	}

@@ -19,9 +19,11 @@ import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_event_editor.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
