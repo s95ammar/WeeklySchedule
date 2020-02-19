@@ -1,15 +1,10 @@
 package com.s95ammar.weeklyschedule.views.activities
 
 import android.os.Bundle
-import android.text.format.DateFormat
-import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -18,22 +13,14 @@ import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.color.colorChooser
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.datetime.timePicker
-import com.afollestad.materialdialogs.list.*
 import com.google.android.material.navigation.NavigationView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
-import com.s95ammar.weeklyschedule.util.*
-import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
-import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
-import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
+import com.s95ammar.weeklyschedule.util.close
+import com.s95ammar.weeklyschedule.util.closeIfOpen
+import com.s95ammar.weeklyschedule.util.isOpen
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_days_multi_choice_buttons.*
-import org.joda.time.LocalTime
 import javax.inject.Inject
 
 
@@ -41,17 +28,13 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
-	private lateinit var scheduleViewerViewModel: ScheduleViewerViewModel
 	private lateinit var navController: NavController
 	private lateinit var appBarConfig: AppBarConfiguration
-	private lateinit var scheduleToolbarMenu: Menu
 	private val topLevelDestinations = setOf(R.id.nav_top_level_schedule_viewer, R.id.nav_top_level_schedules, R.id.nav_top_level_categories)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
-		scheduleViewerViewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
-		startObservers()
 		initNavController()
 	}
 
@@ -66,22 +49,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		nav_view.setNavigationItemSelectedListener(this)
 	}
 
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-		menuInflater.inflate(R.menu.toolbar_menu, menu)
-		menu?.let { scheduleToolbarMenu = it }
-		scheduleViewerViewModel.scheduleMode.observe(this, Observer { setScheduleToolbarMenuMode(it) })
-		return true
-
-	}
-
-	private fun startObservers() {
-		scheduleViewerViewModel.actionBarTitle.observe(this, Observer { supportActionBar?.title = it })
-		scheduleViewerViewModel.showEventEditorFragment.observe(this, Observer { (key, id) ->
-			navController.navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment, bundleOf(key to id))
-		})
-		scheduleViewerViewModel.showDaysMultiChoiceDialog.observe(this, Observer { showDaysMultiChoiceDialog(it) })
-		scheduleViewerViewModel.showEventTimePicker.observe(this, Observer { showTimePicker(it) })
-	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean =
 			if (navController.currentDestination?.id != item.itemId) {
@@ -102,20 +69,9 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 			}
 
 	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
-		if (destination.id != R.id.nav_top_level_schedule_viewer) scheduleViewerViewModel.setScheduleViewerMode(ScheduleMode.NOT_DISPLAYED)
 		drawer_layout.setDrawerLockMode(if (topLevelDestinations.contains(destination.id)) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 	}
 
-	private fun setScheduleToolbarMenuMode(mode: ScheduleMode) {
-		scheduleToolbarMenu.findItem(R.id.button_edit).isVisible = when (mode) {
-			ScheduleMode.VIEW -> true
-			else -> false
-		}
-		scheduleToolbarMenu.findItem(R.id.button_done).isVisible = when (mode) {
-			ScheduleMode.EDIT -> true
-			else -> false
-		}
-	}
 
 	// adds functionality to burger icon (only for opening the drawer) and back arrow
 	override fun onSupportNavigateUp() = navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
@@ -127,50 +83,8 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 					drawer_layout.close()
 					return true
 				}
-			R.id.button_edit -> scheduleViewerViewModel.setScheduleViewerMode(ScheduleMode.EDIT)
-			R.id.button_done -> scheduleViewerViewModel.setScheduleViewerMode(ScheduleMode.VIEW)
 		}
 		return false
-	}
-
-	private fun showDaysMultiChoiceDialog(daysToSelectionIndices: Pair<Days, IntArray>) {
-		daysToSelectionIndices.let { (days, selectionIndices) ->
-			MaterialDialog(this).show {
-				title(R.string.days)
-				customView(R.layout.dialog_days_multi_choice_buttons).apply {
-					button_days_select_all.setOnClickListener { checkAllItems() }
-					button_days_clear.setOnClickListener { uncheckAllItems() }
-				}
-				listItemsMultiChoice(
-						items = days.array.asList(),
-						initialSelection = selectionIndices,
-						allowEmptySelection = true
-				) { _, _, selection ->
-					val newSelectionIndices = IntArray(selection.size) { i -> days.array.indexOf(selection[i]) }
-					scheduleViewerViewModel.displaySelectedDays(newSelectionIndices)
-				}
-				positiveButton(R.string.select)
-				negativeButton(R.string.cancel)
-			}
-		}
-	}
-
-	private fun showTimePicker(timeDetails: TimeDetails) {
-		MaterialDialog(this).show {
-			title(when (timeDetails.target) {
-				TimeTarget.START_TIME -> R.string.start_time
-				TimeTarget.END_TIME -> R.string.end_time
-			})
-			timePicker(
-					currentTime = timeDetails.time.toCalendar(),
-					show24HoursView = DateFormat.is24HourFormat(this@MainActivity)
-			) {
-				_, time ->
-				scheduleViewerViewModel.setEventTime(TimeDetails(LocalTime.fromCalendarFields(time), timeDetails.target))
-			}
-			positiveButton(R.string.ok)
-			negativeButton(R.string.cancel)
-		}
 	}
 
 	override fun onBackPressed() {

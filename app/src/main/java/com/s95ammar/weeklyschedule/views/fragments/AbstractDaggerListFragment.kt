@@ -11,14 +11,16 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.s95ammar.weeklyschedule.R
 import dagger.android.support.DaggerFragment
 
 /**
 * An abstraction layer for fragments, which are built by the MVVM architecture pattern,
-* Injected by Dagger and display an observable list of items in a RecyclerView
+* injected by Dagger and display an observable list of items in a RecyclerView
 *
 * @param <T> Type of the List items
 * @param <VM> Type of the fragment's ViewModel
@@ -53,7 +55,7 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 
 	}
 
-	fun showPopupMenu(@MenuRes menuRes: Int, anchor: View, listener: PopupMenu.OnMenuItemClickListener?) {
+	protected fun showPopupMenu(@MenuRes menuRes: Int, anchor: View, listener: PopupMenu.OnMenuItemClickListener?) {
 		val popupMenu = PopupMenu(requireActivity(), anchor).apply {
 			inflate(menuRes)
 			setOnMenuItemClickListener(listener)
@@ -70,6 +72,8 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 			onListChanged(it)
 		})
 	}
+
+	protected fun getActivityNavController() = requireActivity().findNavController(R.id.nav_host_fragment)
 
 	abstract fun setListeners()
 

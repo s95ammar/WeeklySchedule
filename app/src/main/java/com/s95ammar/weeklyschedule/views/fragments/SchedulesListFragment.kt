@@ -13,8 +13,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Schedule
@@ -33,15 +31,13 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 
 	@Inject lateinit var factory: ViewModelProvider.Factory
 	@Inject lateinit var listAdapter: SchedulesListAdapter
-	private val navController
-		get() = requireActivity().findNavController(R.id.nav_host_fragment)
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 		return inflater.inflate(R.layout.fragment_schedules_list, container, false)
 	}
 
 	override fun setListeners() = button_add_schedule.setOnClickListener {
-		navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
+		getActivityNavController().navigate(R.id.action_nav_schedules_to_scheduleEditorDialog)
 	}
 
 	override fun initViewModel() = ViewModelProvider(this, factory).get(SchedulesListViewModel::class.java)
@@ -70,7 +66,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 	}
 
 	override fun onItemClicked(item: Schedule) {
-		navController.navigate(R.id.action_nav_schedules_to_nav_schedule_viewer,
+		getActivityNavController().navigate(R.id.action_nav_schedules_to_nav_schedule_viewer,
 				bundleOf(resources.getString(R.string.key_schedule_id) to item.id))
 	}
 
@@ -81,7 +77,7 @@ class SchedulesListFragment : AbstractDaggerListFragment<Schedule, SchedulesList
 
 	private fun onMenuItemClick(schedule: Schedule, menuItem: MenuItem): Boolean {
 		when (menuItem.itemId) {
-			R.id.schedules_more_rename -> navController.navigate(R.id.action_nav_schedules_to_scheduleEditorDialog,
+			R.id.schedules_more_rename -> getActivityNavController().navigate(R.id.action_nav_schedules_to_scheduleEditorDialog,
 					bundleOf(resources.getString(R.string.key_schedule_id) to schedule.id))
 			R.id.schedules_more_delete ->
 				if (!schedule.isActive) viewModel.delete(schedule)

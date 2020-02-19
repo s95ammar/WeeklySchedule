@@ -41,7 +41,6 @@ enum class Days(val amount: Int, val array: Array<String>) {
 }
 
 enum class TimeTarget { START_TIME, END_TIME }
-class TimeDetails(var time: LocalTime, var target: TimeTarget)
 
 fun getDaysAbbreviations(days: List<String>): List<String> {
 	if (days.isEmpty()) return emptyList()
@@ -64,7 +63,7 @@ fun getHoursStringArray(timePattern: String) = Array<String>(HOURS_IN_DAY) { i -
 	LocalTime.MIDNIGHT.plusHours(i).toString(timePattern)
 }
 
-fun LocalTime.toCalendar(): Calendar = Calendar.getInstance().apply {
-	set(Calendar.HOUR_OF_DAY, this@toCalendar.hourOfDay)
-	set(Calendar.MINUTE, this@toCalendar.minuteOfHour)
+fun LocalTime.toCalendarInstance(): Calendar = Calendar.getInstance().apply {
+	set(Calendar.HOUR_OF_DAY, this@toCalendarInstance.hourOfDay)
+	set(Calendar.MINUTE, this@toCalendarInstance.minuteOfHour)
 }

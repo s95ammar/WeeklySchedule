@@ -2,6 +2,7 @@ package com.s95ammar.weeklyschedule.views.fragments
 
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,12 @@ import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.datetime.timePicker
+import com.afollestad.materialdialogs.list.checkAllItems
+import com.afollestad.materialdialogs.list.listItemsMultiChoice
+import com.afollestad.materialdialogs.list.uncheckAllItems
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.di.TimePattern
 import com.s95ammar.weeklyschedule.models.data.Category
@@ -18,6 +25,7 @@ import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.dialog_days_multi_choice_buttons.*
 import kotlinx.android.synthetic.main.fragment_event_editor.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -26,6 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
+import java.util.*
 import javax.inject.Inject
 
 
@@ -55,7 +64,7 @@ class EventEditorFragment : DaggerFragment() {
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		viewModel = ViewModelProvider(requireActivity(), factory).get(ScheduleViewerViewModel::class.java)
+		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
 		setMode()
 		setValues {
 			setUpLayout()
@@ -81,8 +90,8 @@ class EventEditorFragment : DaggerFragment() {
 			when (mode) {
 				Mode.ADD -> this@EventEditorFragment.schedule = viewModel.getScheduleById(argScheduleId).suspendFetch()
 				Mode.EDIT -> {
-					this@EventEditorFragment.event =  viewModel.getEventById(argEventId).suspendFetch()
-					this@EventEditorFragment.schedule =  viewModel.getScheduleById(event.scheduleId).suspendFetch()
+					this@EventEditorFragment.event = viewModel.getEventById(argEventId).suspendFetch()
+					this@EventEditorFragment.schedule = viewModel.getScheduleById(event.scheduleId).suspendFetch()
 				}
 			}
 			selectedDaysIndices = emptyArray<Int>().toIntArray()
@@ -92,7 +101,7 @@ class EventEditorFragment : DaggerFragment() {
 
 
 	private fun setUpLayout() {
-		viewModel.getAllCategories().safeFetch { allCategories->
+		viewModel.getAllCategories().safeFetch { allCategories ->
 			setUpCategorySpinner(allCategories)
 			setUpDaysCardView()
 			setUpTimeCardViews()
@@ -129,53 +138,75 @@ class EventEditorFragment : DaggerFragment() {
 			}
 			Mode.ADD -> {
 				spinner_event_days.visibility = View.GONE
-				cardView_event_day.setOnClickListener {
-					viewModel.showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices)
-					observeDaysSelection()
-				}
+				cardView_event_day.setOnClickListener { showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices) }
 			}
 		}
 	}
 
-	private fun observeDaysSelection() {
-		viewModel.onDaysSelected.observe(viewLifecycleOwner, Observer {
-			it?.let { selectedDaysIndices ->
-				this.selectedDaysIndices = selectedDaysIndices
-				val selectedDays: List<String> = schedule.days.array.filterIndexed { i, _ ->
-					selectedDaysIndices.contains(i)
-				}
-				textView_event_days_value.text = viewModel.getDaysAbbreviationsString(selectedDays)
-				viewModel.onDaysSelected.removeObservers(viewLifecycleOwner)
+	private fun showDaysMultiChoiceDialog(days: Days, selectionIndices: IntArray) {
+		MaterialDialog(requireContext()).show {
+			title(R.string.days)
+			customView(R.layout.dialog_days_multi_choice_buttons).apply {
+				button_days_select_all.setOnClickListener { checkAllItems() }
+				button_days_clear.setOnClickListener { uncheckAllItems() }
 			}
-		})
+			listItemsMultiChoice(
+					items = days.array.asList(),
+					initialSelection = selectionIndices,
+					allowEmptySelection = true
+			) { _, _, selection ->
+				val newSelectionIndices = IntArray(selection.size) { i -> days.array.indexOf(selection[i]) }
+				this@EventEditorFragment.selectedDaysIndices = newSelectionIndices
+				displaySelectedDays()
+			}
+			positiveButton(R.string.select)
+			negativeButton(R.string.cancel)
+		}
+	}
+
+	private fun displaySelectedDays() {
+		val selectedDays: List<String> = schedule.days.array.filterIndexed { i, _ ->
+			selectedDaysIndices.contains(i)
+		}
+		textView_event_days_value.text = viewModel.getDaysAbbreviationsString(selectedDays)
 	}
 
 	private fun setUpTimeCardViews() {
 		textView_event_start_value.text = DEFAULT_TIME.toString(timePattern)
 		textView_event_end_value.text = DEFAULT_TIME.toString(timePattern)
 		cardView_event_start.setOnClickListener {
-			onTimeClicked(TimeDetails(getEnteredStartTime(), TimeTarget.START_TIME))
+			showTimePicker(getEnteredStartTime(), TimeTarget.START_TIME)
 		}
 		cardView_event_end.setOnClickListener {
-			onTimeClicked(TimeDetails(getEnteredEndTime(), TimeTarget.END_TIME))
+			showTimePicker(getEnteredEndTime(), TimeTarget.END_TIME)
 		}
 	}
 
-	private fun onTimeClicked(timeDetails: TimeDetails) {
-		viewModel.showEventTimePicker(timeDetails)
-		observeTimeSet()
+	private fun showTimePicker(time: LocalTime, target: TimeTarget) {
+		MaterialDialog(requireContext()).show {
+			title(when (target) {
+				TimeTarget.START_TIME -> R.string.start_time
+				TimeTarget.END_TIME -> R.string.end_time
+			})
+			timePicker(
+					currentTime = time.toCalendarInstance(),
+					show24HoursView = DateFormat.is24HourFormat(requireContext())
+			) {
+				_, time: Calendar ->
+				displaySelectedTime(LocalTime.fromCalendarFields(time), target)
+			}
+			positiveButton(R.string.ok)
+			negativeButton(R.string.cancel)
+		}
 	}
 
-	private fun observeTimeSet() {
-		viewModel.onEventTimeSet.observe(viewLifecycleOwner, Observer { timeDetails ->
-			timeDetails?.let {
-				when (it.target) {
-					TimeTarget.START_TIME -> textView_event_start_value.text = it.time.toString(timePattern)
-					TimeTarget.END_TIME -> textView_event_end_value.text = it.time.toString(timePattern)
-				}
-			}
-		})
+	private fun displaySelectedTime(selectedTime: LocalTime, target: TimeTarget) {
+		when (target) {
+			TimeTarget.START_TIME -> textView_event_start_value.text = selectedTime.toString(timePattern)
+			TimeTarget.END_TIME -> textView_event_end_value.text = selectedTime.toString(timePattern)
+		}
 	}
+
 
 	private fun onOkListener() = View.OnClickListener {
 		when (val validationResult = viewModel.validateInput(toValidateBundle())) {
