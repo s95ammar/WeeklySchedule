@@ -2,7 +2,7 @@ package com.s95ammar.weeklyschedule.di.app
 
 import android.app.Application
 import androidx.room.Room
-import com.s95ammar.weeklyschedule.models.room.*
+import com.s95ammar.weeklyschedule.models.room.WeeklyScheduleDatabase
 import com.s95ammar.weeklyschedule.util.DATABASE_NAME
 import dagger.Module
 import dagger.Provides

@@ -1,12 +1,10 @@
 package com.s95ammar.weeklyschedule.views.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.core.graphics.drawable.DrawableCompat
 import com.s95ammar.weeklyschedule.R

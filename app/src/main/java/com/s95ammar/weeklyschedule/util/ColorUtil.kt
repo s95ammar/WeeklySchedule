@@ -1,7 +1,6 @@
 package com.s95ammar.weeklyschedule.util
 
 import android.graphics.Color
-import androidx.annotation.ColorInt
 
 enum class ColorTarget { FILL, TEXT }
 

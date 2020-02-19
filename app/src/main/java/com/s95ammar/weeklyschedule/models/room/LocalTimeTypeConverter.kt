@@ -6,7 +6,6 @@ import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.format.ISODateTimeFormat
 import java.lang.reflect.Type
-import com.google.gson.GsonBuilder
 
 
 class LocalTimeTypeConverter {

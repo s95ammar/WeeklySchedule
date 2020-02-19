@@ -1,14 +1,14 @@
 package com.s95ammar.weeklyschedule.views.adapters
 
-import androidx.recyclerview.widget.RecyclerView
-import androidx.cardview.widget.CardView
-import android.widget.TextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
 import kotlinx.android.synthetic.main.item_category.view.*

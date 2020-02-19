@@ -3,8 +3,6 @@ package com.s95ammar.weeklyschedule.di.app
 import android.app.Application
 import com.s95ammar.weeklyschedule.App
 import com.s95ammar.weeklyschedule.di.TimePattern
-import com.s95ammar.weeklyschedule.di.main.MainActivityFragmentsModule
-//import com.s95ammar.weeklyschedule.di.main.MainActivitySubcomponent
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
