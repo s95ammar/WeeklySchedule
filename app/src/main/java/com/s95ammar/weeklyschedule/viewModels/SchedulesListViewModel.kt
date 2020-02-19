@@ -22,16 +22,11 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 		Log.d(LOG_TAG, "init: ")
 	}
 
-	fun insertSchedule(schedule: Schedule) {
-		viewModelScope.launch { repo.insert(schedule) }
-	}
-
+	fun insertSchedule(schedule: Schedule) = viewModelScope.launch { repo.insert(schedule) }
 	fun update(vararg schedule: Schedule) = viewModelScope.launch { repo.update(*schedule) }
 	fun delete(schedule: Schedule) = viewModelScope.launch { repo.delete(schedule) }
 	fun getScheduleById(id: Int) = repo.getScheduleById(id)
-	fun getActiveSchedule() = repo.getScheduleById(Schedule.activeScheduleId)
 	fun getAllSchedules() = repo.getAllSchedules()
-
 
 	fun renameSchedule(id: Int, newName: String) {
 		getScheduleById(id).safeFetch {
@@ -54,7 +49,7 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 	}
 
 	private fun manageActiveScheduleReplacement(newActiveSchedule: Schedule) {
-		getActiveSchedule().safeFetch { activeSchedule ->
+		getScheduleById(Schedule.activeScheduleId).safeFetch { activeSchedule ->
 			if (activeSchedule != newActiveSchedule) { // true only when RecyclerView is being built
 				activeSchedule.isActive = false
 				newActiveSchedule.isActive = true

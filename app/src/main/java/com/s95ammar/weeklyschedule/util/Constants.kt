@@ -1,6 +1,6 @@
 package com.s95ammar.weeklyschedule.util
 
-enum class ScheduleMode { VIEW, EDIT, NOT_DISPLAYED }
+enum class ScheduleMode { VIEW, EDIT, MISSING }
 enum class Mode { ADD, EDIT }
 const val SHARED_PREFERENCES = "shared_preferences"
 const val ACTIVE_SCHEDULE_ID_KEY = "active_schedule"

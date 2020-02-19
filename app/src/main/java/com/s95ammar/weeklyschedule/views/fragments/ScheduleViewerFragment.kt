@@ -82,15 +82,13 @@ class ScheduleViewerFragment : DaggerFragment() {
 			R.id.button_done -> viewModel.setScheduleViewerMode(ScheduleMode.VIEW)
 		}
 		return false
-
 	}
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
 		setMode()
-		startObservers()
-		if (viewModel.scheduleMode.value != ScheduleMode.NOT_DISPLAYED) showSchedule()
+		if (viewModel.scheduleMode.value != ScheduleMode.MISSING) showSchedule()
 	}
 
 	private fun navigateToEventEditorFragment(args: Bundle) {
@@ -101,18 +99,15 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	private fun setMode() {
 		viewModel.setScheduleViewerMode(when (argScheduleId) {
-			0 -> ScheduleMode.NOT_DISPLAYED
+			0 -> ScheduleMode.MISSING
 			else -> ScheduleMode.VIEW
 		})
-	}
-
-	private fun startObservers() {
 	}
 
 	private fun getModeObserver(): Observer<ScheduleMode> = Observer { mode ->
 		setScheduleToolbarMenuMode(mode)
 		when (mode) {
-			ScheduleMode.NOT_DISPLAYED -> textView_no_active_schedule.visibility = VISIBLE
+			ScheduleMode.MISSING -> textView_no_active_schedule.visibility = VISIBLE
 			ScheduleMode.VIEW -> button_add_event.visibility = GONE
 			ScheduleMode.EDIT -> {
 				button_add_event.visibility = VISIBLE
