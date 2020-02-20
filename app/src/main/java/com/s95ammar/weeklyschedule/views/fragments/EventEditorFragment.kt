@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.datetime.timePicker
@@ -49,9 +50,9 @@ class EventEditorFragment : DaggerFragment() {
 	private lateinit var viewModel: ScheduleViewerViewModel
 	private lateinit var schedule: Schedule
 	private lateinit var event: Event
+	private lateinit var allCategories: List<Category>
 	private lateinit var selectedDaysIndices: IntArray
-	private val mode
-		get() = viewModel.eventEditorMode.value ?: throw NullPointerException()
+	private lateinit var mode: Mode
 	private val argEventId
 		get() = arguments?.getInt(resources.getString(R.string.key_event_id)) ?: 0
 	private val argScheduleId
@@ -66,82 +67,82 @@ class EventEditorFragment : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
 		setMode()
-		setValues {
-			setUpLayout()
-			setListeners()
+		setViews()
+		setListeners()
+		setAndDisplayValues()
+	}
+
+	private fun setViews() {
+		setUpTimeCardViews()
+		when (mode) {
+			Mode.ADD -> spinner_event_days.visibility = View.GONE
+			Mode.EDIT -> {
+				textView_event_days.setText(R.string.day)
+				button_event_delete.visibility = View.VISIBLE
+				spinner_event_days.visibility = View.VISIBLE
+			}
 		}
 	}
 
 	private fun setListeners() {
 		button_event_ok.setOnClickListener(onOkListener())
-		button_event_cancel.setOnClickListener { requireActivity().onBackPressed() }
-		button_event_delete.setOnClickListener { viewModel.delete(event); requireActivity().onBackPressed() }
+		button_event_cancel.setOnClickListener { findNavController().navigateUp() }
+		button_event_delete.setOnClickListener { viewModel.delete(event); findNavController().navigateUp() }
 	}
 
 	private fun setMode() {
-		viewModel.setEventEditorMode(when (argEventId) {
+		mode = when (argEventId) {
 			0 -> Mode.ADD
 			else -> Mode.EDIT
-		})
+		}
 	}
 
-	private fun setValues(onComplete: () -> Unit) {
-		CoroutineScope(IO).launch {
-			when (mode) {
-				Mode.ADD -> this@EventEditorFragment.schedule = viewModel.getScheduleById(argScheduleId).suspendFetch()
-				Mode.EDIT -> {
-					this@EventEditorFragment.event = viewModel.getEventById(argEventId).suspendFetch()
-					this@EventEditorFragment.schedule = viewModel.getScheduleById(event.scheduleId).suspendFetch()
+
+	private fun setAndDisplayValues() {
+		viewModel.getAllCategories().safeFetch { allCategories ->
+			this.allCategories = allCategories
+			setUpCategorySpinner()
+		}
+
+		when (mode) {
+			Mode.ADD -> viewModel.getScheduleById(argScheduleId).safeFetch {
+				this.schedule = it
+				cardView_event_day.setOnClickListener { showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices) }
+			}
+			Mode.EDIT -> {
+				viewModel.getEventById(argEventId).safeFetch { event ->
+					viewModel.getScheduleById(event.scheduleId).safeFetch { schedule ->
+						this.event = event
+						this.schedule = schedule
+						setCategorySpinnerSelection()
+						setUpDaysSpinner()
+						editText_event_name.setText(event.name)
+						spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
+						textView_event_start_value.text = event.startTime.toString(timePattern)
+						textView_event_end_value.text = event.endTime.toString(timePattern)
+					}
 				}
 			}
-			selectedDaysIndices = emptyArray<Int>().toIntArray()
-			withContext(Main) { onComplete() }
 		}
+		selectedDaysIndices = emptyArray<Int>().toIntArray()
 	}
 
-
-	private fun setUpLayout() {
-		viewModel.getAllCategories().safeFetch { allCategories ->
-			setUpCategorySpinner(allCategories)
-			setUpDaysCardView()
-			setUpTimeCardViews()
-			if (mode == Mode.EDIT) {
-				setCategorySpinnerSelection(allCategories)
-				editText_event_name.setText(event.name)
-				textView_event_days.setText(R.string.day)
-				spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
-				textView_event_start_value.text = event.startTime.toString(timePattern)
-				textView_event_end_value.text = event.endTime.toString(timePattern)
-				button_event_delete.visibility = View.VISIBLE
-			}
-		}
-	}
-
-	private fun setUpCategorySpinner(allCategories: List<Category>) {
+	private fun setUpCategorySpinner() {
 		spinner_event_categories.adapter = CategorySpinnerAdapter(requireContext(), allCategories)
 		cardView_event_category.setOnClickListener { spinner_event_categories.performClick() }
-
 	}
 
-	private fun setCategorySpinnerSelection(allCategories: List<Category>) {
+	private fun setCategorySpinnerSelection() {
 		allCategories.find { it.id == event.categoryId }?.let { eventCategory ->
 			spinner_event_categories.setSelection(allCategories.indexOf(eventCategory))
 		}
 	}
 
-	private fun setUpDaysCardView() {
-		when (mode) {
-			Mode.EDIT -> {
-				spinner_event_days.visibility = View.VISIBLE
-				spinner_event_days.adapter = ArrayAdapter(requireContext(), R.layout.spinner_row_day, schedule.days.array)
-				cardView_event_day.setOnClickListener { spinner_event_days.performClick() }
-			}
-			Mode.ADD -> {
-				spinner_event_days.visibility = View.GONE
-				cardView_event_day.setOnClickListener { showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices) }
-			}
-		}
+	private fun setUpDaysSpinner() {
+		spinner_event_days.adapter = ArrayAdapter(requireContext(), R.layout.spinner_row_day, schedule.days.array)
+		cardView_event_day.setOnClickListener { spinner_event_days.performClick() }
 	}
+
 
 	private fun showDaysMultiChoiceDialog(days: Days, selectionIndices: IntArray) {
 		MaterialDialog(requireContext()).show {
@@ -219,7 +220,7 @@ class EventEditorFragment : DaggerFragment() {
 				viewModel.onEventOperationAttempt.observe(viewLifecycleOwner, object : Observer<Result> {
 					override fun onChanged(it: Result) {
 						when (it) {
-							is Result.Success -> requireActivity().onBackPressed()
+							is Result.Success -> findNavController().navigateUp()
 							is Result.Error -> { toast(it.message) }
 						}
 						viewModel.onEventOperationAttempt.removeObserver(this)

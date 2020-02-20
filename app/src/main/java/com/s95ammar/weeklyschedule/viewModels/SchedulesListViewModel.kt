@@ -1,12 +1,10 @@
 package com.s95ammar.weeklyschedule.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
-import com.s95ammar.weeklyschedule.util.LOG_TAG
 import com.s95ammar.weeklyschedule.util.safeFetch
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -14,13 +12,9 @@ import javax.inject.Inject
 
 class SchedulesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 
-	val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
+	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
 
 	val onActiveScheduleIdChanged: LiveData<Unit> = _onActiveScheduleChanged
-
-	init {
-		Log.d(LOG_TAG, "init: ")
-	}
 
 	fun insertSchedule(schedule: Schedule) = viewModelScope.launch { repo.insert(schedule) }
 	fun update(vararg schedule: Schedule) = viewModelScope.launch { repo.update(*schedule) }
@@ -74,8 +68,4 @@ class SchedulesListViewModel @Inject constructor(private var repo: Repository) :
 		}
 	}
 
-	override fun onCleared() {
-		super.onCleared()
-		Log.d(LOG_TAG, "onCleared: ")
-	}
 }

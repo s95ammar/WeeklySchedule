@@ -17,16 +17,10 @@ import javax.inject.Inject
 
 class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 	private val _scheduleMode = MutableLiveData<ScheduleMode>()
-	private val _eventEditorMode = MutableLiveData<Mode>()
 	private val _onEventOperationAllowed = SingleLiveEvent<Result>()
 
 	val scheduleMode: LiveData<ScheduleMode> = _scheduleMode
-	val eventEditorMode: LiveData<Mode> = _eventEditorMode
 	val onEventOperationAttempt: LiveData<Result> = _onEventOperationAllowed
-
-	init {
-		Log.d(LOG_TAG, "init: ")
-	}
 
 	fun getScheduleById(id: Int) = repo.getScheduleById(id)
 
@@ -43,11 +37,6 @@ class ScheduleViewerViewModel @Inject constructor(private var repo: Repository) 
 	fun setScheduleViewerMode(scheduleMode: ScheduleMode) {
 		_scheduleMode.value = scheduleMode
 	}
-
-	fun setEventEditorMode(mode: Mode) {
-		_eventEditorMode.value = mode
-	}
-
 
 	fun getDaysAbbreviationsString(days: List<String>): String {
 		val str = getDaysAbbreviations(days).toString()

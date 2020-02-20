@@ -42,7 +42,6 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 		appBarConfig = AppBarConfiguration(topLevelDestinations, drawer_layout)
 		navController = findNavController(R.id.nav_host_fragment)
 		navController.setGraph(R.navigation.nav_graph, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
-
 		setupActionBarWithNavController(navController, appBarConfig)
 		nav_view.setupWithNavController(navController)
 		navController.addOnDestinationChangedListener(this)
@@ -50,23 +49,24 @@ class MainActivity : DaggerAppCompatActivity(), NavController.OnDestinationChang
 	}
 
 
-	override fun onNavigationItemSelected(item: MenuItem): Boolean =
-			if (navController.currentDestination?.id != item.itemId) {
-				if (topLevelDestinations.contains(item.itemId)) navController.popBackStack()
-				when (item.itemId) {
-					R.id.nav_top_level_schedule_viewer -> {
-						navController.navigate(R.id.nav_top_level_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
-						drawer_layout.closeIfOpen()
-						true
-					}
-					else -> onNavDestinationSelected(item, navController).also { handled ->
-						if (handled) drawer_layout.closeIfOpen()
-					}
+	override fun onNavigationItemSelected(navigationItem: MenuItem): Boolean {
+		return if (navController.currentDestination?.id != navigationItem.itemId) {
+			if (topLevelDestinations.contains(navigationItem.itemId)) navController.popBackStack()
+			when (navigationItem.itemId) {
+				R.id.nav_top_level_schedule_viewer -> {
+					navController.navigate(R.id.nav_top_level_schedule_viewer, bundleOf(resources.getString(R.string.key_schedule_id) to Schedule.activeScheduleId))
+					drawer_layout.closeIfOpen()
+					true
 				}
-			} else {
-				drawer_layout.closeIfOpen()
-				false
+				else -> onNavDestinationSelected(navigationItem, navController).also { handled ->
+					if (handled) drawer_layout.closeIfOpen()
+				}
 			}
+		} else {
+			drawer_layout.closeIfOpen()
+			false
+		}
+	}
 
 	override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
 		drawer_layout.setDrawerLockMode(if (topLevelDestinations.contains(destination.id)) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)

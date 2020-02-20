@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
+import com.s95ammar.weeklyschedule.util.LOG_TAG
 import dagger.android.support.DaggerFragment
 
 /**
@@ -68,12 +69,10 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 	@CallSuper
 	protected open fun startObservers() {
 		itemsList.observe(viewLifecycleOwner, Observer {
-			Log.d("log_${javaClass.simpleName}", "onListChanged: $it")
+			Log.d(LOG_TAG, "onListChanged: $it")
 			onListChanged(it)
 		})
 	}
-
-	protected fun getActivityNavController() = requireActivity().findNavController(R.id.nav_host_fragment)
 
 	abstract fun setListeners()
 
@@ -81,9 +80,9 @@ abstract class AbstractDaggerListFragment<T, VM : ViewModel, LA : ListAdapter<T,
 
 	abstract fun assignItemsList(): LiveData<List<T>>
 
-	abstract fun onListChanged(itemsList: List<T>)
-
 	abstract fun assignRecyclerView(): RecyclerView
 
 	abstract fun assignListAdapter(): LA
+
+	abstract fun onListChanged(itemsList: List<T>)
 }

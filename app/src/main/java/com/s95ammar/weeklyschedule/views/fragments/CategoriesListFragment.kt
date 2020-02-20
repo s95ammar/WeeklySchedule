@@ -10,6 +10,7 @@ import android.widget.Button
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
@@ -30,10 +31,10 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 	}
 
 	override fun setListeners() = button_add_category.setOnClickListener {
-		getActivityNavController().navigate(R.id.action_nav_categories_to_categoryEditorDialog)
+		findNavController().navigate(R.id.action_nav_categories_to_categoryEditorDialog)
 	}
 
-	override fun initViewModel() = ViewModelProvider(requireActivity(), factory).get(CategoriesListViewModel::class.java)
+	override fun initViewModel() = ViewModelProvider(this, factory).get(CategoriesListViewModel::class.java)
 
 	override fun assignItemsList() = viewModel.getAllCategories()
 
@@ -47,7 +48,7 @@ class CategoriesListFragment : AbstractDaggerListFragment<Category, CategoriesLi
 	}
 
 	override fun onItemClicked(item: Category) {
-		getActivityNavController().navigate(R.id.action_nav_categories_to_categoryEditorDialog,
+		findNavController().navigate(R.id.action_nav_categories_to_categoryEditorDialog,
 				bundleOf(resources.getString(R.string.key_category_id) to item.id))
 	}
 

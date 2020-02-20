@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.di.TimePattern
 import com.s95ammar.weeklyschedule.models.data.Event
@@ -58,10 +59,6 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	private enum class Direction { Horizontal, Vertical }
 
-	init {
-		Log.d(LOG_TAG, "init: $this")
-	}
-
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
 	                          savedInstanceState: Bundle?): View? {
 		navController = requireActivity().findNavController(R.id.nav_host_fragment)
@@ -88,13 +85,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
 		setMode()
-		if (viewModel.scheduleMode.value != ScheduleMode.MISSING) showSchedule()
-	}
-
-	private fun navigateToEventEditorFragment(args: Bundle) {
-		requireActivity()
-				.findNavController(R.id.nav_host_fragment)
-				.navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment, args)
+		if (viewModel.scheduleMode.value != ScheduleMode.MISSING) displaySchedule()
 	}
 
 	private fun setMode() {
@@ -114,11 +105,15 @@ class ScheduleViewerFragment : DaggerFragment() {
 				button_add_event.setOnClickListener {
 					viewModel.getAllCategories().safeFetch {
 						if (it.isNotEmpty()) navigateToEventEditorFragment(bundleOf(resources.getString(R.string.key_schedule_id) to argScheduleId))
-						else Toast.makeText(requireContext(), R.string.category_list_empty_error, Toast.LENGTH_LONG).show()
+						else toast(R.string.category_list_empty_error, Toast.LENGTH_LONG)
 					}
 				}
 			}
 		}
+	}
+
+	private fun navigateToEventEditorFragment(args: Bundle) {
+		findNavController().navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment, args)
 	}
 
 	private fun setScheduleToolbarMenuMode(mode: ScheduleMode) {
@@ -132,7 +127,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		}
 	}
 
-	private fun showSchedule() {
+	private fun displaySchedule() {
 		viewModel.getScheduleById(argScheduleId).safeFetch {
 			Log.d(LOG_TAG, "showSchedule: $it")
 			schedule = it

@@ -46,13 +46,6 @@ suspend fun <T> LiveData<T>.suspendFetch(): T = suspendCoroutine { continuation 
 }
 
 
-fun <T> LiveData<T>.suspendFetch(action: (t: T) -> Unit) {
-	CoroutineScope(IO).launch {
-		val value = suspendFetch()
-		withContext(Main) { action(value) }
-	}
-}
-
 val EditText.input
 	get() = text.toString()
 
