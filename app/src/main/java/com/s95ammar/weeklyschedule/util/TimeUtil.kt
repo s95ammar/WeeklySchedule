@@ -11,6 +11,7 @@ val DEFAULT_TIME = LocalTime(12, 0)
 const val TIME_PATTERN_12H = "hh:mm aa"
 const val TIME_PATTERN_24H = "HH:mm"
 
+enum class TimeTarget { START_TIME, END_TIME }
 enum class Days(val amount: Int, val array: Array<String>) {
 	OneWeek(7, arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")),
 	TwoWeeks(14, arrayOf(
@@ -39,8 +40,6 @@ enum class Days(val amount: Int, val array: Array<String>) {
 		fun toInt(days: Days): Int = days.toInt()
 	}
 }
-
-enum class TimeTarget { START_TIME, END_TIME }
 
 fun getDaysAbbreviations(days: List<String>): List<String> {
 	if (days.isEmpty()) return emptyList()

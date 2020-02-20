@@ -23,19 +23,18 @@ import kotlinx.android.synthetic.main.dialog_edit_category.*
 import javax.inject.Inject
 
 class CategoryEditorDialog : DaggerDialogFragment() {
-	private lateinit var mode: Mode
-	private val argCategoryId
-		get() = arguments?.getInt(resources.getString(R.string.key_category_id)) ?: 0
-
-	@ColorInt
-	private var selectedFillColor: Int = COLOR_GREEN
-	@ColorInt
-	private var selectedTextColor: Int = COLOR_BLACK
-
-	@Inject
-	lateinit var factory: ViewModelProvider.Factory
+	@Inject lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: CategoriesListViewModel
 	private var dialogView: View? = null
+
+	private var mode: Mode
+		get() = viewModel.categoryEditorMode
+		set(value) { viewModel.categoryEditorMode = value }
+	@ColorInt private var selectedFillColor: Int = COLOR_GREEN
+	@ColorInt private var selectedTextColor: Int = COLOR_BLACK
+
+	private val argCategoryId
+		get() = arguments?.getInt(resources.getString(R.string.key_category_id)) ?: 0
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_edit_category, null)

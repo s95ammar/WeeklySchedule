@@ -22,16 +22,19 @@ import javax.inject.Inject
 
 
 class ScheduleEditorDialog : DaggerDialogFragment() {
-	private lateinit var mode: Mode
-	private val argScheduleId
-		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
-	private val daysSelection
-		get() = spinner_edit_schedule.selectedItem.toString().toInt()
 
-	@Inject
-	lateinit var factory: ViewModelProvider.Factory
+	@Inject lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: SchedulesListViewModel
 	private var dialogView: View? = null
+
+	private var mode: Mode
+		get() = viewModel.scheduleEditorMode
+		set(value) { viewModel.scheduleEditorMode = value }
+
+	private val argScheduleId
+		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
+	private val daysSelectionValue
+		get() = spinner_edit_schedule.selectedItem.toString().toInt()
 
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_edit_schedule, null)
@@ -79,10 +82,8 @@ class ScheduleEditorDialog : DaggerDialogFragment() {
 		try {
 			requireNonBlankFields(editText_edit_schedule_name to "schedule name")
 			when (mode) {
-				Mode.ADD -> {
-					Schedule(editText_edit_schedule_name.input, Days.fromInt(daysSelection))
-							.let { viewModel.insertSchedule(it) }
-				}
+				Mode.ADD -> Schedule(editText_edit_schedule_name.input, Days.fromInt(daysSelectionValue))
+						.let { viewModel.insertSchedule(it) }
 				Mode.EDIT -> viewModel.renameSchedule(argScheduleId, editText_edit_schedule_name.input)
 			}
 		} catch (e: BlankFieldRequiredException) {

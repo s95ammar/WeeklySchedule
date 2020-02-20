@@ -25,7 +25,6 @@ import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.EventEditorViewModel
-import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.viewModels.SharedDataViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
@@ -39,8 +38,7 @@ import javax.inject.Inject
 
 class EventEditorFragment : DaggerFragment() {
 
-	@Inject
-	lateinit var factory: ViewModelProvider.Factory
+	@Inject lateinit var factory: ViewModelProvider.Factory
 
 	@field: [Inject TimePattern]
 	lateinit var timePattern: String
@@ -86,7 +84,6 @@ class EventEditorFragment : DaggerFragment() {
 		sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer {
 			setActionBarTitle(it)
 		})
-
 	}
 
 	private fun setListeners() {

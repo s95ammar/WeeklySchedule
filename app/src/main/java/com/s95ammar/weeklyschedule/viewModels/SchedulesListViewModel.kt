@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Schedule
+import com.s95ammar.weeklyschedule.util.Mode
 import com.s95ammar.weeklyschedule.util.safeFetch
 import com.s95ammar.weeklyschedule.viewModels.viewModelHelpers.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -12,8 +13,9 @@ import javax.inject.Inject
 
 class SchedulesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
 
-	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
+	lateinit var scheduleEditorMode: Mode
 
+	private val _onActiveScheduleChanged = SingleLiveEvent<Unit>()
 	val onActiveScheduleIdChanged: LiveData<Unit> = _onActiveScheduleChanged
 
 	fun insertSchedule(schedule: Schedule) = viewModelScope.launch { repo.insert(schedule) }

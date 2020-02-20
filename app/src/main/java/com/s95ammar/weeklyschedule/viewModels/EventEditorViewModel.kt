@@ -2,7 +2,6 @@ package com.s95ammar.weeklyschedule.viewModels
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s95ammar.weeklyschedule.R

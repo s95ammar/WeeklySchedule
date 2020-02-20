@@ -148,11 +148,8 @@ class ScheduleViewerFragment : DaggerFragment() {
 					mapEventsTextViews[event]?.let { eventTextView ->
 						eventTextView.setOnClickListener {
 							when (viewModel.scheduleMode.value) {
-								ScheduleMode.EDIT -> {
-									navigateToEventEditorFragment(event)
-								}
-								else -> {
-								}
+								ScheduleMode.EDIT -> { navigateToEventEditorFragment(event) }
+								else -> {}
 							}
 						}
 					}

@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s95ammar.weeklyschedule.models.Repository
 import com.s95ammar.weeklyschedule.models.data.Category
+import com.s95ammar.weeklyschedule.util.Mode
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CategoriesListViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
+
+	lateinit var categoryEditorMode: Mode
 
 	fun insert(category: Category) = viewModelScope.launch { repo.insert(category) }
 	fun update(category: Category) = viewModelScope.launch { repo.update(category) }
