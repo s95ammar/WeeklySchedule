@@ -10,11 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.di.TimePattern
@@ -22,6 +19,7 @@ import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
+import com.s95ammar.weeklyschedule.viewModels.SharedDataViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_schedule_viewer.*
 import javax.inject.Inject
@@ -33,10 +31,10 @@ class ScheduleViewerFragment : DaggerFragment() {
 	@Inject
 	lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: ScheduleViewerViewModel
+	private lateinit var sharedDataViewModel: SharedDataViewModel
 	private lateinit var schedule: Schedule
 	private lateinit var events: List<Event>
 	private lateinit var scheduleToolbarMenu: Menu
-	private lateinit var navController: NavController
 
 	private val daysAmount
 		get() = schedule.days.amount
@@ -61,7 +59,6 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
 	                          savedInstanceState: Bundle?): View? {
-		navController = requireActivity().findNavController(R.id.nav_host_fragment)
 		setHasOptionsMenu(true)
 		return inflater.inflate(R.layout.fragment_schedule_viewer, container, false)
 	}
@@ -84,8 +81,12 @@ class ScheduleViewerFragment : DaggerFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
+		sharedDataViewModel = ViewModelProvider(requireActivity(), factory).get(SharedDataViewModel::class.java)
 		setMode()
 		if (viewModel.scheduleMode.value != ScheduleMode.MISSING) displaySchedule()
+		sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer {
+			(requireActivity() as AppCompatActivity).supportActionBar?.title = it
+		})
 	}
 
 	private fun setMode() {
@@ -104,7 +105,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 				button_add_event.visibility = VISIBLE
 				button_add_event.setOnClickListener {
 					viewModel.getAllCategories().safeFetch {
-						if (it.isNotEmpty()) navigateToEventEditorFragment(bundleOf(resources.getString(R.string.key_schedule_id) to argScheduleId))
+						if (it.isNotEmpty()) navigateToEventEditorFragment()
 						else toast(R.string.category_list_empty_error, Toast.LENGTH_LONG)
 					}
 				}
@@ -112,8 +113,12 @@ class ScheduleViewerFragment : DaggerFragment() {
 		}
 	}
 
-	private fun navigateToEventEditorFragment(args: Bundle) {
-		findNavController().navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment, args)
+	private fun navigateToEventEditorFragment(event: Event? = null) {
+		sharedDataViewModel.setEditedSchedule(schedule)
+		event?.let { sharedDataViewModel.setEditedEvent(event) }
+		sharedDataViewModel.setEventEditorFragmentMode(event?.let { Mode.EDIT } ?: Mode.ADD)
+		sharedDataViewModel.setAllCategories()
+		findNavController().navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment)
 	}
 
 	private fun setScheduleToolbarMenuMode(mode: ScheduleMode) {
@@ -131,7 +136,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		viewModel.getScheduleById(argScheduleId).safeFetch {
 			Log.d(LOG_TAG, "showSchedule: $it")
 			schedule = it
-			(requireActivity() as AppCompatActivity).supportActionBar?.title = it.name
+			sharedDataViewModel.setActionBarTitle(schedule.name)
 			prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
 			prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days.array)
 			viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
@@ -151,7 +156,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 						eventTextView.setOnClickListener {
 							when (viewModel.scheduleMode.value) {
 								ScheduleMode.EDIT -> {
-									navigateToEventEditorFragment(bundleOf(resources.getString(R.string.key_event_id) to event.id))
+									navigateToEventEditorFragment(event)
 								}
 								else -> {
 								}

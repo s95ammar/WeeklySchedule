@@ -3,10 +3,12 @@ package com.s95ammar.weeklyschedule.views.fragments
 
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,15 +26,11 @@ import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
+import com.s95ammar.weeklyschedule.viewModels.SharedDataViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.dialog_days_multi_choice_buttons.*
 import kotlinx.android.synthetic.main.fragment_event_editor.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -48,16 +46,14 @@ class EventEditorFragment : DaggerFragment() {
 	lateinit var timePattern: String
 
 	private lateinit var viewModel: ScheduleViewerViewModel
-	private lateinit var schedule: Schedule
-	private lateinit var event: Event
-	private lateinit var allCategories: List<Category>
+	private lateinit var sharedDataViewModel: SharedDataViewModel
 	private lateinit var selectedDaysIndices: IntArray
+	
+	private lateinit var allCategories: List<Category>
+	private lateinit var event: Event
+	private lateinit var schedule: Schedule
 	private lateinit var mode: Mode
-	private val argEventId
-		get() = arguments?.getInt(resources.getString(R.string.key_event_id)) ?: 0
-	private val argScheduleId
-		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
-
+	
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
 	                          savedInstanceState: Bundle?): View? {
 		return inflater.inflate(R.layout.fragment_event_editor, container, false)
@@ -66,14 +62,23 @@ class EventEditorFragment : DaggerFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
-		setMode()
+		sharedDataViewModel = ViewModelProvider(requireActivity(), factory).get(SharedDataViewModel::class.java)
+		setValues()
 		setViews()
 		setListeners()
 		setAndDisplayValues()
 	}
 
+	private fun setValues() {
+		sharedDataViewModel.allCategories.safeFetch { allCategories = it }
+		sharedDataViewModel.editedSchedule.safeFetch { schedule= it }
+		sharedDataViewModel.editedEvent.safeFetch { event = it }
+		sharedDataViewModel.eventEditorFragmentMode.safeFetch { mode = it }
+	}
+
 	private fun setViews() {
 		setUpTimeCardViews()
+		Log.d(LOG_TAG, "setViews: $mode")
 		when (mode) {
 			Mode.ADD -> spinner_event_days.visibility = View.GONE
 			Mode.EDIT -> {
@@ -82,6 +87,10 @@ class EventEditorFragment : DaggerFragment() {
 				spinner_event_days.visibility = View.VISIBLE
 			}
 		}
+		sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer {
+			(requireActivity() as AppCompatActivity).supportActionBar?.title = it
+		})
+
 	}
 
 	private fun setListeners() {
@@ -90,38 +99,20 @@ class EventEditorFragment : DaggerFragment() {
 		button_event_delete.setOnClickListener { viewModel.delete(event); findNavController().navigateUp() }
 	}
 
-	private fun setMode() {
-		mode = when (argEventId) {
-			0 -> Mode.ADD
-			else -> Mode.EDIT
-		}
-	}
-
-
 	private fun setAndDisplayValues() {
-		viewModel.getAllCategories().safeFetch { allCategories ->
-			this.allCategories = allCategories
 			setUpCategorySpinner()
-		}
 
 		when (mode) {
-			Mode.ADD -> viewModel.getScheduleById(argScheduleId).safeFetch {
-				this.schedule = it
+			Mode.ADD ->
 				cardView_event_day.setOnClickListener { showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices) }
-			}
+
 			Mode.EDIT -> {
-				viewModel.getEventById(argEventId).safeFetch { event ->
-					viewModel.getScheduleById(event.scheduleId).safeFetch { schedule ->
-						this.event = event
-						this.schedule = schedule
 						setCategorySpinnerSelection()
 						setUpDaysSpinner()
 						editText_event_name.setText(event.name)
 						spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
 						textView_event_start_value.text = event.startTime.toString(timePattern)
 						textView_event_end_value.text = event.endTime.toString(timePattern)
-					}
-				}
 			}
 		}
 		selectedDaysIndices = emptyArray<Int>().toIntArray()

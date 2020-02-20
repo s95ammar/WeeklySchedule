@@ -6,6 +6,7 @@ import com.s95ammar.weeklyschedule.di.ViewModelKey
 import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
+import com.s95ammar.weeklyschedule.viewModels.SharedDataViewModel
 import com.s95ammar.weeklyschedule.views.activities.MainActivity
 import dagger.Binds
 import dagger.Module
@@ -28,6 +29,11 @@ abstract class MainActivityModule {
 	@IntoMap
 	@ViewModelKey(CategoriesListViewModel::class)
 	abstract fun bindCategoriesListViewModel(categoriesListViewModel: CategoriesListViewModel): ViewModel
+
+	@Binds
+	@IntoMap
+	@ViewModelKey(SharedDataViewModel::class)
+	abstract fun bindSharedViewModel(sharedDataViewModel: SharedDataViewModel): ViewModel
 
 	@Binds
 	abstract fun bindMainActivity(mainActivity: MainActivity): Activity
