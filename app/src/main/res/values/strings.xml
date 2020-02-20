@@ -50,7 +50,7 @@
     <string name="development_start_date">Development start date:</string>
     <string name="development_start_date_value">30.04.2019</string>
     <string name="hours_spent">Total hours spent on coding:</string>
-    <string name="hours_spent_value">63 hours</string>
+    <string name="hours_spent_value">168 hours</string>
 	<string name="select">select</string>
 	<string name="schedule_add_title">New Schedule</string>
     <string name="schedule_rename_title">Rename Schedule</string>

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
@@ -94,7 +95,6 @@ class EventEditorFragment : DaggerFragment() {
 
 	private fun setAndDisplayValues() {
 		setUpCategorySpinner()
-
 		when (mode) {
 			Mode.ADD ->
 				cardView_event_day.setOnClickListener { showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices) }
@@ -114,6 +114,20 @@ class EventEditorFragment : DaggerFragment() {
 	private fun setUpCategorySpinner() {
 		spinner_event_categories.adapter = CategorySpinnerAdapter(requireContext(), allCategories)
 		cardView_event_category.setOnClickListener { spinner_event_categories.performClick() }
+		spinner_event_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+			override fun onNothingSelected(parent: AdapterView<*>?) {
+
+			}
+
+			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+				val selectedCategory = parent?.getItemAtPosition(position) as Category
+				viewModel.getEventsBy(selectedCategory.id, schedule.id).safeFetch { categoryEvents ->
+					val uniqueEventsNames = categoryEvents.map { it.name }.distinct()
+					editText_event_name.setAdapter(ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, uniqueEventsNames))
+				}
+			}
+
+		}
 	}
 
 	private fun setCategorySpinnerSelection() {

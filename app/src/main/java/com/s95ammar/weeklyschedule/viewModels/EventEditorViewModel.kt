@@ -23,6 +23,7 @@ class EventEditorViewModel @Inject constructor(private var repo: Repository) : V
 	fun delete(event: Event) = viewModelScope.launch { repo.delete(event) }
 	fun getEventsBy(scheduleId: Int) = repo.getEventsBy(scheduleId)
 	fun getEventsBy(scheduleId: Int, day: String) = repo.getEventsBy(scheduleId, day)
+	fun getEventsBy(categoryId: Int, scheduleId: Int) = repo.getEventsBy(categoryId, scheduleId)
 
 	fun getDaysAbbreviationsString(days: List<String>): String {
 		val str = getDaysAbbreviations(days).toString()
