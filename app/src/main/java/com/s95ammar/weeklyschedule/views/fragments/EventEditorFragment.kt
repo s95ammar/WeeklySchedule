@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +24,7 @@ import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
+import com.s95ammar.weeklyschedule.viewModels.EventEditorViewModel
 import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
 import com.s95ammar.weeklyschedule.viewModels.SharedDataViewModel
 import com.s95ammar.weeklyschedule.views.adapters.CategorySpinnerAdapter
@@ -45,7 +45,7 @@ class EventEditorFragment : DaggerFragment() {
 	@field: [Inject TimePattern]
 	lateinit var timePattern: String
 
-	private lateinit var viewModel: ScheduleViewerViewModel
+	private lateinit var viewModel: EventEditorViewModel
 	private lateinit var sharedDataViewModel: SharedDataViewModel
 	private lateinit var selectedDaysIndices: IntArray
 
@@ -65,7 +65,7 @@ class EventEditorFragment : DaggerFragment() {
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
+		viewModel = ViewModelProvider(this, factory).get(EventEditorViewModel::class.java)
 		sharedDataViewModel = ViewModelProvider(requireActivity(), factory).get(SharedDataViewModel::class.java)
 		setViews()
 		setListeners()
@@ -84,7 +84,7 @@ class EventEditorFragment : DaggerFragment() {
 			}
 		}
 		sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer {
-			(requireActivity() as AppCompatActivity).supportActionBar?.title = it
+			setActionBarTitle(it)
 		})
 
 	}

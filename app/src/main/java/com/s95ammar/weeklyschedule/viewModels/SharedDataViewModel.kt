@@ -10,7 +10,7 @@ import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.Mode
 import javax.inject.Inject
 
-class SharedDataViewModel @Inject constructor(private var repo: Repository) : ViewModel() {
+class SharedDataViewModel : ViewModel() {
 
 	lateinit var allCategories: List<Category>
 	lateinit var eventEditorFragmentMode: Mode
@@ -19,12 +19,6 @@ class SharedDataViewModel @Inject constructor(private var repo: Repository) : Vi
 
 	private val _actionBarTitle = MutableLiveData<String>()
 	val actionBarTitle: LiveData<String> = _actionBarTitle
-
-	init {
-		repo.getAllCategories().observeForever {
-			allCategories = it
-		}
-	}
 
 	fun setActionBarTitle(title: String) {
 		_actionBarTitle.value = title

@@ -7,7 +7,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -24,20 +23,19 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_schedule_viewer.*
 import javax.inject.Inject
 
-/* GET READY TO SEE SOME FREAKY SHIT XD */
-
 class ScheduleViewerFragment : DaggerFragment() {
 
-	@Inject
-	lateinit var factory: ViewModelProvider.Factory
+	@Inject lateinit var factory: ViewModelProvider.Factory
 	private lateinit var viewModel: ScheduleViewerViewModel
 	private lateinit var sharedDataViewModel: SharedDataViewModel
-	private lateinit var schedule: Schedule
-	private lateinit var events: List<Event>
 	private lateinit var scheduleToolbarMenu: Menu
 
-	private val daysAmount
-		get() = schedule.days.amount
+	private var schedule: Schedule
+		get() = viewModel.schedule
+		set(value) { viewModel.schedule = value }
+	private var events: List<Event>
+		get() = viewModel.events
+		set(value) { viewModel.events = value }
 
 	private val argScheduleId
 		get() = arguments?.getInt(resources.getString(R.string.key_schedule_id)) ?: 0
@@ -49,8 +47,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		private const val PADDING = 8
 	}
 
-	@field: [Inject TimePattern]
-	lateinit var timePattern: String
+	@field: [Inject TimePattern] lateinit var timePattern: String
 	private val textViewsDays = ArrayList<TextView>()
 	private val textViewsHours = ArrayList<TextView>()
 	private var mapEventsTextViews = HashMap<Event, TextView>()
@@ -72,8 +69,8 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
-			R.id.button_edit -> viewModel.setScheduleViewerMode(ScheduleMode.EDIT)
-			R.id.button_done -> viewModel.setScheduleViewerMode(ScheduleMode.VIEW)
+			R.id.button_edit -> viewModel.setMode(ScheduleMode.EDIT)
+			R.id.button_done -> viewModel.setMode(ScheduleMode.VIEW)
 		}
 		return false
 	}
@@ -81,16 +78,15 @@ class ScheduleViewerFragment : DaggerFragment() {
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
-		sharedDataViewModel = ViewModelProvider(requireActivity(), factory).get(SharedDataViewModel::class.java)
+		sharedDataViewModel = ViewModelProvider(requireActivity()).get(SharedDataViewModel::class.java)
+		viewModel.getAllCategories().safeFetch { sharedDataViewModel.allCategories = it }
 		setMode()
 		if (viewModel.scheduleMode.value != ScheduleMode.MISSING) displaySchedule()
-		sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer {
-			(requireActivity() as AppCompatActivity).supportActionBar?.title = it
-		})
+		sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer { setActionBarTitle(it) })
 	}
 
 	private fun setMode() {
-		viewModel.setScheduleViewerMode(when (argScheduleId) {
+		viewModel.scheduleMode.value ?: viewModel.setMode(when (argScheduleId) {
 			0 -> ScheduleMode.MISSING
 			else -> ScheduleMode.VIEW
 		})
@@ -135,7 +131,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 			schedule = it
 			sharedDataViewModel.setActionBarTitle(schedule.name)
 			prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
-			prepareHeaderTextViews(textViewsDays, daysAmount, schedule.days.array)
+			prepareHeaderTextViews(textViewsDays, schedule.days.amount, schedule.days.array)
 			viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
 				Log.d(LOG_TAG, "showSchedule: $scheduleEvents")
 				events = scheduleEvents
@@ -179,7 +175,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	private fun prepareEventTextViews() {
 		mapEventsTextViews.clear()
-		for (i in 0 until daysAmount) {
+		for (i in 0 until schedule.days.amount) {
 			val day = schedule.getDayOfSchedule(i)
 			val dayEvents = events.filter { day == it.day }
 			for (event in dayEvents) {

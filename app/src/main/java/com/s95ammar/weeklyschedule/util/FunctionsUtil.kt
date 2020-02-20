@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.annotation.WorkerThread
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -47,4 +48,8 @@ fun Fragment.toast(@StringRes stringRes: Int, length: Int = Toast.LENGTH_SHORT) 
 
 fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
 	Toast.makeText(activity, msg, length).show()
+}
+
+fun Fragment.setActionBarTitle(title: String) {
+	(requireActivity() as AppCompatActivity).supportActionBar?.title = title
 }
