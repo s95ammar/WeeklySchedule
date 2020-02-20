@@ -38,14 +38,6 @@ fun <T> LiveData<T>.safeFetch(action: (t: T) -> Unit) {
 	})
 }
 
-@WorkerThread
-suspend fun <T> LiveData<T>.suspendFetch(): T = suspendCoroutine { continuation ->
-	CoroutineScope(Main).launch {
-		safeFetch { continuation.resume(it) }
-	}
-}
-
-
 val EditText.input
 	get() = text.toString()
 

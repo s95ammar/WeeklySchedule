@@ -48,12 +48,16 @@ class EventEditorFragment : DaggerFragment() {
 	private lateinit var viewModel: ScheduleViewerViewModel
 	private lateinit var sharedDataViewModel: SharedDataViewModel
 	private lateinit var selectedDaysIndices: IntArray
-	
-	private lateinit var allCategories: List<Category>
-	private lateinit var event: Event
-	private lateinit var schedule: Schedule
-	private lateinit var mode: Mode
-	
+
+	private val allCategories: List<Category>
+		get() = sharedDataViewModel.allCategories
+	private val event: Event
+		get() = sharedDataViewModel.editedEvent
+	private val schedule: Schedule
+		get() = sharedDataViewModel.editedSchedule
+	private val mode: Mode
+		get() = sharedDataViewModel.eventEditorFragmentMode
+
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
 	                          savedInstanceState: Bundle?): View? {
 		return inflater.inflate(R.layout.fragment_event_editor, container, false)
@@ -63,17 +67,9 @@ class EventEditorFragment : DaggerFragment() {
 		super.onActivityCreated(savedInstanceState)
 		viewModel = ViewModelProvider(this, factory).get(ScheduleViewerViewModel::class.java)
 		sharedDataViewModel = ViewModelProvider(requireActivity(), factory).get(SharedDataViewModel::class.java)
-		setValues()
 		setViews()
 		setListeners()
 		setAndDisplayValues()
-	}
-
-	private fun setValues() {
-		sharedDataViewModel.allCategories.safeFetch { allCategories = it }
-		sharedDataViewModel.editedSchedule.safeFetch { schedule= it }
-		sharedDataViewModel.editedEvent.safeFetch { event = it }
-		sharedDataViewModel.eventEditorFragmentMode.safeFetch { mode = it }
 	}
 
 	private fun setViews() {
@@ -100,19 +96,19 @@ class EventEditorFragment : DaggerFragment() {
 	}
 
 	private fun setAndDisplayValues() {
-			setUpCategorySpinner()
+		setUpCategorySpinner()
 
 		when (mode) {
 			Mode.ADD ->
 				cardView_event_day.setOnClickListener { showDaysMultiChoiceDialog(schedule.days, selectedDaysIndices) }
 
 			Mode.EDIT -> {
-						setCategorySpinnerSelection()
-						setUpDaysSpinner()
-						editText_event_name.setText(event.name)
-						spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
-						textView_event_start_value.text = event.startTime.toString(timePattern)
-						textView_event_end_value.text = event.endTime.toString(timePattern)
+				setCategorySpinnerSelection()
+				setUpDaysSpinner()
+				editText_event_name.setText(event.name)
+				spinner_event_days.setSelection(schedule.days.array.indexOf(event.day))
+				textView_event_start_value.text = event.startTime.toString(timePattern)
+				textView_event_end_value.text = event.endTime.toString(timePattern)
 			}
 		}
 		selectedDaysIndices = emptyArray<Int>().toIntArray()
@@ -183,8 +179,7 @@ class EventEditorFragment : DaggerFragment() {
 			timePicker(
 					currentTime = time.toCalendarInstance(),
 					show24HoursView = DateFormat.is24HourFormat(requireContext())
-			) {
-				_, time: Calendar ->
+			) { _, time: Calendar ->
 				displaySelectedTime(LocalTime.fromCalendarFields(time), target)
 			}
 			positiveButton(R.string.ok)
@@ -212,7 +207,9 @@ class EventEditorFragment : DaggerFragment() {
 					override fun onChanged(it: Result) {
 						when (it) {
 							is Result.Success -> findNavController().navigateUp()
-							is Result.Error -> { toast(it.message) }
+							is Result.Error -> {
+								toast(it.message)
+							}
 						}
 						viewModel.onEventOperationAttempt.removeObserver(this)
 					}

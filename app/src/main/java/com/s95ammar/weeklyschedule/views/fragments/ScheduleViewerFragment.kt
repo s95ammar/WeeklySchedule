@@ -104,20 +104,17 @@ class ScheduleViewerFragment : DaggerFragment() {
 			ScheduleMode.EDIT -> {
 				button_add_event.visibility = VISIBLE
 				button_add_event.setOnClickListener {
-					viewModel.getAllCategories().safeFetch {
-						if (it.isNotEmpty()) navigateToEventEditorFragment()
-						else toast(R.string.category_list_empty_error, Toast.LENGTH_LONG)
-					}
+					if (sharedDataViewModel.allCategories.isNotEmpty()) navigateToEventEditorFragment()
+					else toast(R.string.category_list_empty_error, Toast.LENGTH_LONG)
 				}
 			}
 		}
 	}
 
 	private fun navigateToEventEditorFragment(event: Event? = null) {
-		sharedDataViewModel.setEditedSchedule(schedule)
-		event?.let { sharedDataViewModel.setEditedEvent(event) }
-		sharedDataViewModel.setEventEditorFragmentMode(event?.let { Mode.EDIT } ?: Mode.ADD)
-		sharedDataViewModel.setAllCategories()
+		sharedDataViewModel.editedSchedule = schedule
+		event?.let { sharedDataViewModel.editedEvent = event }
+		sharedDataViewModel.eventEditorFragmentMode = event?.let { Mode.EDIT } ?: Mode.ADD
 		findNavController().navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment)
 	}
 
