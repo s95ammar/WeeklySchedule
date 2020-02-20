@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
+	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toTopOf="@+id/button_event_cancel"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:id="@+id/event_layout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="8dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent">
+
 
 			<androidx.cardview.widget.CardView
 				android:id="@+id/cardView_event_category"
@@ -88,9 +95,9 @@
 						android:id="@+id/editText_event_name"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:hint="@string/event_name_optional"
 						android:layout_marginStart="24dp"
 						android:completionThreshold="1"
+						android:hint="@string/event_name_optional"
 						android:imeOptions="actionDone"
 						android:inputType="text"
 						android:maxLength="25"
@@ -250,40 +257,38 @@
 			</androidx.cardview.widget.CardView>
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
+	</ScrollView>
 
-		<Button
-			android:id="@+id/button_event_ok"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:text="@string/ok"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toEndOf="@+id/button_event_delete" />
+	<Button
+		android:id="@+id/button_event_ok"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/ok"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toEndOf="@+id/button_event_delete" />
 
-		<Button
-			android:id="@+id/button_event_delete"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:text="@string/delete"
-			android:visibility="gone"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@+id/button_event_ok"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toEndOf="@+id/button_event_cancel" />
+	<Button
+		android:id="@+id/button_event_delete"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/delete"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/button_event_ok"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toEndOf="@+id/button_event_cancel" />
 
-		<Button
-			android:id="@+id/button_event_cancel"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:text="@string/cancel"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@+id/button_event_delete"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toStartOf="parent" />
-
-
-	</androidx.constraintlayout.widget.ConstraintLayout>
+	<Button
+		android:id="@+id/button_event_cancel"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/cancel"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/button_event_delete"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
