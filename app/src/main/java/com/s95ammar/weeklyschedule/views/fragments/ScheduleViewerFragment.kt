@@ -1,7 +1,9 @@
 package com.s95ammar.weeklyschedule.views.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -9,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -42,9 +45,9 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	companion object {
 		private const val TEXT_VIEW_HEADER_HEIGHT = 100
-		private const val TEXT_SIZE = 20f
+		private const val MIN_TEXT_SIZE = 4
+		private const val TEXT_SIZE = 20
 		private const val TEXT_VIEWS_WIDTH = 300
-		private const val PADDING = 8
 	}
 
 	@field: [Inject TimePattern] lateinit var timePattern: String
@@ -81,8 +84,10 @@ class ScheduleViewerFragment : DaggerFragment() {
 		sharedDataViewModel = ViewModelProvider(requireActivity()).get(SharedDataViewModel::class.java)
 		viewModel.getAllCategories().safeFetch { sharedDataViewModel.allCategories = it }
 		setMode()
-		if (viewModel.scheduleMode.value != ScheduleMode.MISSING) displaySchedule()
-		sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer { setActionBarTitle(it) })
+		if (viewModel.scheduleMode.value != ScheduleMode.MISSING) {
+			displaySchedule()
+			sharedDataViewModel.actionBarTitle.observe(viewLifecycleOwner, Observer { setActionBarTitle(it) })
+		}
 	}
 
 	private fun setMode() {
@@ -141,23 +146,6 @@ class ScheduleViewerFragment : DaggerFragment() {
 		}
 	}
 
-	private fun setEventsTextViewsOnClickListeners() {
-		schedule.days.array.forEach { day ->
-			viewModel.getEventsBy(schedule.id, day).safeFetch {
-				it.forEach { event ->
-					mapEventsTextViews[event]?.let { eventTextView ->
-						eventTextView.setOnClickListener {
-							when (viewModel.scheduleMode.value) {
-								ScheduleMode.EDIT -> { navigateToEventEditorFragment(event) }
-								else -> {}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 	private fun getEventsOfDay(day: String) = events.filter { day == it.day }
 
 	private fun prepareHeaderTextViews(textViews: ArrayList<TextView>, length: Int, values: Array<String>) {
@@ -185,12 +173,28 @@ class ScheduleViewerFragment : DaggerFragment() {
 		setEventsTextViewsOnClickListeners()
 	}
 
+	private fun setEventsTextViewsOnClickListeners() {
+		schedule.days.array.forEach { day ->
+			viewModel.getEventsBy(schedule.id, day).safeFetch {
+				it.forEach { event ->
+					mapEventsTextViews[event]?.let { eventTextView ->
+						eventTextView.setOnClickListener {
+							when (viewModel.scheduleMode.value) {
+								ScheduleMode.EDIT -> { navigateToEventEditorFragment(event) }
+								else -> {}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private fun getTableTextView() = TextView(activity).apply {
 		id = View.generateViewId()
 		minWidth = TEXT_VIEWS_WIDTH
-		textSize = TEXT_SIZE
+		TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(this, MIN_TEXT_SIZE, TEXT_SIZE, 1, TypedValue.COMPLEX_UNIT_SP)
 		background = requireActivity().getDrawable(R.drawable.shape_rounded_rectangle)?.mutate()
-		setPaddingRelative(PADDING, PADDING, PADDING, PADDING)
 		gravity = Gravity.CENTER
 	}
 
