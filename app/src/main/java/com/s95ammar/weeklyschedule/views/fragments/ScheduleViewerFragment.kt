@@ -1,8 +1,7 @@
 package com.s95ammar.weeklyschedule.views.fragments
 
-import android.os.Build
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.View.GONE
@@ -131,14 +130,14 @@ class ScheduleViewerFragment : DaggerFragment() {
 	}
 
 	private fun displaySchedule() {
+		progressBar.visibility = VISIBLE
 		viewModel.getScheduleById(argScheduleId).safeFetch {
-			Log.d(LOG_TAG, "showSchedule: $it")
 			schedule = it
 			sharedDataViewModel.setActionBarTitle(schedule.name)
-			prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
-			prepareHeaderTextViews(textViewsDays, schedule.days.amount, schedule.days.array)
 			viewModel.getEventsBy(schedule.id).observe(viewLifecycleOwner, Observer { scheduleEvents ->
-				Log.d(LOG_TAG, "showSchedule: $scheduleEvents")
+				progressBar.visibility = GONE
+				prepareHeaderTextViews(textViewsHours, HOURS_IN_DAY, getHoursStringArray(timePattern))
+				prepareHeaderTextViews(textViewsDays, schedule.days.amount, schedule.days.array)
 				events = scheduleEvents
 				prepareEventTextViews()
 				connectTextViews()
@@ -146,7 +145,6 @@ class ScheduleViewerFragment : DaggerFragment() {
 		}
 	}
 
-	private fun getEventsOfDay(day: String) = events.filter { day == it.day }
 
 	private fun prepareHeaderTextViews(textViews: ArrayList<TextView>, length: Int, values: Array<String>) {
 		textViews.clear()
@@ -160,33 +158,18 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	private fun prepareEventTextViews() {
 		mapEventsTextViews.clear()
-		for (i in 0 until schedule.days.amount) {
-			val day = schedule.getDayOfSchedule(i)
-			val dayEvents = events.filter { day == it.day }
-			for (event in dayEvents) {
-				val tv = getTableTextView()
-				formatEventTextView(tv, event)
-				mapEventsTextViews[event] = tv
-				layout_schedule_viewer.addView(tv)
-			}
-		}
-		setEventsTextViewsOnClickListeners()
-	}
-
-	private fun setEventsTextViewsOnClickListeners() {
-		schedule.days.array.forEach { day ->
-			viewModel.getEventsBy(schedule.id, day).safeFetch {
-				it.forEach { event ->
-					mapEventsTextViews[event]?.let { eventTextView ->
-						eventTextView.setOnClickListener {
-							when (viewModel.scheduleMode.value) {
-								ScheduleMode.EDIT -> { navigateToEventEditorFragment(event) }
-								else -> {}
-							}
-						}
-					}
+		events.forEach { event ->
+			val tv = getTableTextView()
+			formatEventTextView(tv, event)
+			mapEventsTextViews[event] = tv
+			layout_schedule_viewer.addView(tv)
+			tv.setOnClickListener {
+				when (viewModel.scheduleMode.value) {
+					ScheduleMode.EDIT -> navigateToEventEditorFragment(event)
+					else -> {}
 				}
 			}
+
 		}
 	}
 
@@ -194,7 +177,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 		id = View.generateViewId()
 		minWidth = TEXT_VIEWS_WIDTH
 		TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(this, MIN_TEXT_SIZE, TEXT_SIZE, 1, TypedValue.COMPLEX_UNIT_SP)
-		background = requireActivity().getDrawable(R.drawable.shape_rounded_rectangle)?.mutate()
+		background = requireActivity().getDrawable(R.drawable.shape_rounded_rectangle)
 		gravity = Gravity.CENTER
 	}
 
@@ -203,16 +186,20 @@ class ScheduleViewerFragment : DaggerFragment() {
 			minHeight = TEXT_VIEW_HEADER_HEIGHT
 			this.text = text
 			setTextColor(COLOR_BLACK)
-			background.mutate().setTint(COLOR_GRAY)
+			background.setTint(COLOR_GRAY)
 		}
 	}
 
 	private fun formatEventTextView(tv: TextView, event: Event) {
 		tv.apply {
 			text = event.name
-			viewModel.getCategoryById(event.categoryId).safeFetch { category ->
+			sharedDataViewModel.allCategories.find { it.id == event.categoryId }?.let { category ->
 				setTextColor(category.textColor)
-				background.mutate().setTint(category.fillColor)
+				background = GradientDrawable().also {
+					it.setColor(category.fillColor)
+					it.cornerRadius = CORNER_RADIUS
+					it.setStroke(STROKE_WIDTH, category.textColor)
+				}
 			}
 			layoutParams = ConstraintLayout.LayoutParams(TEXT_VIEWS_WIDTH, 0)
 		}
@@ -257,18 +244,18 @@ class ScheduleViewerFragment : DaggerFragment() {
 	}
 
 	private fun connectEventTextViews(constraintSet: ConstraintSet) {
-		for (day in schedule.days.array)
-			for (event in getEventsOfDay(day))
-				mapEventsTextViews[event]?.id?.let { eventTextViewId ->
-					val ec = EventConstraints(event)
-					constraintSet.apply {
-						connect(eventTextViewId, ConstraintSet.TOP, ec.targetStartHourId, ConstraintSet.TOP, ec.marginTop)
-						connect(eventTextViewId, ConstraintSet.BOTTOM, ec.targetEndHourId, ConstraintSet.BOTTOM, ec.marginBottom)
-						connect(eventTextViewId, ConstraintSet.LEFT, ec.targetDayId, ConstraintSet.LEFT)
-						connect(eventTextViewId, ConstraintSet.RIGHT, ec.targetDayId, ConstraintSet.RIGHT)
-						constrainDefaultHeight(eventTextViewId, ConstraintSet.MATCH_CONSTRAINT_SPREAD)
-					}
+		events.forEach { event ->
+			mapEventsTextViews[event]?.id?.let { eventTextViewId ->
+				val ec = EventConstraints(event)
+				constraintSet.apply {
+					connect(eventTextViewId, ConstraintSet.TOP, ec.targetStartHourId, ConstraintSet.TOP, ec.marginTop)
+					connect(eventTextViewId, ConstraintSet.BOTTOM, ec.targetEndHourId, ConstraintSet.BOTTOM, ec.marginBottom)
+					connect(eventTextViewId, ConstraintSet.LEFT, ec.targetDayId, ConstraintSet.LEFT)
+					connect(eventTextViewId, ConstraintSet.RIGHT, ec.targetDayId, ConstraintSet.RIGHT)
+					constrainDefaultHeight(eventTextViewId, ConstraintSet.MATCH_CONSTRAINT_SPREAD)
 				}
+			}
+		}
 	}
 
 	private inner class EventConstraints(event: Event) {

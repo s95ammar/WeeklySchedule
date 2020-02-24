@@ -3,6 +3,7 @@ package com.s95ammar.weeklyschedule.views.fragments.dialogs
 import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.PorterDuff
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -135,14 +136,24 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 
 	private fun assignFillColor(@ColorInt colorInt: Int) {
 		view_edit_category_fill_color.background.setColorFilter(colorInt, PorterDuff.Mode.SRC) // changes color but not shape
-		textView_edit_category_preview_value.setBackgroundColor(colorInt)
 		selectedFillColor = colorInt
+		setPreview()
 	}
 
 	private fun assignTextColor(@ColorInt colorInt: Int) {
 		view_edit_category_text_color.background.setColorFilter(colorInt, PorterDuff.Mode.SRC)
-		textView_edit_category_preview_value.setTextColor(colorInt)
 		selectedTextColor = colorInt
+		setPreview()
+	}
+
+	private fun setPreview() {
+		textView_edit_category_preview_value.setTextColor(selectedTextColor)
+		textView_edit_category_preview_value.background = GradientDrawable().apply {
+			setColor(selectedFillColor)
+			cornerRadius = CORNER_RADIUS
+			setStroke(STROKE_WIDTH, selectedTextColor)
+		}
+
 	}
 
 }
