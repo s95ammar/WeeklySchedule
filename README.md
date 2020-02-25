@@ -2,8 +2,8 @@
 Android app for organizing weekly schedules by categories and displaying them in tables.
 
 - [In progress](#In-progress)
-- [App preview](#App-Preview)
-  - [Navigation drawer & its fragments](#Navigationdrawer&itsfragments)
+- [App preview](#App-preview)
+  - [Navigation drawer & its fragments](#Navigation-drawer--its-fragments)
 
 ## In progress
 
