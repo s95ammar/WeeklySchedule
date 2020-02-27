@@ -11,11 +11,9 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.util.LOG_TAG
 import dagger.android.support.DaggerFragment
 

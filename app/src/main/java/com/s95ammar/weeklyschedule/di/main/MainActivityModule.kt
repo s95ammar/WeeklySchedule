@@ -3,7 +3,10 @@ package com.s95ammar.weeklyschedule.di.main
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import com.s95ammar.weeklyschedule.di.ViewModelKey
-import com.s95ammar.weeklyschedule.viewModels.*
+import com.s95ammar.weeklyschedule.viewModels.CategoriesListViewModel
+import com.s95ammar.weeklyschedule.viewModels.EventEditorViewModel
+import com.s95ammar.weeklyschedule.viewModels.ScheduleViewerViewModel
+import com.s95ammar.weeklyschedule.viewModels.SchedulesListViewModel
 import com.s95ammar.weeklyschedule.views.activities.MainActivity
 import dagger.Binds
 import dagger.Module

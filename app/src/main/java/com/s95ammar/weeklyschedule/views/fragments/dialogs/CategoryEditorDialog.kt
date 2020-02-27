@@ -3,7 +3,6 @@ package com.s95ammar.weeklyschedule.views.fragments.dialogs
 import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.PorterDuff
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -148,12 +147,7 @@ class CategoryEditorDialog : DaggerDialogFragment() {
 
 	private fun setPreview() {
 		textView_edit_category_preview_value.setTextColor(selectedTextColor)
-		textView_edit_category_preview_value.background = GradientDrawable().apply {
-			setColor(selectedFillColor)
-			cornerRadius = CORNER_RADIUS
-			setStroke(STROKE_WIDTH, selectedTextColor)
-		}
-
+		textView_edit_category_preview_value.background = getStrokedBackground(selectedFillColor, selectedTextColor)
 	}
 
 }

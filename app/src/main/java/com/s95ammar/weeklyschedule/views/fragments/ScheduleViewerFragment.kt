@@ -2,7 +2,6 @@ package com.s95ammar.weeklyschedule.views.fragments
 
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.util.TypedValue
@@ -136,17 +135,8 @@ class ScheduleViewerFragment : DaggerFragment() {
 		}
 	}
 
-	private fun getEventBackground(category: Category, mode: ScheduleMode): Drawable {
-		val gradientDrawable = GradientDrawable().apply {
-			setColor(category.fillColor)
-			cornerRadius = CORNER_RADIUS
-			setStroke(STROKE_WIDTH, category.textColor)
-		}
-		return when (mode) {
-			ScheduleMode.EDIT -> RippleDrawable(ColorStateList.valueOf(category.textColor), gradientDrawable, null)
-			else -> gradientDrawable
-		}
-	}
+	private fun getEventBackground(category: Category, mode: ScheduleMode): Drawable =
+			getStrokedBackground(category.fillColor, category.textColor, rippleEffect = (mode == ScheduleMode.EDIT))
 
 	private fun navigateToEventEditorFragment(event: Event? = null) {
 		sharedDataViewModel.editedSchedule = schedule

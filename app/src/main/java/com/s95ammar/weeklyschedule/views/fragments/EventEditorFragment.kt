@@ -126,7 +126,6 @@ class EventEditorFragment : DaggerFragment() {
 					editText_event_name.setAdapter(ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, uniqueEventsNames))
 				}
 			}
-
 		}
 	}
 

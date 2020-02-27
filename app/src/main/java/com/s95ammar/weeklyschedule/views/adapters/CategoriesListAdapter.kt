@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.models.data.Category
+import com.s95ammar.weeklyschedule.util.getStrokedBackground
 import kotlinx.android.synthetic.main.item_category.view.*
 import javax.inject.Inject
 
@@ -32,7 +33,7 @@ class CategoriesListAdapter @Inject constructor() : ListAdapter<Category, Catego
 		val currentItem = getItem(i)
 		holder.apply {
 			tvCategoryName.text = currentItem.name
-			cardView.setCardBackgroundColor(currentItem.fillColor)
+			cardView.background = getStrokedBackground(currentItem.fillColor, currentItem.textColor)
 			tvCategoryName.setTextColor(currentItem.textColor)
 			buttonMore.background?.mutate()?.setTint(currentItem.textColor)
 		}
