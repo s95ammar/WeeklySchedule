@@ -1,6 +1,9 @@
 package com.s95ammar.weeklyschedule.views.fragments
 
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
@@ -16,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.s95ammar.weeklyschedule.R
 import com.s95ammar.weeklyschedule.di.TimePattern
+import com.s95ammar.weeklyschedule.models.data.Category
 import com.s95ammar.weeklyschedule.models.data.Event
 import com.s95ammar.weeklyschedule.models.data.Schedule
 import com.s95ammar.weeklyschedule.util.*
@@ -24,6 +28,7 @@ import com.s95ammar.weeklyschedule.viewModels.SharedDataViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_schedule_viewer.*
 import javax.inject.Inject
+
 
 class ScheduleViewerFragment : DaggerFragment() {
 
@@ -98,6 +103,7 @@ class ScheduleViewerFragment : DaggerFragment() {
 
 	private fun getModeObserver(): Observer<ScheduleMode> = Observer { mode ->
 		setScheduleToolbarMenuMode(mode)
+		refreshEventsBackground(mode)
 		when (mode) {
 			ScheduleMode.MISSING -> textView_no_active_schedule.visibility = VISIBLE
 			ScheduleMode.VIEW -> button_add_event.visibility = GONE
@@ -111,13 +117,6 @@ class ScheduleViewerFragment : DaggerFragment() {
 		}
 	}
 
-	private fun navigateToEventEditorFragment(event: Event? = null) {
-		sharedDataViewModel.editedSchedule = schedule
-		event?.let { sharedDataViewModel.editedEvent = event }
-		sharedDataViewModel.eventEditorFragmentMode = event?.let { Mode.EDIT } ?: Mode.ADD
-		findNavController().navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment)
-	}
-
 	private fun setScheduleToolbarMenuMode(mode: ScheduleMode) {
 		scheduleToolbarMenu.findItem(R.id.button_edit).isVisible = when (mode) {
 			ScheduleMode.VIEW -> true
@@ -127,6 +126,33 @@ class ScheduleViewerFragment : DaggerFragment() {
 			ScheduleMode.EDIT -> true
 			else -> false
 		}
+	}
+
+	private fun refreshEventsBackground(mode: ScheduleMode) {
+		mapEventsTextViews.forEach { (event, tv) ->
+			sharedDataViewModel.allCategories.find { it.id == event.categoryId }?.let { category ->
+				tv.background = getEventBackground(category, mode)
+			}
+		}
+	}
+
+	private fun getEventBackground(category: Category, mode: ScheduleMode): Drawable {
+		val gradientDrawable = GradientDrawable().apply {
+			setColor(category.fillColor)
+			cornerRadius = CORNER_RADIUS
+			setStroke(STROKE_WIDTH, category.textColor)
+		}
+		return when (mode) {
+			ScheduleMode.EDIT -> RippleDrawable(ColorStateList.valueOf(category.textColor), gradientDrawable, null)
+			else -> gradientDrawable
+		}
+	}
+
+	private fun navigateToEventEditorFragment(event: Event? = null) {
+		sharedDataViewModel.editedSchedule = schedule
+		event?.let { sharedDataViewModel.editedEvent = event }
+		sharedDataViewModel.eventEditorFragmentMode = event?.let { Mode.EDIT } ?: Mode.ADD
+		findNavController().navigate(R.id.action_nav_schedule_viewer_to_eventEditorFragment)
 	}
 
 	private fun displaySchedule() {
@@ -176,7 +202,9 @@ class ScheduleViewerFragment : DaggerFragment() {
 	private fun getTableTextView() = TextView(activity).apply {
 		id = View.generateViewId()
 		minWidth = TEXT_VIEWS_WIDTH
-		TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(this, MIN_TEXT_SIZE, TEXT_SIZE, 1, TypedValue.COMPLEX_UNIT_SP)
+		TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+				this, MIN_TEXT_SIZE, TEXT_SIZE, 1, TypedValue.COMPLEX_UNIT_SP
+		)
 		background = requireActivity().getDrawable(R.drawable.shape_rounded_rectangle)
 		gravity = Gravity.CENTER
 	}
@@ -193,12 +221,10 @@ class ScheduleViewerFragment : DaggerFragment() {
 	private fun formatEventTextView(tv: TextView, event: Event) {
 		tv.apply {
 			text = event.name
-			sharedDataViewModel.allCategories.find { it.id == event.categoryId }?.let { category ->
-				setTextColor(category.textColor)
-				background = GradientDrawable().also {
-					it.setColor(category.fillColor)
-					it.cornerRadius = CORNER_RADIUS
-					it.setStroke(STROKE_WIDTH, category.textColor)
+			viewModel.scheduleMode.value?.let { mode ->
+				sharedDataViewModel.allCategories.find { it.id == event.categoryId }?.let { category ->
+					tv.setTextColor(category.textColor)
+					background = getEventBackground(category, mode)
 				}
 			}
 			layoutParams = ConstraintLayout.LayoutParams(TEXT_VIEWS_WIDTH, 0)
